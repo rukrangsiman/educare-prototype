@@ -1,0 +1,1014 @@
+<!doctype html>
+<html lang="th" class="site">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Educare Prototype</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Noto+Serif+Thai:wght@600;700&family=Inter:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: screen index on the left, one phone-sized app on the right; on a phone the app is the page.
+   Palette and faces copied from frontend/src/app/globals.css (Educare's approved mockup). The app is
+   light-only, so this prototype commits to that single look with every color set explicitly. */
+:root {
+  --navy: #0d1b2a;
+  --deep-blue: #1e3a8a;
+  --teal: #0fa3a3;
+  --gold: #f2c94c;
+  --ivory: #f7f6f2;
+  --stone: #e6e8eb;
+  --muted: #5b6472;
+  --white: #ffffff;
+  --page: #ecebe5;
+  --teal-soft: #e3f4f4;
+  --gold-soft: #fbf3d6;
+  --blue-soft: #e6ebf7;
+  --red: #b4372f;
+  --red-soft: #f8e6e4;
+  --display: "Playfair Display", "Noto Serif Thai", Georgia, serif;
+  --body: "Inter", "Noto Sans Thai", system-ui, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--navy);
+  font-family: var(--body);
+  font-size: 15px;
+  line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 28px;
+  -webkit-font-smoothing: antialiased;
+}
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+h1, h2, h3 { font-family: var(--display); margin: 0; text-wrap: balance; line-height: 1.25; }
+p { margin: 0; }
+.baht { font-family: "Noto Serif Thai", serif; }
+
+/* ---------- shell ---------- */
+.shell {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 420px);
+  gap: 36px;
+  justify-content: center;
+  align-items: start;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.side { display: flex; flex-direction: column; gap: 18px; position: sticky; top: 20px; }
+.brand { display: flex; flex-direction: column; gap: 6px; }
+.brand h1 { font-size: 30px; letter-spacing: -0.01em; }
+.brand h1 span { color: var(--teal); }
+.brand p { color: var(--muted); font-size: 14px; }
+.controls { display: flex; flex-direction: column; gap: 10px; }
+.seg { display: grid; grid-template-columns: 1fr 1fr; background: var(--white); border: 1px solid var(--stone); border-radius: 10px; padding: 3px; }
+.seg button { border: 0; background: none; padding: 8px 10px; border-radius: 8px; font-weight: 600; font-size: 14px; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--navy); color: var(--white); }
+.check { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; color: var(--navy); }
+.check input { margin-top: 4px; accent-color: var(--teal); }
+.index { background: var(--white); border: 1px solid var(--stone); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 14px; }
+.index summary { font-weight: 700; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+.index summary::-webkit-details-marker { display: none; }
+.index summary::after { content: "▾"; color: var(--muted); }
+.index details:not([open]) summary::after { content: "▸"; }
+.idx-group { display: flex; flex-direction: column; gap: 2px; }
+.idx-group h4 { margin: 10px 0 4px; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.idx-item { display: grid; grid-template-columns: 30px 1fr auto; gap: 8px; align-items: center; border: 0; background: none; text-align: left; padding: 6px 8px; border-radius: 8px; font-size: 14px; }
+.idx-item:hover { background: var(--ivory); }
+.idx-item[aria-current="true"] { background: var(--teal-soft); font-weight: 600; }
+.idx-item .code { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 12px; font-weight: 600; }
+.dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.dot.built { background: var(--teal); }
+.dot.partial { background: var(--gold); }
+.dot.new { background: var(--white); border: 2px solid var(--deep-blue); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+
+/* ---------- phone ---------- */
+.phone {
+  background: var(--ivory);
+  border: 1px solid #d8d7cf;
+  border-radius: 30px;
+  box-shadow: 0 24px 60px -30px rgba(13, 27, 42, 0.45);
+  height: min(860px, calc(100vh - 40px));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  min-width: 0;
+}
+.appbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 18px; background: var(--white); border-bottom: 1px solid var(--stone); }
+.logo { font-family: var(--display); font-weight: 700; font-size: 22px; letter-spacing: -0.01em; }
+.logo span { color: var(--gold); }
+.appbar .mode { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--teal); background: var(--teal-soft); padding: 3px 8px; border-radius: 99px; margin-left: 8px; vertical-align: middle; font-family: var(--body); }
+.iconbtn { border: 0; background: none; position: relative; width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; color: var(--navy); }
+.iconbtn:hover { background: var(--ivory); }
+.badge-n { position: absolute; top: 4px; right: 4px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 99px; background: var(--red); color: var(--white); font-size: 10px; font-weight: 700; display: grid; place-items: center; }
+.screen { flex: 1; overflow-y: auto; padding: 18px 18px 28px; display: flex; flex-direction: column; gap: 18px; }
+.tabbar { display: grid; grid-template-columns: repeat(5, 1fr); background: var(--white); border-top: 1px solid var(--stone); padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px)); }
+.tab { border: 0; background: none; display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 11px; color: var(--muted); padding: 6px 2px; border-radius: 10px; }
+.tab[aria-current="true"] { color: var(--deep-blue); font-weight: 600; }
+.tab svg { width: 22px; height: 22px; }
+.toast { position: absolute; left: 50%; bottom: 84px; transform: translateX(-50%); background: var(--navy); color: var(--white); padding: 10px 16px; border-radius: 10px; font-size: 14px; max-width: calc(100% - 40px); text-align: center; box-shadow: 0 10px 30px -10px rgba(0,0,0,.4); z-index: 5; }
+.screen-tag { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); border-top: 1px dashed #d5d4cc; padding-top: 12px; margin-top: auto; }
+.screen-tag strong { color: var(--navy); font-variant-numeric: tabular-nums; }
+.status-chip { display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px; border-radius: 99px; font-weight: 600; font-size: 11px; }
+.status-chip.built { background: var(--teal-soft); color: #0b7474; }
+.status-chip.partial { background: var(--gold-soft); color: #7a5d00; }
+.status-chip.new { background: var(--blue-soft); color: var(--deep-blue); }
+.ask { background: var(--gold-soft); border: 1px solid #ecd9a0; border-radius: 12px; padding: 12px 14px; font-size: 14px; display: flex; flex-direction: column; gap: 6px; }
+.ask b { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #7a5d00; }
+.ask ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
+
+/* ---------- app components ---------- */
+.hello { display: flex; flex-direction: column; gap: 4px; }
+.hello h2 { font-size: 26px; }
+.hello p { color: var(--muted); font-size: 14px; }
+.search { display: flex; gap: 8px; background: var(--white); border: 1px solid var(--stone); border-radius: 12px; padding: 6px 6px 6px 14px; align-items: center; }
+.search input { flex: 1; border: 0; outline: 0; background: none; min-width: 0; padding: 6px 0; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; padding: 0 16px; border-radius: 10px; border: 1px solid transparent; font-weight: 600; font-size: 14px; text-decoration: none; }
+.btn.primary { background: var(--navy); color: var(--white); }
+.btn.primary:hover { background: var(--deep-blue); }
+.btn.teal { background: var(--teal); color: var(--white); }
+.btn.ghost { background: var(--white); border-color: var(--stone); color: var(--navy); }
+.btn.block { width: 100%; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { border: 1px solid var(--stone); background: var(--white); border-radius: 99px; padding: 5px 12px; font-size: 13px; }
+.chip[aria-pressed="true"] { background: var(--navy); border-color: var(--navy); color: var(--white); }
+.sec { display: flex; flex-direction: column; gap: 10px; }
+.sec-h { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.sec-h h3 { font-size: 18px; }
+.link { background: none; border: 0; color: var(--deep-blue); font-weight: 600; font-size: 13px; padding: 0; }
+.card { background: var(--white); border: 1px solid var(--stone); border-radius: 14px; overflow: hidden; }
+.card.pad { padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.lcard { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 12px; padding: 12px; text-align: left; width: 100%; border: 0; background: none; color: inherit; }
+.thumb { border-radius: 10px; height: 72px; display: flex; align-items: flex-end; padding: 6px; color: var(--white); font-size: 11px; font-weight: 600; }
+.lcard .t { font-weight: 600; font-size: 14px; line-height: 1.4; }
+.meta { color: var(--muted); font-size: 13px; }
+.row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.price { font-weight: 700; font-variant-numeric: tabular-nums; }
+.pill { display: inline-flex; align-items: center; padding: 2px 9px; border-radius: 99px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.pill.teal { background: var(--teal-soft); color: #0b7474; }
+.pill.gold { background: var(--gold-soft); color: #7a5d00; }
+.pill.blue { background: var(--blue-soft); color: var(--deep-blue); }
+.pill.grey { background: var(--stone); color: var(--muted); }
+.pill.red { background: var(--red-soft); color: var(--red); }
+.hero { height: 130px; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; color: var(--white); }
+.facts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.fact { background: var(--white); border: 1px solid var(--stone); border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; }
+.fact span { font-size: 12px; color: var(--muted); }
+.fact b { font-size: 14px; }
+.tutor-row { display: flex; align-items: center; gap: 12px; }
+.avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--deep-blue); color: var(--white); display: grid; place-items: center; font-weight: 700; flex: none; }
+.avatar.lg { width: 72px; height: 72px; font-size: 26px; }
+.note { background: var(--blue-soft); border-radius: 12px; padding: 12px 14px; font-size: 14px; display: flex; flex-direction: column; gap: 4px; }
+.note.warn { background: var(--gold-soft); }
+.note.ok { background: var(--teal-soft); }
+.note b { font-weight: 600; }
+.stickybar { position: sticky; bottom: -28px; margin: 0 -18px -28px; padding: 12px 18px 16px; background: var(--white); border-top: 1px solid var(--stone); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.tabs { display: flex; gap: 6px; overflow-x: auto; }
+.tabs button { border: 1px solid var(--stone); background: var(--white); border-radius: 99px; padding: 6px 12px; font-size: 13px; white-space: nowrap; }
+.tabs button[aria-pressed="true"] { background: var(--navy); color: var(--white); border-color: var(--navy); }
+form.f { display: flex; flex-direction: column; gap: 12px; }
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field label, .field .lab { font-size: 13px; font-weight: 600; }
+.field input, .field select, .field textarea { border: 1px solid var(--stone); background: var(--white); border-radius: 10px; padding: 10px 12px; width: 100%; min-width: 0; }
+.field textarea { min-height: 80px; resize: vertical; }
+.field small { color: var(--muted); font-size: 12px; }
+.field .err { color: var(--red); font-size: 12px; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.radio { display: flex; gap: 8px; align-items: center; font-size: 14px; }
+.radio input { accent-color: var(--teal); }
+.switch { position: relative; width: 42px; height: 24px; flex: none; }
+.switch input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.switch span { position: absolute; inset: 0; background: var(--stone); border-radius: 99px; transition: background .15s; pointer-events: none; }
+.switch span::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: var(--white); transition: transform .15s; box-shadow: 0 1px 2px rgba(0,0,0,.2); }
+.switch input:checked + span { background: var(--teal); }
+.switch input:checked + span::after { transform: translateX(18px); }
+.switch input:focus-visible + span { outline: 2px solid var(--teal); outline-offset: 2px; }
+.list { display: flex; flex-direction: column; }
+.list > * + * { border-top: 1px solid var(--stone); }
+.li { padding: 12px 14px; display: flex; gap: 12px; align-items: flex-start; }
+.li .grow { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.unread { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); margin-top: 8px; flex: none; }
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.stat { background: var(--white); border: 1px solid var(--stone); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 2px; }
+.stat span { font-size: 12px; color: var(--muted); }
+.stat b { font-size: 20px; font-variant-numeric: tabular-nums; }
+.flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; font-size: 11px; text-align: center; color: var(--muted); }
+.flow div { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.flow i { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-style: normal; font-weight: 700; color: var(--white); background: var(--deep-blue); font-size: 12px; }
+.tbl { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+.tbl th { text-align: left; font-weight: 600; color: var(--muted); font-size: 11px; letter-spacing: .04em; text-transform: uppercase; padding: 8px 10px; border-bottom: 1px solid var(--stone); }
+.tbl td { padding: 10px; border-bottom: 1px solid var(--stone); vertical-align: top; }
+.tbl td.num, .tbl th.num { text-align: right; }
+.scroll-x { overflow-x: auto; }
+.qr-wrap { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 18px; }
+.qr-wrap canvas { width: 200px; height: 200px; max-width: 100%; image-rendering: pixelated; }
+.timer { font-size: 30px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--deep-blue); }
+.empty { text-align: center; padding: 22px 16px; display: flex; flex-direction: column; gap: 10px; align-items: center; }
+.empty h3 { font-size: 19px; }
+.big-ok { width: 64px; height: 64px; border-radius: 50%; background: var(--teal); color: var(--white); display: grid; place-items: center; margin: 10px auto 0; }
+.plus { border: 1px solid var(--stone); background: var(--white); border-radius: 10px; padding: 6px 10px; font-weight: 600; font-size: 13px; white-space: nowrap; }
+.plus[aria-pressed="true"] { background: var(--teal); border-color: var(--teal); color: var(--white); }
+.locked { text-align: center; display: flex; flex-direction: column; gap: 10px; align-items: center; padding: 26px 10px; }
+
+/* ---------- desktop view (toggle) ---------- */
+.browserbar { display: flex; align-items: center; gap: 14px; padding: 9px 16px; background: #e9e8e2; border-bottom: 1px solid #d8d7cf; }
+.browserbar .dots { display: flex; gap: 6px; }
+.browserbar .dots i { width: 10px; height: 10px; border-radius: 50%; background: #cfcdc4; display: block; }
+.browserbar .url { flex: 1; max-width: 520px; background: var(--white); border-radius: 8px; padding: 4px 12px; font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.appbar-right { display: flex; align-items: center; gap: 6px; }
+.topnav { display: flex; gap: 4px; flex: 1; justify-content: center; }
+.topnav button { border: 0; background: none; padding: 8px 14px; border-radius: 8px; font-weight: 500; font-size: 14px; color: var(--muted); white-space: nowrap; }
+.topnav button:hover { color: var(--navy); }
+.topnav button[aria-current="true"] { color: var(--navy); background: var(--ivory); font-weight: 600; }
+.acct { width: 36px; height: 36px; border-radius: 50%; border: 0; background: var(--deep-blue); color: var(--white); font-weight: 700; }
+.hint { font-size: 12px; color: var(--muted); }
+.shell.desk { grid-template-columns: 240px minmax(0, 1fr); max-width: 1480px; }
+.phone.desk { border-radius: 12px; }
+.desk .appbar { padding: 12px 32px; gap: 24px; }
+.desk .tabbar { display: none; }
+.desk .screen { padding: 32px 40px 36px; gap: 22px; align-items: center; }
+.desk .screen > * { width: min(100%, 1040px); }
+.desk .screen.narrow > * { width: min(100%, 640px); }
+.desk .hello h2 { font-size: 36px; }
+.desk .card.list.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; background: none; border: 0; overflow: visible; }
+.desk .card.list.grid > * + * { border-top: 0; }
+.desk .card.list.grid .lcard { background: var(--white); border: 1px solid var(--stone); border-radius: 14px; grid-template-columns: minmax(0, 1fr); }
+.desk .card.list.grid .thumb { height: 96px; }
+.desk .facts, .desk .stats { grid-template-columns: repeat(4, 1fr); }
+.desk .screen.split { display: grid; grid-template-columns: minmax(0, 700px) 320px; justify-content: center; align-items: start; align-content: start; column-gap: 28px; }
+.desk .screen.split > * { width: auto; grid-column: 1; }
+.desk .screen.split > .screen-tag { grid-column: 1 / -1; }
+.desk .screen.split > .stickybar { grid-column: 2; grid-row: 1 / span 6; position: sticky; top: 0; margin: 0; border: 1px solid var(--stone); border-radius: 14px; flex-direction: column; align-items: stretch; padding: 18px; gap: 14px; }
+
+@media (max-width: 820px) {
+  body { padding-block: 12px 0; }
+  .shell.desk { grid-template-columns: minmax(0, 1fr); }
+  .phone.desk { overflow-x: auto; }
+  .phone.desk > :not(.toast) { min-width: 960px; }
+  .shell { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .side { position: static; }
+  .brand h1 { font-size: 24px; }
+  .phone { height: auto; border-radius: 20px; overflow: visible; }
+  .screen { overflow: visible; }
+  .tabbar { position: sticky; bottom: 0; border-radius: 0 0 20px 20px; z-index: 4; }
+  .stickybar { bottom: 62px; }
+  .toast { position: fixed; bottom: 96px; }
+}
+/* ---------- site mode: the same app as a full-screen website (the GitHub Pages build puts class="site" on <html>) ---------- */
+.ribbon, .side-close { display: none; }
+.site body { padding: 0; background: var(--ivory); }
+.site .shell { display: block; max-width: none; }
+.site .side { display: none; position: fixed; inset: 0 0 0 auto; width: min(340px, 92vw); z-index: 30; background: var(--page); padding: calc(16px + env(safe-area-inset-top, 0px)) 16px calc(16px + env(safe-area-inset-bottom, 0px)); overflow-y: auto; box-shadow: -20px 0 50px -20px rgba(13, 27, 42, 0.45); }
+.site .side.open { display: flex; }
+.site .view-seg, .site #desk-hint, .site .browserbar { display: none !important; }
+.site .side-close { display: inline-flex; align-self: flex-end; }
+.site .phone { height: 100vh; height: 100dvh; border: 0; border-radius: 0; box-shadow: none; overflow: hidden; }
+.site .phone.desk > :not(.toast) { min-width: 0; }
+.site .screen { overflow-y: auto; }
+.site .tabbar { position: static; border-radius: 0; }
+.site .stickybar { bottom: -28px; }
+.site .toast { position: absolute; bottom: 84px; }
+.site .screen-tag .status-chip { display: none; }
+.site .ribbon { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: calc(6px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 6px max(16px, env(safe-area-inset-left, 0px)); background: var(--navy); color: var(--white); font-size: 12px; }
+.ribbon button { border: 1px solid rgba(255, 255, 255, 0.35); background: none; color: var(--white); border-radius: 99px; padding: 3px 12px; font-size: 12px; white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="side" id="side">
+    <button type="button" class="btn ghost side-close" id="side-close">ปิดเมนู</button>
+    <div class="brand">
+      <h1>educare <span>prototype</span></h1>
+      <p>หน้าจอกดเล่นได้ทั้งฝั่งนักเรียนและติวเตอร์ ใช้คุยกับผู้ใช้ว่าอยากได้อะไร ข้อมูลทุกอย่างเป็นตัวอย่าง กดได้แต่ไม่บันทึกจริง</p>
+    </div>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="มุมมอง">
+        <button type="button" id="role-student" data-role="student">นักเรียน</button>
+        <button type="button" id="role-tutor" data-role="tutor">ติวเตอร์</button>
+      </div>
+      <div class="seg view-seg" role="group" aria-label="ขนาดจอ">
+        <button type="button" id="view-mobile" data-view="mobile">มือถือ</button>
+        <button type="button" id="view-desk" data-view="desk">คอมพิวเตอร์</button>
+      </div>
+      <p class="hint" id="desk-hint" hidden>โหมดคอมดูชัดที่สุดบนจอกว้าง บนมือถือเลื่อนซ้าย-ขวาได้</p>
+      <label class="check"><input type="checkbox" id="show-asks"> แสดงคำถามสำหรับคุยกับผู้ใช้ในแต่ละหน้า</label>
+    </div>
+    <nav class="index" aria-label="หน้าจอทั้งหมด">
+      <details id="index-details" open>
+        <summary>หน้าจอทั้งหมด</summary>
+        <div id="index-list"></div>
+      </details>
+      <div class="legend">
+        <span><i class="dot built"></i>มีในแอปจริงแล้ว</span>
+        <span><i class="dot partial"></i>มีบางส่วน</span>
+        <span><i class="dot new"></i>ยังไม่มี</span>
+      </div>
+    </nav>
+  </aside>
+
+  <main class="phone" id="phone" aria-label="แอป Educare">
+    <div class="ribbon"><span>หน้าตัวอย่าง Educare · ข้อมูลทั้งหมดไม่ใช่ของจริง</span><button type="button" id="helper-btn">เมนูตัวอย่าง</button></div>
+    <div class="browserbar" id="browserbar" hidden><span class="dots"><i></i><i></i><i></i></span><span class="url" id="url">educare.example</span></div>
+    <header class="appbar">
+      <div><span class="logo">edu<span>care</span></span><span class="mode" id="mode-tag" hidden>ติวเตอร์</span></div>
+      <nav class="topnav" id="topnav" hidden aria-label="เมนูหลัก"></nav>
+      <div class="appbar-right">
+        <button type="button" class="iconbtn" id="bell" aria-label="การแจ้งเตือน"></button>
+        <button type="button" class="acct" id="acct" hidden aria-label="บัญชีของฉัน"></button>
+      </div>
+    </header>
+    <div class="screen" id="screen"></div>
+    <nav class="tabbar" id="tabbar" aria-label="เมนูหลัก"></nav>
+    <div class="toast" id="toast" role="status" hidden></div>
+  </main>
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  // ---------- icons ----------
+  const I = {
+    home: '<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>',
+    cal: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+    star: '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/>',
+    mega: '<path d="M3 10v4a1 1 0 0 0 1 1h3l6 4V5L7 9H4a1 1 0 0 0-1 1zM17 8a5 5 0 0 1 0 8"/>',
+    user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>',
+    bell: '<path d="M6 9a6 6 0 0 1 12 0c0 6 3 7 3 7H3s3-1 3-7M10 20a2 2 0 0 0 4 0"/>',
+    grid: '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
+    book: '<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5M8 7h7"/>',
+    wallet: '<rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M16 15h2M7 6l9-3 1 3"/>',
+    check: '<path d="M5 12l5 5 9-10"/>',
+    search: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>',
+  };
+  const icon = (n, s = 22, w = 1.8) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[n]}</svg>`;
+
+  // ---------- helpers ----------
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const baht = (n) => {
+    const frac = Math.round(n * 100) % 100 !== 0;
+    return '<span class="baht">฿</span>' + n.toLocaleString("th-TH", { minimumFractionDigits: frac ? 2 : 0, maximumFractionDigits: 2 });
+  };
+  const GRADS = ["linear-gradient(135deg,#0D1B2A,#1E3A8A)", "linear-gradient(135deg,#0FA3A3,#0D1B2A)", "linear-gradient(135deg,#1E3A8A,#0FA3A3)", "linear-gradient(135deg,#C9A227,#0D1B2A)"];
+  // Example platform fee. The real rate is not set yet, so it is labelled as an example everywhere.
+  const FEE = 15;
+
+  // ---------- example data (all invented) ----------
+  const TUTORS = {
+    prae: { name: "ครูแพร", initials: "พ", headline: "ติว TGAT และเคมี ม.ปลาย", since: "ส.ค. 2026", taught: 24, subjects: ["TGAT", "เคมี", "ภาษาอังกฤษ"], bio: "จบวิศวะเคมี จุฬาฯ สอนพิเศษมา 5 ปี เน้นทำโจทย์จริงและเทคนิคจับเวลา ห้องเรียนเล็ก ถามได้ตลอด" },
+    ton: { name: "ครูต้น", initials: "ต", headline: "ฟิสิกส์ ม.ปลาย · คณิตสอบเข้า ม.4", since: "ก.ย. 2026", taught: 18, subjects: ["ฟิสิกส์", "คณิต"], bio: "อดีตนักเรียนค่ายฟิสิกส์โอลิมปิก อธิบายจากภาพก่อนสูตร ทุกคลาสมีชีทสรุปให้" },
+    jane: { name: "ครูเจน", initials: "จ", headline: "IELTS Writing & Speaking", since: "ต.ค. 2026", taught: 9, subjects: ["IELTS", "ภาษาอังกฤษ"], bio: "IELTS 8.5 สอนตัวต่อตัว ตรวจงานเขียนละเอียดพร้อม feedback เป็นลายลักษณ์อักษร" },
+    boss: { name: "ครูบอส", initials: "บ", headline: "Python และพื้นฐานโปรแกรมมิ่ง", since: "ต.ค. 2026", taught: 6, subjects: ["Python", "คอมพิวเตอร์"], bio: "Software engineer สอนมือใหม่ให้เขียนโปรแกรมแรกได้ภายในคลาสเดียว" },
+  };
+  const CLASSES = [
+    { id: "c1", title: "ติว TGAT ความถนัดทั่วไป: ตะลุยโจทย์ภาษาอังกฤษ", subject: "TGAT", level: "ม.6", tutor: "prae", when: "ส. 8 พ.ย. · 10:00–12:00", hours: "2 ชม.", seats: 8, booked: 5, price: 350, via: "Zoom" },
+    { id: "c2", title: "ฟิสิกส์ ม.5 ไฟฟ้ากระแส สรุปเนื้อหา + ทำโจทย์", subject: "ฟิสิกส์", level: "ม.5", tutor: "ton", when: "อา. 9 พ.ย. · 13:00–15:00", hours: "2 ชม.", seats: 6, booked: 2, price: 250, via: "Google Meet" },
+    { id: "c3", title: "IELTS Writing Task 2 ตัวต่อตัว", subject: "IELTS", level: "มหาลัย / ทำงาน", tutor: "jane", when: "อ. 11 พ.ย. · 19:00–20:30", hours: "1.5 ชม.", seats: 1, booked: 0, price: 590, via: "Zoom" },
+    { id: "c4", title: "คณิต ม.3 เตรียมสอบเข้า ม.4: ทฤษฎีบทพีทาโกรัส", subject: "คณิต", level: "ม.3", tutor: "ton", when: "พ. 12 พ.ย. · 18:00–19:30", hours: "1.5 ชม.", seats: 10, booked: 7, price: 180, via: "Google Meet" },
+    { id: "c6", title: "เคมี ม.4 ตารางธาตุ เข้าใจใน 90 นาที", subject: "เคมี", level: "ม.4", tutor: "prae", when: "พฤ. 13 พ.ย. · 17:30–19:00", hours: "1.5 ชม.", seats: 8, booked: 8, price: 220, via: "Zoom" },
+    { id: "c5", title: "Python เบื้องต้นสำหรับมือใหม่ (ครั้งที่ 1)", subject: "Python", level: "ทั่วไป", tutor: "boss", when: "ส. 15 พ.ย. · 09:30–12:00", hours: "2.5 ชม.", seats: 12, booked: 3, price: 290, via: "Zoom" },
+  ];
+  const cls = (id) => CLASSES.find((c) => c.id === id) || CLASSES[0];
+
+  const state = {
+    view: "mobile",
+    role: "student",
+    screen: "s1",
+    classId: "c1",
+    q: "",
+    filter: "all",
+    bookTab: "upcoming",
+    tclassTab: "open",
+    approved: true,
+    asks: false,
+    wishOpen: false,
+    wishPrefill: "",
+    wishPublic: false,
+    demandSort: "top",
+    postPrefill: null,
+    wish: [
+      { id: "w1", topic: "ฟิสิกส์ ม.5 เรื่องไฟฟ้า", level: "ม.5", until: "", notify: true, public: true, match: "c2" },
+      { id: "w2", topic: "IELTS Speaking part 2", level: "มหาลัย / ทำงาน", until: "2026-11-30", notify: true, public: false, match: null },
+      { id: "w3", topic: "ชีวะ ม.6 ระบบประสาท", level: "ม.6", until: "2026-09-20", notify: false, public: false, match: null, expired: true },
+    ],
+    demand: [
+      { id: "d1", topic: "ฟิสิกส์ ม.5 เรื่องไฟฟ้า", level: "ม.5", count: 12, mine: true, opened: "c2", age: "5 วันก่อน" },
+      { id: "d2", topic: "A-Level คณิต 1 ตะลุยข้อสอบเก่า", level: "ม.6", count: 9, mine: false, age: "2 วันก่อน" },
+      { id: "d3", topic: "ภาษาญี่ปุ่น N5 สำหรับมือใหม่", level: "ทั่วไป", count: 6, mine: false, age: "วันนี้" },
+      { id: "d4", topic: "Excel สำหรับทำรายงาน", level: "ทำงาน", count: 4, mine: false, age: "1 สัปดาห์ก่อน" },
+      { id: "d5", topic: "คณิต ม.2 สมการเชิงเส้น", level: "ม.2", count: 3, mine: false, age: "3 วันก่อน" },
+    ],
+    bookings: [
+      { id: "b1", classId: "c1", status: "paid" },
+      { id: "b2", classId: "c4", status: "pending" },
+      { id: "b3", title: "เคมี ม.4 พันธะเคมี", when: "ศ. 31 ต.ค. · 17:30–19:00", tutor: "prae", price: 220, status: "done" },
+    ],
+    notifs: [
+      { t: "มีคลาสตรงกับ Wish list “ฟิสิกส์ ม.5 เรื่องไฟฟ้า”", d: "ครูต้นเปิดคลาส อา. 9 พ.ย. เหลือ 4 ที่", go: "s3", cid: "c2", unread: true },
+      { t: "คลาส TGAT จะเริ่มพรุ่งนี้ 10:00", d: "ลิงก์ Zoom อยู่ในหน้าการจองของฉัน", go: "s8", unread: true },
+      { t: "ชำระเงินสำเร็จ", d: "ติว TGAT ความถนัดทั่วไป · ฿350", go: "s8", unread: false },
+      { t: "Wish list “ชีวะ ม.6 ระบบประสาท” หมดเวลาแล้ว", d: "ไม่มีคลาสที่ตรงภายใน 20 ก.ย. ตั้งใหม่ได้", go: "s9", unread: false },
+    ],
+    zoom: "https://zoom.us/j/000000000",
+    payTimer: null,
+  };
+
+  // ---------- earnings (tutor ครูต้น) ----------
+  // Two fee rates on purpose: the commission % is locked at booking time, so an older booking keeps its old rate.
+  const EARN = [
+    { title: "คณิต ม.3 สมการเชิงเส้น", date: "31 ต.ค.", seats: 3, price: 180, fee: 12, status: "paid", note: "โอนแล้ว 3 พ.ย." },
+    { title: "ฟิสิกส์ ม.5 แรงและการเคลื่อนที่", date: "2 พ.ย.", seats: 4, price: 250, fee: FEE, status: "ready", note: "รอทีมงานโอนรอบถัดไป" },
+    { title: "คณิต ม.3 อสมการ", date: "3 พ.ย.", seats: 5, price: 180, fee: FEE, status: "grace", note: "ปล่อยได้ 4 พ.ย. 19:30" },
+    { title: "ฟิสิกส์ ม.5 ไฟฟ้ากระแส", date: "9 พ.ย.", seats: 2, price: 250, fee: FEE, status: "held", note: "คลาสยังไม่เริ่ม" },
+    { title: "คณิต ม.3 พีทาโกรัส", date: "12 พ.ย.", seats: 7, price: 180, fee: FEE, status: "held", note: "คลาสยังไม่เริ่ม" },
+  ].map((r) => { const gross = r.seats * r.price; const fee = Math.round(gross * r.fee) / 100; return { ...r, gross, feeAmt: fee, net: gross - fee }; });
+  const EARN_LABEL = { held: ["รอคลาสจบ", "grey"], grace: ["รอครบ 24 ชม.", "gold"], ready: ["พร้อมโอน", "teal"], paid: ["โอนแล้ว", "blue"] };
+
+  // ---------- screens ----------
+  const S = {};
+  const def = (id, role, title, status, render, asks) => { S[id] = { id, role, title, status, render, asks }; };
+  const STATUS_TEXT = { built: "มีในแอปจริงแล้ว", partial: "มีบางส่วน", new: "ยังไม่มีในแอปจริง" };
+
+  const classCard = (c, i) => `
+    <button type="button" class="lcard" data-go="s3" data-cid="${c.id}">
+      <div class="thumb" style="background:${GRADS[i % GRADS.length]}">${esc(c.subject)}</div>
+      <div style="display:flex;flex-direction:column;gap:4px;min-width:0">
+        <span class="t">${esc(c.title)}</span>
+        <span class="meta">${esc(TUTORS[c.tutor].name)} · ${esc(c.when)}</span>
+        <span class="row"><span class="price">${baht(c.price)}</span>${seatPill(c)}</span>
+      </div>
+    </button>`;
+  const seatPill = (c) => c.booked >= c.seats ? '<span class="pill red">เต็มแล้ว</span>'
+    : c.seats === 1 ? '<span class="pill blue">ตัวต่อตัว</span>'
+    : `<span class="pill teal">เหลือ ${c.seats - c.booked} ที่</span>`;
+
+  def("s1", "student", "หน้าแรก + ค้นหา", "built", () => `
+    <div class="hello"><h2>อยากเรียนอะไรวันนี้?</h2><p>สวัสดี มายด์ · ค้นหาคลาสที่ติวเตอร์เปิดไว้ แล้วจองได้ทันที</p></div>
+    <form class="search" data-form="search" role="search">
+      ${icon("search", 18)}
+      <input id="q1" name="q" placeholder="วิชา ระดับชั้น หรือชื่อติวเตอร์" value="${esc(state.q)}" aria-label="ค้นหาคลาส">
+      <button class="btn primary" type="submit">ค้นหา</button>
+    </form>
+    <div class="chips">${["TGAT", "ฟิสิกส์", "IELTS", "คณิต", "Python", "ชีวะ"].map((t) => `<button type="button" class="chip" data-q="${t}">${t}</button>`).join("")}</div>
+    <section class="sec">
+      <div class="sec-h"><h3>คลาสใกล้เริ่ม</h3><button type="button" class="link" data-q="">ดูทั้งหมด</button></div>
+      <div class="card list grid">${CLASSES.map(classCard).join("")}</div>
+    </section>
+    <div class="note"><b>หาไม่เจอ?</b>ตั้ง Wish list ไว้ พอมีติวเตอร์เปิดคลาสที่ตรงกัน เราจะแจ้งให้ทันที
+      <div><button type="button" class="btn ghost" data-go="s9" style="margin-top:6px">ตั้ง Wish list</button></div></div>`,
+    ["เวลาจะหาที่เรียน ปกติพิมพ์ค้นหาด้วยคำแบบไหน (ชื่อวิชา, ชื่อข้อสอบ, ชื่อครู)?", "อยากเห็นอะไรบนการ์ดคลาสบ้างก่อนกดเข้าไปดู?"]);
+
+  def("s2", "student", "ผลการค้นหา", "partial", () => {
+    const q = state.q.trim().toLowerCase();
+    let list = CLASSES.filter((c) => !q || (c.title + c.subject + c.level + TUTORS[c.tutor].name).toLowerCase().includes(q));
+    if (state.filter === "one") list = list.filter((c) => c.seats === 1);
+    if (state.filter === "group") list = list.filter((c) => c.seats > 1);
+    if (state.filter === "cheap") list = list.filter((c) => c.price <= 250);
+    const f = (k, t) => `<button type="button" class="chip" data-filter="${k}" aria-pressed="${state.filter === k}">${t}</button>`;
+    return `
+    <form class="search" data-form="search" role="search">
+      ${icon("search", 18)}
+      <input id="q2" name="q" value="${esc(state.q)}" placeholder="วิชา ระดับชั้น หรือชื่อติวเตอร์" aria-label="ค้นหาคลาส">
+      <button class="btn primary" type="submit">ค้นหา</button>
+    </form>
+    <div class="chips">${f("all", "ทั้งหมด")}${f("group", "เรียนกลุ่ม")}${f("one", "ตัวต่อตัว")}${f("cheap", "ไม่เกิน ฿250")}</div>
+    ${list.length ? `<p class="meta">พบ ${list.length} คลาส${q ? ` สำหรับ “${esc(state.q)}”` : ""}</p><div class="card list grid">${list.map(classCard).join("")}</div>`
+      : `<div class="card empty"><h3>ยังไม่มีคลาส “${esc(state.q)}”</h3>
+          <p class="meta">ตั้ง Wish list ไว้ เราจะแจ้งเมื่อมีติวเตอร์เปิดคลาสที่ตรงกัน หรือโพสต์บน Demand Board ให้ติวเตอร์เห็นว่ามีคนอยากเรียน</p>
+          <button type="button" class="btn primary" data-wish-from-search>ตั้ง Wish list “${esc(state.q)}”</button>
+          <button type="button" class="btn ghost" data-go="s10">ดู Demand Board</button></div>`}`;
+  }, ["ตัวกรองไหนสำคัญที่สุด: วันเวลา, ราคา, ระดับชั้น, เรียนกลุ่ม/ตัวต่อตัว?", "ลองค้นคำที่ไม่มี (เช่น “ชีวะ”) — ถ้าเจอหน้านี้ จะตั้ง Wish list ไหม?"]);
+
+  def("s3", "student", "รายละเอียดคลาส", "built", () => {
+    const c = cls(state.classId), t = TUTORS[c.tutor], full = c.booked >= c.seats;
+    return `
+    <div class="card"><div class="hero" style="background:${GRADS[CLASSES.indexOf(c) % GRADS.length]}">
+      <div class="row"><span class="pill" style="background:rgba(255,255,255,.18);color:#fff">${esc(c.subject)} · ${esc(c.level)}</span>${seatPill(c)}</div>
+      <h2 style="font-size:21px;color:#fff">${esc(c.title)}</h2></div></div>
+    <button type="button" class="card pad" data-go="s4" data-tid="${c.tutor}" style="text-align:left">
+      <div class="tutor-row"><div class="avatar">${t.initials}</div><div style="flex:1;min-width:0"><b>${t.name}</b><div class="meta">${esc(t.headline)}</div></div><span class="link">ดูโปรไฟล์</span></div>
+    </button>
+    <div class="facts">
+      <div class="fact"><span>วันเวลา</span><b>${esc(c.when)}</b></div>
+      <div class="fact"><span>ระยะเวลา</span><b>${c.hours}</b></div>
+      <div class="fact"><span>รูปแบบ</span><b>${c.seats === 1 ? "ตัวต่อตัว" : `กลุ่ม ${c.seats} คน`}</b></div>
+      <div class="fact"><span>เรียนผ่าน</span><b>${c.via}</b></div>
+    </div>
+    <section class="sec"><h3>เนื้อหาคลาส</h3>
+      <p>สรุปเนื้อหาที่ออกสอบบ่อย ทำโจทย์ไปพร้อมกันพร้อมเฉลยละเอียด มีชีทสรุปให้ดาวน์โหลดหลังเรียน ถามได้ตลอดคลาส</p>
+      <p class="meta">ลิงก์ห้องเรียน ${c.via} จะขึ้นในหน้าการจองของฉันหลังชำระเงิน และส่งทางอีเมล</p></section>
+    <div class="note warn"><b>ยกเลิกและคืนเงิน</b>ติดต่อทีมงานเพื่อขอคืนเงิน ทีมงานจะตรวจสอบและโอนคืนให้</div>
+    <div class="stickybar"><div><div class="meta">ต่อที่นั่ง</div><div class="price" style="font-size:20px">${baht(c.price)}</div></div>
+      <button type="button" class="btn primary" data-go="s5" ${full ? "disabled" : ""}>${full ? "เต็มแล้ว" : "จองที่นั่ง"}</button></div>`;
+  }, ["ข้อมูลไหนที่ยังขาด ทำให้ไม่กล้ากดจอง?", "อยากเห็นรีวิวจากคนที่เคยเรียนไหม (ตอนนี้ยังไม่มีระบบรีวิว)?"]);
+
+  def("s4", "student", "โปรไฟล์ติวเตอร์", "new", () => {
+    const id = state.tutorId || "ton", t = TUTORS[id];
+    const theirs = CLASSES.filter((c) => c.tutor === id);
+    return `
+    <div class="card pad" style="align-items:center;text-align:center">
+      <div class="avatar lg">${t.initials}</div>
+      <h2 style="font-size:22px">${t.name}</h2>
+      <p class="meta">${esc(t.headline)}</p>
+      <span class="pill teal">${icon("check", 14, 2.4)}&nbsp;ทีมงานอนุมัติแล้ว</span>
+    </div>
+    <div class="stats"><div class="stat"><span>สอนไปแล้ว</span><b>${t.taught} คลาส</b></div><div class="stat"><span>อยู่กับ Educare ตั้งแต่</span><b style="font-size:16px">${t.since}</b></div></div>
+    <section class="sec"><h3>เกี่ยวกับครู</h3><p>${esc(t.bio)}</p><div class="chips">${t.subjects.map((s) => `<span class="chip">${s}</span>`).join("")}</div></section>
+    <section class="sec"><h3>คลาสที่เปิดอยู่</h3><div class="card list grid">${theirs.map((c) => classCard(c, CLASSES.indexOf(c))).join("")}</div></section>`;
+  }, ["ก่อนจอง อยากรู้อะไรเกี่ยวกับครูบ้าง (ประวัติการศึกษา, ผลงานลูกศิษย์, วิดีโอแนะนำตัว)?", "ป้าย “ทีมงานอนุมัติแล้ว” ช่วยให้มั่นใจขึ้นไหม?"]);
+
+  def("s5", "student", "ยืนยันการจอง", "built", () => {
+    const c = cls(state.classId);
+    return `
+    <h2 style="font-size:22px">ยืนยันการจอง</h2>
+    <div class="card list">${classCard(c, CLASSES.indexOf(c))}</div>
+    <div class="card pad">
+      <div class="row"><span>ค่าเรียน 1 ที่นั่ง</span><span class="price">${baht(c.price)}</span></div>
+      <div class="row"><span class="meta">ค่าธรรมเนียมผู้เรียน</span><span class="meta">ไม่มี</span></div>
+      <div class="row" style="border-top:1px solid var(--stone);padding-top:10px"><b>ยอดชำระ</b><span class="price" style="font-size:20px">${baht(c.price)}</span></div>
+    </div>
+    <div class="note"><b>ชำระด้วย PromptPay</b>สแกน QR ด้วยแอปธนาคารใดก็ได้ ภายใน 30 นาที ถ้าไม่ชำระ การจองจะถูกยกเลิกอัตโนมัติ</div>
+    <label class="check"><input type="checkbox" id="agree-terms" checked> ฉันอ่านและยอมรับเงื่อนไขการจองและการคืนเงินแล้ว</label>
+    <button type="button" class="btn primary block" data-act="pay">ไปหน้าชำระเงิน</button>`;
+  }, ["อยากจ่ายช่องทางไหนนอกจาก PromptPay (บัตรเครดิต, TrueMoney)?", "เวลา 30 นาทีพอไหม?"]);
+
+  def("s6", "student", "ชำระเงิน (PromptPay QR)", "new", () => {
+    const c = cls(state.classId);
+    return `
+    <div class="card qr-wrap">
+      <span class="meta">ยอดชำระ</span><div class="price" style="font-size:28px">${baht(c.price)}</div>
+      <canvas id="qr" width="232" height="232" aria-label="QR PromptPay ตัวอย่าง"></canvas>
+      <span class="pill grey">QR ตัวอย่าง สแกนไม่ได้</span>
+      <span class="meta">ชำระภายใน</span><div class="timer" id="qr-timer">30:00</div>
+    </div>
+    <div class="card pad">
+      <div class="flow"><div><i>1</i>เปิดแอปธนาคาร</div><div><i>2</i>สแกน QR</div><div><i>3</i>ยืนยันยอด</div><div><i>4</i>รอหน้านี้เปลี่ยนเอง</div></div>
+    </div>
+    <div class="note warn"><b>ระหว่างที่ QR ยังใช้ได้ ยกเลิกการจองไม่ได้</b>ถ้าไม่ต้องการแล้ว ปล่อยให้ QR หมดเวลา การจองจะถูกยกเลิกเอง</div>
+    <button type="button" class="btn teal block" data-act="paid">จำลอง: ชำระเงินสำเร็จ</button>
+`;
+  }, ["เคยจ่ายด้วย QR ในเว็บอื่นแล้วงงตรงไหนไหม?", "ถ้าจ่ายแล้วหน้าจอไม่เปลี่ยน จะทำอย่างไรต่อ?"]);
+
+  def("s7", "student", "จองสำเร็จ", "new", () => {
+    const c = cls(state.classId);
+    return `
+    <div class="big-ok">${icon("check", 34, 2.6)}</div>
+    <div style="text-align:center;display:flex;flex-direction:column;gap:6px"><h2 style="font-size:24px">จองสำเร็จแล้ว</h2><p class="meta">ส่งใบยืนยันไปที่อีเมลของคุณแล้ว</p></div>
+    <div class="card list">${classCard(c, CLASSES.indexOf(c))}</div>
+    <div class="note ok"><b>ต่อจากนี้</b>ลิงก์ห้องเรียน ${c.via} จะอยู่ในหน้าการจองของฉัน เราจะส่งอีเมลเตือนก่อนเริ่มคลาส 1 ชั่วโมง</div>
+    <button type="button" class="btn primary block" data-go="s8">ดูการจองของฉัน</button>
+    <button type="button" class="btn ghost block" data-go="s1">หาคลาสอื่นต่อ</button>`;
+  }, ["อยากได้การเตือนแบบไหน (อีเมล, LINE, เพิ่มลงปฏิทิน)?"]);
+
+  def("s8", "student", "การจองของฉัน", "partial", () => {
+    const tabs = { upcoming: "กำลังจะถึง", pending: "รอชำระเงิน", done: "ผ่านมาแล้ว" };
+    const want = { upcoming: "paid", pending: "pending", done: "done" }[state.bookTab];
+    const rows = state.bookings.filter((b) => b.status === want).map((b) => {
+      const c = b.classId ? cls(b.classId) : null;
+      const title = c ? c.title : b.title, when = c ? c.when : b.when, tutor = TUTORS[c ? c.tutor : b.tutor].name, price = c ? c.price : b.price;
+      const action = b.status === "paid" ? `<button type="button" class="btn teal" data-act="zoom">เข้าห้องเรียน (${c.via})</button><p class="meta">ลิงก์จากติวเตอร์ · กดได้ตลอด</p>`
+        : b.status === "pending" ? `<button type="button" class="btn primary" data-go="s6" data-cid="${b.classId}">ชำระเงินต่อ</button><p class="meta">QR หมดอายุใน 18 นาที</p>`
+        : `<p class="meta">เรียนจบแล้ว</p>`;
+      const pill = b.status === "paid" ? '<span class="pill teal">ชำระแล้ว</span>' : b.status === "pending" ? '<span class="pill gold">รอชำระเงิน</span>' : '<span class="pill grey">จบแล้ว</span>';
+      return `<div class="card pad"><div class="row"><b style="font-size:14px">${esc(title)}</b>${pill}</div><span class="meta">${tutor} · ${when} · ${baht(price)}</span>${action}</div>`;
+    }).join("");
+    return `
+    <h2 style="font-size:22px">การจองของฉัน</h2>
+    <div class="tabs">${Object.entries(tabs).map(([k, v]) => `<button type="button" data-booktab="${k}" aria-pressed="${state.bookTab === k}">${v}</button>`).join("")}</div>
+    ${rows || '<div class="card empty"><p class="meta">ยังไม่มีรายการ</p></div>'}
+    <div class="note"><b>มีปัญหาหรืออยากขอคืนเงิน?</b>ติดต่อทีมงานทางอีเมล support@educare.example (ที่อยู่ตัวอย่าง) แจ้งชื่อคลาสและวันที่จอง</div>`;
+  }, ["อยากยกเลิกเองในแอปไหม หรือติดต่อทีมงานก็โอเค?", "ลิงก์ห้องเรียนควรกดได้ตลอด หรือเปิดแค่ใกล้เวลาเรียน?"]);
+
+  def("s9", "student", "Wish list", "new", () => {
+    const items = state.wish.map((w) => {
+      const deadline = w.until ? `ภายใน ${thaiDate(w.until)}` : "ไม่กำหนดเวลา · แจ้งจนกว่าจะปิด";
+      const status = w.expired ? '<span class="pill grey">หมดเวลาแล้ว</span>' : w.match ? `<button type="button" class="pill teal" style="border:0" data-go="s3" data-cid="${w.match}">พบ 1 คลาสที่ตรง ›</button>` : '<span class="pill gold">กำลังรอคลาส</span>';
+      return `<div class="li"><div class="grow"><b style="font-size:14px">${esc(w.topic)}</b><span class="meta">${esc(w.level)} · ${deadline}</span>
+        <div class="chips">${status}${w.public ? '<span class="pill blue">อยู่บน Demand Board ด้วย</span>' : '<span class="pill grey">ส่วนตัว</span>'}</div></div>
+        <label class="switch" title="แจ้งเตือน"><input type="checkbox" data-wishnotify="${w.id}" ${w.notify && !w.expired ? "checked" : ""} ${w.expired ? "disabled" : ""} aria-label="แจ้งเตือน ${esc(w.topic)}"><span></span></label></div>`;
+    }).join("");
+    return `
+    <div class="hello"><h2>Wish list</h2><p>เขียนสิ่งที่อยากเรียนไว้ พอมีติวเตอร์เปิดคลาสที่ตรงกัน เราจะแจ้งคุณทันที</p></div>
+    <button type="button" class="btn primary block" data-act="wishform">${state.wishOpen ? "ปิดฟอร์ม" : "+ เพิ่มสิ่งที่อยากเรียน"}</button>
+    ${state.wishOpen ? wishForm() : ""}
+    <div class="card list">${items}</div>
+    <p class="meta">ปิดสวิตช์ = หยุดแจ้งเตือนรายการนั้น · ถ้าคุณจองคลาสที่ตรงแล้ว รายการจะหยุดแจ้งเอง</p>`;
+  }, ["อยากตั้งเวลาหมดอายุไหม หรือปล่อยแจ้งไปเรื่อยๆ ดีกว่า?", "ถ้ามีคลาสตรงหลายคลาส อยากได้แจ้งทุกคลาส หรือสรุปวันละครั้ง?", "“ตรงกัน” ควรหมายถึงอะไร: ชื่อวิชาเหมือนกัน หรือต้องระดับชั้นตรงด้วย?"]);
+
+  const wishForm = () => `
+    <form class="card pad f" data-form="wish">
+      <div class="field"><label for="w-topic">อยากเรียนอะไร</label><input id="w-topic" name="topic" required placeholder="เช่น ฟิสิกส์ ม.5 เรื่องไฟฟ้า" value="${esc(state.wishPrefill)}"></div>
+      <div class="field"><label for="w-level">ระดับ</label><select id="w-level" name="level">${["ม.1–ม.3", "ม.4", "ม.5", "ม.6", "มหาลัย / ทำงาน", "ทั่วไป"].map((l) => `<option>${l}</option>`).join("")}</select></div>
+      <div class="field"><span class="lab">แจ้งเตือนถึงเมื่อไหร่</span>
+        <label class="radio"><input type="radio" name="mode" value="none" checked> ไม่กำหนด แจ้งไปเรื่อยๆ จนกว่าจะปิด</label>
+        <label class="radio"><input type="radio" name="mode" value="until"> แจ้งเฉพาะคลาสที่เรียนภายในวันที่</label>
+        <input id="w-until" name="until" type="date" min="2026-11-04" value="2026-11-30" aria-label="วันที่สุดท้าย">
+        <small>ถ้ากำหนดวัน คลาสที่เรียนหลังวันนั้นจะไม่ถูกแจ้ง</small></div>
+      <label class="check"><input type="checkbox" name="public" id="w-public" ${state.wishPublic ? "checked" : ""}> แสดงบน Demand Board ด้วย (ไม่แสดงชื่อ ติวเตอร์เห็นว่ามีคนอยากเรียนกี่คน)</label>
+      <button class="btn primary" type="submit">บันทึก</button>
+    </form>`;
+
+  def("s10", "student", "Demand Board", "new", () => {
+    const list = [...state.demand].sort((a, b) => state.demandSort === "top" ? b.count - a.count : 0);
+    return `
+    <div class="hello"><h2>Demand Board</h2><p>สิ่งที่ผู้เรียนอยากเรียนแต่ยังไม่มีคลาส กด +1 ถ้าคุณก็อยากเรียน ติวเตอร์จะเห็นและเปิดคลาสตาม</p></div>
+    <div class="row"><div class="tabs"><button type="button" data-dsort="top" aria-pressed="${state.demandSort === "top"}">คนอยากเรียนมากสุด</button><button type="button" data-dsort="new" aria-pressed="${state.demandSort === "new"}">ล่าสุด</button></div></div>
+    <div class="card list">${list.map((d) => `<div class="li"><div class="grow"><b style="font-size:14px">${esc(d.topic)}</b><span class="meta">${esc(d.level)} · โพสต์ ${d.age}</span>
+      ${d.opened ? `<button type="button" class="pill teal" style="border:0;align-self:flex-start" data-go="s3" data-cid="${d.opened}">มีติวเตอร์เปิดคลาสแล้ว ›</button>` : ""}</div>
+      <button type="button" class="plus" data-plus="${d.id}" aria-pressed="${d.mine}">+1 · ${d.count}</button></div>`).join("")}</div>
+    <button type="button" class="btn primary block" data-act="postdemand">โพสต์สิ่งที่อยากเรียน</button>`;
+  }, ["ถ้าเห็นคนอื่นอยากเรียนเรื่องเดียวกัน จะกด +1 ไหม?", "อยากให้แสดงชื่อคนโพสต์ไหม หรือไม่ระบุตัวตนดีกว่า?"]);
+
+  def("s11", "student", "การแจ้งเตือน", "new", () => `
+    <h2 style="font-size:22px">การแจ้งเตือน</h2>
+    <div class="card list">${state.notifs.map((n, i) => `<button type="button" class="li" style="border-left:0;border-right:0;border-bottom:0;background:none;text-align:left;width:100%" data-notif="${i}">
+      ${n.unread ? '<span class="unread" aria-label="ยังไม่อ่าน"></span>' : '<span style="width:8px;flex:none"></span>'}
+      <span class="grow"><b style="font-size:14px">${esc(n.t)}</b><span class="meta">${esc(n.d)}</span></span></button>`).join("")}</div>
+    <p class="meta">ตอนนี้แจ้งในเว็บและทางอีเมล · แจ้งผ่าน LINE จะมาใน Phase 2</p>`,
+    ["อยากได้แจ้งเตือนทางไหนมากที่สุด?", "แจ้งเตือนไหนที่ไม่อยากได้?"]);
+
+  def("s12", "student", "บัญชีของฉัน", "new", () => `
+    <div class="card pad"><div class="tutor-row"><div class="avatar">ม</div><div><b>มายด์</b><div class="meta">mind@example.com</div></div></div></div>
+    <section class="sec"><h3>วิธีเข้าสู่ระบบ</h3><div class="card list">
+      <div class="li"><div class="grow"><b style="font-size:14px">อีเมลและรหัสผ่าน</b><span class="meta">เปลี่ยนรหัสผ่านได้ที่ “ลืมรหัสผ่าน?”</span></div><span class="pill teal">ใช้อยู่</span></div>
+      <div class="li"><div class="grow"><b style="font-size:14px">Google</b><span class="meta">ผูกกับ mind@gmail.com</span></div><span class="pill teal">ผูกแล้ว</span></div>
+      <div class="li"><div class="grow"><b style="font-size:14px">LINE</b><span class="meta">ล็อกอินผ่าน LINE</span></div><span class="pill grey">เร็วๆ นี้</span></div>
+    </div></section>
+    <section class="sec"><h3>การแจ้งเตือนทางอีเมล</h3><div class="card list">
+      ${[["คลาสตรงกับ Wish list", true], ["เตือนก่อนเริ่มคลาส", true], ["ข่าวสารและโปรโมชัน", false]].map(([t, on], i) => `<div class="li"><div class="grow"><span style="font-size:14px">${t}</span></div><label class="switch"><input type="checkbox" id="mail-${i}" ${on ? "checked" : ""} aria-label="${t}"><span></span></label></div>`).join("")}
+    </div></section>
+    <div class="card pad"><b>สอนเองได้ไหม?</b><p class="meta">เปิดโหมดติวเตอร์ แล้วรอทีมงานอนุมัติก่อนโพสต์คลาสแรก ใช้บัญชีเดียวกันทั้งเรียนและสอน</p>
+      <button type="button" class="btn primary" data-act="becometutor">เปิดโหมดติวเตอร์</button></div>
+    <div class="row"><button type="button" class="link" data-act="legal">ข้อกำหนดการใช้งาน · นโยบายความเป็นส่วนตัว</button><button type="button" class="link" style="color:var(--red)" data-act="logout">ออกจากระบบ</button></div>`,
+    ["อยากแก้อะไรในบัญชีได้เองบ้าง (ชื่อ, รูป, เบอร์โทร)?"]);
+
+  // ---------- tutor screens ----------
+  const approvalBanner = () => state.approved ? "" : `<div class="note warn"><b>รอทีมงานอนุมัติ</b>ระหว่างนี้แก้โปรไฟล์ได้ แต่ยังโพสต์คลาสไม่ได้ ทีมงานจะแจ้งทางอีเมลเมื่ออนุมัติแล้ว</div>`;
+  const demoApproval = () => `<label class="check" style="font-size:13px;color:var(--muted)"><input type="checkbox" data-act="approve" ${state.approved ? "checked" : ""}> จำลอง: ทีมงานอนุมัติแล้ว</label>`;
+  const sum = (st) => EARN.filter((r) => st.includes(r.status)).reduce((a, r) => a + r.net, 0);
+
+  def("t1", "tutor", "ภาพรวมติวเตอร์", "new", () => `
+    <div class="hello"><h2>สวัสดี ครูต้น</h2><p>ภาพรวมคลาสและรายได้ของคุณ</p></div>
+    ${approvalBanner()}${demoApproval()}
+    <div class="stats">
+      <div class="stat"><span>คลาสที่เปิดรับ</span><b>2</b></div>
+      <div class="stat"><span>ที่นั่งถูกจอง</span><b>9</b></div>
+      <div class="stat"><span>รายได้รอปล่อย</span><b>${baht(sum(["held", "grace"]))}</b></div>
+      <div class="stat"><span>พร้อมโอน</span><b>${baht(sum(["ready"]))}</b></div>
+    </div>
+    <section class="sec"><div class="sec-h"><h3>คลาสถัดไป</h3><button type="button" class="link" data-go="t3">คลาสทั้งหมด</button></div>
+      <div class="card pad"><b style="font-size:14px">${esc(cls("c2").title)}</b><span class="meta">${cls("c2").when} · จองแล้ว 2/6</span>
+      <button type="button" class="btn ghost" data-go="t4" data-cid="c2">ดูผู้จองและลิงก์ห้องเรียน</button></div></section>
+    <div class="note"><b>มี 2 คำขอบน Demand Board ที่ตรงวิชาของคุณ</b>รวม 15 คนอยากเรียน<div><button type="button" class="btn ghost" data-go="t7" style="margin-top:6px">ดูคำขอ</button></div></div>
+    <button type="button" class="btn primary block" data-go="t2" ${state.approved ? "" : "disabled"}>+ โพสต์คลาสใหม่</button>`,
+    ["อยากเห็นตัวเลขอะไรเป็นอย่างแรกเมื่อเปิดแอป?", "ระหว่างรออนุมัติ อยากรู้อะไร (ใช้เวลากี่วัน, ต้องส่งอะไรเพิ่ม)?"]);
+
+  def("t2", "tutor", "โพสต์คลาส", "built", () => {
+    if (!state.approved) return `${approvalBanner()}<div class="card locked"><h3>ยังโพสต์คลาสไม่ได้</h3><p class="meta">ทีมงานต้องอนุมัติบัญชีติวเตอร์ของคุณก่อน</p>${demoApproval()}</div>`;
+    const p = state.postPrefill || {};
+    return `
+    <h2 style="font-size:22px">โพสต์คลาสใหม่</h2>
+    ${p.from ? `<div class="note ok"><b>เปิดคลาสจากคำขอ “${esc(p.from)}”</b>เมื่อโพสต์แล้ว ผู้ที่กด +1 ไว้ ${p.count} คนจะได้รับแจ้งเตือน</div>` : ""}
+    <form class="f" data-form="post">
+      <div class="field"><label for="p-title">ชื่อคลาส</label><input id="p-title" required value="${esc(p.title || "")}" placeholder="เช่น ฟิสิกส์ ม.5 ไฟฟ้ากระแส สรุป + โจทย์"></div>
+      <div class="two"><div class="field"><label for="p-subject">วิชา</label><input id="p-subject" value="${esc(p.subject || "ฟิสิกส์")}"></div>
+        <div class="field"><label for="p-level">ระดับ</label><input id="p-level" value="${esc(p.level || "ม.5")}"></div></div>
+      <div class="field"><label for="p-desc">รายละเอียด</label><textarea id="p-desc" placeholder="เรียนอะไร เหมาะกับใคร ต้องเตรียมอะไร"></textarea></div>
+      <div class="two"><div class="field"><label for="p-date">วันที่</label><input id="p-date" type="date" value="2026-11-22" min="2026-11-04"></div>
+        <div class="field"><label for="p-time">เวลาเริ่ม</label><input id="p-time" type="time" value="13:00"></div></div>
+      <div class="two"><div class="field"><label for="p-dur">ระยะเวลา</label><select id="p-dur"><option>1 ชม.</option><option selected>1.5 ชม.</option><option>2 ชม.</option><option>3 ชม.</option></select></div>
+        <div class="field"><label for="p-seats">รับกี่คน</label><input id="p-seats" type="number" min="1" max="50" value="6"></div></div>
+      <div class="field"><label for="p-price">ราคาต่อที่นั่ง (บาท)</label><input id="p-price" type="number" min="20" value="250"><span class="err" id="p-price-err" hidden>ราคาขั้นต่ำ 20 บาท</span></div>
+      <div class="field"><label for="p-via">เรียนผ่าน</label><select id="p-via"><option>Zoom</option><option>Google Meet</option></select><small>ลิงก์ห้องเรียนส่งให้ผู้เรียนหลังชำระเงิน ใส่ทีหลังได้</small></div>
+      <div class="card pad" id="p-calc"></div>
+      <button class="btn primary" type="submit">โพสต์คลาส</button>
+    </form>`;
+  }, ["ช่องไหนกรอกยาก หรือไม่จำเป็น?", "อยากตั้งคลาสซ้ำทุกสัปดาห์ได้ไหม (ตอนนี้ทำทีละคลาส)?", "ค่าธรรมเนียมแสดงแบบนี้เข้าใจไหม?"]);
+
+  const calcBox = () => {
+    const price = Number(document.getElementById("p-price")?.value || 0), seats = Number(document.getElementById("p-seats")?.value || 0);
+    const err = document.getElementById("p-price-err"); if (err) err.hidden = price >= 20;
+    const fee = Math.round(price * FEE) / 100, net = price - fee;
+    const box = document.getElementById("p-calc");
+    if (box) box.innerHTML = `<div class="row"><span>ผู้เรียนจ่ายต่อที่นั่ง</span><span class="price">${baht(price)}</span></div>
+      <div class="row"><span class="meta">ค่าธรรมเนียมแพลตฟอร์ม (ตัวอย่าง ${FEE}%)</span><span class="meta">−${baht(fee)}</span></div>
+      <div class="row"><b>คุณได้รับต่อที่นั่ง</b><span class="price">${baht(net)}</span></div>
+      <div class="row"><span class="meta">ถ้าเต็ม ${seats} ที่</span><span class="price">${baht(net * seats)}</span></div>
+      <p class="meta" style="font-size:12px">% ค่าธรรมเนียมจะล็อกไว้ตอนผู้เรียนจอง ถ้าแพลตฟอร์มเปลี่ยนอัตราภายหลัง การจองเดิมไม่เปลี่ยน</p>`;
+  };
+
+  def("t3", "tutor", "คลาสของฉัน", "built", () => {
+    const mine = { open: [["c2", 2, 6], ["c4", 7, 10]], done: [["คณิต ม.3 อสมการ", 5, 10, "3 พ.ย."], ["ฟิสิกส์ ม.5 แรงและการเคลื่อนที่", 4, 6, "2 พ.ย."]], closed: [["คณิต ม.3 เศษส่วน (ปิดรับเอง)", 0, 8, "5 พ.ย."]] }[state.tclassTab];
+    const tabs = { open: "เปิดรับ", done: "จบแล้ว", closed: "ปิดรับ" };
+    return `
+    <div class="row"><h2 style="font-size:22px">คลาสของฉัน</h2><button type="button" class="btn primary" data-go="t2" ${state.approved ? "" : "disabled"}>+ โพสต์</button></div>
+    <div class="tabs">${Object.entries(tabs).map(([k, v]) => `<button type="button" data-tclasstab="${k}" aria-pressed="${state.tclassTab === k}">${v}</button>`).join("")}</div>
+    ${mine.map((m) => {
+      const c = typeof m[0] === "string" && m[0].startsWith("c") && m[0].length < 4 ? cls(m[0]) : null;
+      const title = c ? c.title : m[0], when = c ? c.when : m[3];
+      return `<div class="card pad"><b style="font-size:14px">${esc(title)}</b><span class="meta">${when} · จองแล้ว ${m[1]}/${m[2]}</span>
+        <div style="height:6px;background:var(--stone);border-radius:99px;overflow:hidden"><div style="height:100%;width:${(m[1] / m[2]) * 100}%;background:var(--teal)"></div></div>
+        ${c ? `<div class="row"><button type="button" class="btn ghost" data-go="t4" data-cid="${c.id}">ดูผู้จอง</button><button type="button" class="link" data-act="closeclass">ปิดรับจอง</button></div>` : ""}</div>`;
+    }).join("")}`;
+  }, ["อยากแก้คลาสหลังมีคนจองแล้วได้แค่ไหน (เวลา, ราคา)?"]);
+
+  def("t4", "tutor", "ผู้จองและลิงก์ห้องเรียน", "partial", () => {
+    const c = cls(state.classId);
+    const people = [["น้องปอ", "ชำระแล้ว"], ["น้องมายด์", "ชำระแล้ว"], ["น้องเจ", "รอชำระเงิน"]].slice(0, Math.max(2, Math.min(3, c.booked + 1)));
+    return `
+    <button type="button" class="link" data-go="t3">‹ คลาสของฉัน</button>
+    <div class="card pad"><b>${esc(c.title)}</b><span class="meta">${c.when} · จองแล้ว ${c.booked}/${c.seats}</span></div>
+    <section class="sec"><h3>ผู้จอง</h3><div class="card list">${people.map(([n, s]) => `<div class="li"><div class="avatar" style="width:34px;height:34px;font-size:13px">${n.replace("น้อง", "").slice(0, 1)}</div><div class="grow"><b style="font-size:14px">${n}</b></div><span class="pill ${s === "ชำระแล้ว" ? "teal" : "gold"}">${s}</span></div>`).join("")}</div></section>
+    <form class="card pad f" data-form="zoom">
+      <div class="field"><label for="z-link">ลิงก์ห้องเรียน (${c.via})</label><input id="z-link" type="url" value="${esc(state.zoom)}"><small>ผู้เรียนที่ชำระแล้วเห็นลิงก์นี้ในหน้าการจอง และได้อีเมลเตือนก่อนเริ่ม 1 ชม.</small></div>
+      <button class="btn primary" type="submit">บันทึกลิงก์</button>
+    </form>
+    <p class="meta">Educare ไม่มีแชทในแอป ติวเตอร์และผู้เรียนเจอกันในห้องเรียนออนไลน์ตามเวลานัด</p>`;
+  }, ["อยากเห็นข้อมูลผู้เรียนเพิ่มไหม (ระดับชั้น, สิ่งที่อยากเน้น)?", "อยากใช้ลิงก์ห้องเดิมทุกคลาสไหม?"]);
+
+  def("t5", "tutor", "รายได้", "new", () => `
+    <h2 style="font-size:22px">รายได้</h2>
+    <div class="stats">
+      <div class="stat"><span>รอคลาสจบ</span><b>${baht(sum(["held"]))}</b></div>
+      <div class="stat"><span>รอครบ 24 ชม.</span><b>${baht(sum(["grace"]))}</b></div>
+      <div class="stat"><span>พร้อมโอน</span><b style="color:#0b7474">${baht(sum(["ready"]))}</b></div>
+      <div class="stat"><span>โอนแล้วเดือนนี้</span><b>${baht(sum(["paid"]))}</b></div>
+    </div>
+    <div class="card pad"><b style="font-size:14px">เงินของคุณเดินทางอย่างไร</b>
+      <div class="flow"><div><i>1</i>ผู้เรียนชำระ</div><div><i>2</i>ระบบพักเงินไว้</div><div><i>3</i>คลาสจบ + 24 ชม.</div><div><i>4</i>ทีมงานโอนรายสัปดาห์</div></div></div>
+    <div class="card scroll-x"><table class="tbl"><thead><tr><th>คลาส</th><th class="num">สุทธิ</th><th>สถานะ</th></tr></thead><tbody>
+      ${EARN.map((r) => `<tr><td><b>${esc(r.title)}</b><div class="meta">${r.date} · ${r.seats} × ${baht(r.price)} · ค่าธรรมเนียม ${r.fee}%</div></td><td class="num">${baht(r.net)}</td><td><span class="pill ${EARN_LABEL[r.status][1]}">${EARN_LABEL[r.status][0]}</span><div class="meta" style="font-size:12px">${r.note}</div></td></tr>`).join("")}
+    </tbody></table></div>
+    <p class="meta">% ค่าธรรมเนียมล็อกไว้ตอนจอง แถวบนสุดใช้อัตราเก่า 12% จึงไม่เปลี่ยนตามอัตราปัจจุบัน (ตัวเลขทั้งหมดเป็นตัวอย่าง)</p>
+    <button type="button" class="btn ghost block" data-go="t6">บัญชีรับเงิน</button>`,
+    ["รอเงิน 24 ชม. หลังคลาสจบ + โอนรายสัปดาห์ รับได้ไหม?", "อยากได้สรุปรายได้แบบไหน (รายเดือน, ใบสรุปไว้ยื่นภาษี)?"]);
+
+  def("t6", "tutor", "บัญชีรับเงิน", "new", () => `
+    <button type="button" class="link" data-go="t5">‹ รายได้</button>
+    <h2 style="font-size:22px">บัญชีรับเงิน</h2>
+    <div class="note"><b>ทีมงานโอนเงินให้รายสัปดาห์</b>เฉพาะรายการที่คลาสจบแล้วและครบ 24 ชั่วโมง</div>
+    <div class="card pad f">
+      <div class="field"><span class="lab">ธนาคาร</span><input value="กสิกรไทย" readonly aria-label="ธนาคาร"></div>
+      <div class="field"><span class="lab">เลขบัญชี</span><input value="xxx-x-x4821-x" readonly aria-label="เลขบัญชี"></div>
+      <div class="field"><span class="lab">ชื่อบัญชี</span><input value="นายต้น ตัวอย่าง" readonly aria-label="ชื่อบัญชี"></div>
+      <button type="button" class="btn ghost" data-act="toast" data-msg="หน้าแก้ไขยังเป็นแค่ตัวอย่าง">แก้ไข</button>
+    </div>
+    <p class="meta">ข้อมูลตัวอย่าง</p>`,
+    ["อยากรับเงินทางไหน (บัญชีธนาคาร, PromptPay)?", "โอนรายสัปดาห์โอเคไหม หรืออยากได้ถี่กว่านั้น?"]);
+
+  def("t7", "tutor", "Demand Board (มุมติวเตอร์)", "new", () => `
+    <div class="hello"><h2>คำขอที่ตรงกับคุณ</h2><p>ผู้เรียนอยากเรียนเรื่องเหล่านี้แต่ยังไม่มีคลาส เปิดคลาสตามคำขอ แล้วระบบจะแจ้งคนที่กด +1 ไว้</p></div>
+    <div class="card list">${state.demand.slice(0, 5).map((d, i) => `<div class="li"><div class="grow"><b style="font-size:14px">${esc(d.topic)}</b><span class="meta">${esc(d.level)} · ${d.count} คนอยากเรียน${i < 2 ? " · ตรงวิชาของคุณ" : ""}</span></div>
+      ${d.opened ? '<span class="pill teal">เปิดแล้ว</span>' : `<button type="button" class="btn ghost" data-open-demand="${d.id}" ${state.approved ? "" : "disabled"}>เปิดคลาส</button>`}</div>`).join("")}</div>`,
+    ["จำนวนคนอยากเรียนเท่าไหร่ถึงจะคุ้มเปิดคลาส?", "อยากให้แจ้งเตือนเมื่อมีคำขอใหม่ในวิชาของคุณไหม?"]);
+
+  def("t8", "tutor", "โปรไฟล์ติวเตอร์", "new", () => `
+    <h2 style="font-size:22px">โปรไฟล์ติวเตอร์</h2>
+    <form class="card pad f" data-form="profile">
+      <div class="tutor-row"><div class="avatar lg">ต</div><button type="button" class="btn ghost" data-act="toast" data-msg="อัปโหลดรูปยังเป็นแค่ตัวอย่าง">เปลี่ยนรูป</button></div>
+      <div class="field"><label for="pf-name">ชื่อที่แสดง</label><input id="pf-name" value="ครูต้น"></div>
+      <div class="field"><label for="pf-head">แนะนำตัวสั้นๆ</label><input id="pf-head" value="${esc(TUTORS.ton.headline)}"></div>
+      <div class="field"><label for="pf-bio">เกี่ยวกับฉัน</label><textarea id="pf-bio">${esc(TUTORS.ton.bio)}</textarea></div>
+      <div class="field"><span class="lab">วิชาที่สอน</span><div class="chips">${["ฟิสิกส์", "คณิต"].map((s) => `<span class="chip">${s} ×</span>`).join("")}<button type="button" class="chip" data-act="toast" data-msg="เพิ่มวิชายังเป็นแค่ตัวอย่าง">+ เพิ่ม</button></div></div>
+      <button class="btn primary" type="submit">บันทึก</button>
+    </form>
+    <button type="button" class="btn ghost block" data-go="s4" data-tid="ton">ดูหน้าโปรไฟล์ที่ผู้เรียนเห็น</button>
+    <button type="button" class="btn ghost block" data-act="tostudent">กลับไปโหมดนักเรียน</button>`,
+    ["อยากใส่อะไรเพิ่มในโปรไฟล์ (วุฒิการศึกษา, วิดีโอแนะนำตัว, ผลงานลูกศิษย์)?"]);
+
+  // ---------- chrome ----------
+  const TABS = {
+    student: [["s1", "หน้าแรก", "home"], ["s8", "การจอง", "cal"], ["s9", "Wish list", "star"], ["s10", "Demand", "mega"], ["s12", "บัญชี", "user"]],
+    tutor: [["t1", "ภาพรวม", "grid"], ["t3", "คลาส", "book"], ["t5", "รายได้", "wallet"], ["t7", "Demand", "mega"], ["t8", "โปรไฟล์", "user"]],
+  };
+  const TAB_OF = { s2: "s1", s3: "s1", s4: "s1", s5: "s1", s6: "s8", s7: "s8", s11: "s12", t2: "t3", t4: "t3", t6: "t5" };
+  // Desktop view: top navigation (account sits behind the avatar), a fake address bar, and per-screen layout hints.
+  const NAV = {
+    student: [["s1", "หาคลาส"], ["s8", "การจองของฉัน"], ["s9", "Wish list"], ["s10", "Demand Board"]],
+    tutor: [["t1", "ภาพรวม"], ["t3", "คลาสของฉัน"], ["t5", "รายได้"], ["t7", "Demand Board"]],
+  };
+  const URLS = { s1: "", s2: "search", s3: "listings/c1", s4: "tutors/ton", s5: "bookings/new", s6: "bookings/pay", s7: "bookings/success", s8: "bookings/mine", s9: "wishlist", s10: "demand", s11: "notifications", s12: "account", t1: "tutor", t2: "listings/new", t3: "listings/mine", t4: "bookings/tutor-mine", t5: "tutor/earnings", t6: "tutor/payout", t7: "tutor/demand", t8: "tutor/profile" };
+  const NARROW = new Set(["s5", "s6", "s7", "s9", "s11", "s12", "t2", "t4", "t6", "t8"]);
+  const SPLIT = new Set(["s3"]);
+  const $ = (id) => document.getElementById(id);
+  // Site mode = the GitHub Pages build: full-screen app, layout follows the window width, helper menu in a side panel.
+  const SITE = document.documentElement.classList.contains("site");
+  const autoView = () => (window.innerWidth >= 900 ? "desk" : "mobile");
+  const screenEl = $("screen");
+
+  function thaiDate(iso) {
+    const m = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
+    const [y, mo, d] = iso.split("-").map(Number);
+    return `${d} ${m[mo - 1]}`;
+  }
+
+  function renderIndex() {
+    const group = (role, label) => `<div class="idx-group"><h4>${label}</h4>${Object.values(S).filter((s) => s.role === role).map((s) =>
+      `<button type="button" class="idx-item" data-go="${s.id}" aria-current="${state.screen === s.id}"><span class="code">${s.id.toUpperCase()}</span><span>${s.title}</span><i class="dot ${s.status}" title="${STATUS_TEXT[s.status]}"></i></button>`).join("")}</div>`;
+    $("index-list").innerHTML = group("student", "นักเรียน") + group("tutor", "ติวเตอร์");
+  }
+
+  function render() {
+    const s = S[state.screen];
+    state.role = s.role;
+    clearInterval(state.payTimer);
+    $("role-student").setAttribute("aria-pressed", String(state.role === "student"));
+    $("role-tutor").setAttribute("aria-pressed", String(state.role === "tutor"));
+    $("mode-tag").hidden = state.role !== "tutor";
+    const unread = state.notifs.filter((n) => n.unread).length;
+    $("bell").innerHTML = icon("bell") + (unread && state.role === "student" ? `<span class="badge-n">${unread}</span>` : "");
+    $("bell").hidden = state.role !== "student";
+    const active = TAB_OF[s.id] || s.id;
+    $("tabbar").innerHTML = TABS[state.role].map(([id, label, ic]) => `<button type="button" class="tab" data-go="${id}" aria-current="${active === id}">${icon(ic)}${label}</button>`).join("");
+    const desk = state.view === "desk";
+    $("phone").classList.toggle("desk", desk);
+    document.querySelector(".shell").classList.toggle("desk", desk);
+    $("view-mobile").setAttribute("aria-pressed", String(!desk));
+    $("view-desk").setAttribute("aria-pressed", String(desk));
+    ["browserbar", "topnav", "acct", "desk-hint"].forEach((k) => { $(k).hidden = !desk; });
+    $("url").textContent = "educare.example/" + URLS[s.id];
+    const navActive = active === "s12" || active === "t8" ? "" : active;
+    $("topnav").innerHTML = NAV[state.role].map(([id, label]) => `<button type="button" data-go="${id}" aria-current="${navActive === id}">${label}</button>`).join("");
+    $("acct").dataset.go = state.role === "student" ? "s12" : "t8";
+    $("acct").textContent = state.role === "student" ? "ม" : "ต";
+    screenEl.className = "screen" + (SPLIT.has(s.id) ? " split" : "") + (NARROW.has(s.id) ? " narrow" : "");
+    const asks = state.asks && s.asks ? `<div class="ask"><b>คำถามคุยกับผู้ใช้</b><ul>${s.asks.map((a) => `<li>${esc(a)}</li>`).join("")}</ul></div>` : "";
+    screenEl.innerHTML = asks + s.render() + `<div class="screen-tag"><span><strong>${s.id.toUpperCase()}</strong> · ${s.title}</span><span class="status-chip ${s.status}">${STATUS_TEXT[s.status]}</span></div>`;
+    screenEl.scrollTop = 0;
+    renderIndex();
+    try { history.replaceState(null, "", "#" + s.id); } catch (e) { /* hash is a convenience only */ }
+    if (s.id === "s6") startPay();
+    if (s.id === "t2" && state.approved) calcBox();
+  }
+
+  function go(id) {
+    if (!S[id]) return;
+    state.screen = id;
+    render();
+    if (SITE) $("side").classList.remove("open");
+    else if (window.matchMedia("(max-width: 820px)").matches) {
+      $("index-details").open = false;
+      document.querySelector(".phone").scrollIntoView({ block: "start" });
+    }
+  }
+
+  let toastT;
+  function toast(msg) {
+    const t = $("toast"); t.textContent = msg; t.hidden = false;
+    clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 2400);
+  }
+
+  // ---------- payment demo ----------
+  function startPay() {
+    drawQR();
+    let left = 30 * 60;
+    const tick = () => {
+      const el = $("qr-timer"); if (!el) return clearInterval(state.payTimer);
+      el.textContent = `${String(Math.floor(left / 60)).padStart(2, "0")}:${String(left % 60).padStart(2, "0")}`;
+      left = Math.max(0, left - 1);
+    };
+    tick(); state.payTimer = setInterval(tick, 1000);
+  }
+  function drawQR() {
+    const cv = $("qr"); if (!cv) return;
+    const ctx = cv.getContext("2d"), n = 29, px = 8;
+    ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, cv.width, cv.height);
+    let seed = 7;
+    const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+    ctx.fillStyle = "#0d1b2a";
+    const finder = (x, y) => (x < 7 && y < 7) || (x >= n - 7 && y < 7) || (x < 7 && y >= n - 7);
+    for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) if (!finder(x, y) && rnd() > 0.52) ctx.fillRect(x * px, y * px, px, px);
+    [[0, 0], [n - 7, 0], [0, n - 7]].forEach(([fx, fy]) => {
+      ctx.fillRect(fx * px, fy * px, 7 * px, 7 * px);
+      ctx.fillStyle = "#ffffff"; ctx.fillRect((fx + 1) * px, (fy + 1) * px, 5 * px, 5 * px);
+      ctx.fillStyle = "#0d1b2a"; ctx.fillRect((fx + 2) * px, (fy + 2) * px, 3 * px, 3 * px);
+    });
+  }
+
+  // ---------- events ----------
+  document.addEventListener("click", (e) => {
+    const el = e.target.closest("button, [data-plus], input[data-act]");
+    if (!el) return;
+    const d = el.dataset;
+    if (d.view) {
+      state.view = d.view;
+      try { localStorage.setItem("educare-proto-view", d.view); } catch (err) { /* remembering the view is optional */ }
+      return render();
+    }
+    if (d.role) return go(d.role === "student" ? "s1" : "t1");
+    if (d.cid) state.classId = d.cid;
+    if (d.tid) state.tutorId = d.tid;
+    if (d.q !== undefined) { state.q = d.q; state.filter = "all"; return go("s2"); }
+    if (d.filter) { state.filter = d.filter; return render(); }
+    if (d.booktab) { state.bookTab = d.booktab; return render(); }
+    if (d.tclasstab) { state.tclassTab = d.tclasstab; return render(); }
+    if (d.dsort) { state.demandSort = d.dsort; return render(); }
+    if (d.plus) {
+      const it = state.demand.find((x) => x.id === d.plus);
+      it.mine = !it.mine; it.count += it.mine ? 1 : -1;
+      toast(it.mine ? "บันทึกแล้ว เราจะแจ้งเมื่อมีคลาสนี้" : "เอา +1 ออกแล้ว");
+      return render();
+    }
+    if (d.notif !== undefined) { const n = state.notifs[Number(d.notif)]; n.unread = false; if (n.cid) state.classId = n.cid; return go(n.go); }
+    if (d.wishFromSearch !== undefined) { state.wishOpen = true; state.wishPrefill = state.q; state.wishPublic = false; return go("s9"); }
+    if (d.openDemand) {
+      const it = state.demand.find((x) => x.id === d.openDemand);
+      state.postPrefill = { title: it.topic, subject: it.topic.split(" ")[0], level: it.level, from: it.topic, count: it.count };
+      return go("t2");
+    }
+    if (d.go) {
+      if (d.go === "t2" && !el.closest("[data-open-demand]")) state.postPrefill = null;
+      return go(d.go);
+    }
+    switch (d.act) {
+      case "pay":
+        if (!$("agree-terms").checked) return toast("ติ๊กยอมรับเงื่อนไขก่อนชำระเงิน");
+        if (!state.bookings.some((b) => b.classId === state.classId && b.status !== "done")) state.bookings.unshift({ id: "b" + Date.now(), classId: state.classId, status: "pending" });
+        return go("s6");
+      case "paid": {
+        const b = state.bookings.find((x) => x.classId === state.classId && x.status === "pending");
+        if (b) b.status = "paid";
+        state.bookTab = "upcoming";
+        return go("s7");
+      }
+      case "zoom": return toast("จะเปิดลิงก์ห้องเรียนในแอปจริง");
+      case "wishform": state.wishOpen = !state.wishOpen; if (state.wishOpen) { state.wishPrefill = ""; state.wishPublic = false; } return render();
+      case "postdemand": state.wishOpen = true; state.wishPrefill = ""; state.wishPublic = true; return go("s9");
+      case "becometutor": state.approved = false; toast("เปิดโหมดติวเตอร์แล้ว รอทีมงานอนุมัติ"); return go("t1");
+      case "tostudent": return go("s12");
+      case "approve": state.approved = el.checked; return render();
+      case "closeclass": return toast("ปิดรับจองแล้ว ผู้ที่จองไว้ยังเรียนได้ตามเดิม");
+      case "legal": return toast("ในเว็บจริงจะเปิดหน้าเงื่อนไขการใช้งาน");
+      case "logout": return toast("ออกจากระบบ (จำลอง)");
+      case "toast": return toast(d.msg);
+    }
+  });
+
+  document.addEventListener("change", (e) => {
+    const el = e.target;
+    if (el.dataset.wishnotify) {
+      const w = state.wish.find((x) => x.id === el.dataset.wishnotify);
+      w.notify = el.checked; toast(el.checked ? "เปิดแจ้งเตือนแล้ว" : "ปิดแจ้งเตือนรายการนี้แล้ว");
+    }
+  });
+  document.addEventListener("input", (e) => { if (e.target.id === "p-price" || e.target.id === "p-seats") calcBox(); });
+
+  document.addEventListener("submit", (e) => {
+    const f = e.target; e.preventDefault();
+    switch (f.dataset.form) {
+      case "search": state.q = f.q.value; state.filter = "all"; return go("s2");
+      case "wish": {
+        const fd = new FormData(f), topic = String(fd.get("topic") || "").trim();
+        if (!topic) return toast("ใส่สิ่งที่อยากเรียนก่อน");
+        const until = fd.get("mode") === "until" ? String(fd.get("until")) : "";
+        const pub = fd.get("public") === "on";
+        state.wish.unshift({ id: "w" + Date.now(), topic, level: String(fd.get("level")), until, notify: true, public: pub, match: null });
+        if (pub) state.demand.unshift({ id: "d" + Date.now(), topic, level: String(fd.get("level")), count: 1, mine: true, age: "เมื่อสักครู่" });
+        state.wishOpen = false; toast(pub ? "บันทึกแล้ว และโพสต์บน Demand Board แล้ว" : "บันทึก Wish list แล้ว"); return render();
+      }
+      case "post": {
+        const price = Number($("p-price").value);
+        if (price < 20) { $("p-price-err").hidden = false; return toast("ราคาขั้นต่ำ 20 บาท"); }
+        const from = state.postPrefill && state.postPrefill.from;
+        if (from) { const it = state.demand.find((x) => x.topic === from); if (it) it.opened = "c2"; }
+        toast(from ? `โพสต์แล้ว แจ้งผู้ที่อยากเรียน ${state.postPrefill.count} คนแล้ว` : "โพสต์คลาสแล้ว");
+        state.postPrefill = null; state.tclassTab = "open"; return go("t3");
+      }
+      case "zoom": return toast("บันทึกลิงก์แล้ว ผู้เรียนเห็นลิงก์ใหม่ทันที");
+      case "profile": return toast("บันทึกโปรไฟล์แล้ว (จำลอง)");
+    }
+  });
+
+  $("show-asks").addEventListener("change", (e) => { state.asks = e.target.checked; render(); });
+  $("bell").addEventListener("click", () => go("s11"));
+
+  const start = (location.hash || "").slice(1).toLowerCase();
+  if (S[start]) state.screen = start;
+  if (SITE) {
+    state.view = autoView();
+    window.addEventListener("resize", () => { const v = autoView(); if (v !== state.view) { state.view = v; render(); } });
+    $("helper-btn").addEventListener("click", () => $("side").classList.toggle("open"));
+    $("side-close").addEventListener("click", () => $("side").classList.remove("open"));
+  } else {
+    try { if (localStorage.getItem("educare-proto-view") === "desk") state.view = "desk"; } catch (err) { /* default to mobile */ }
+    if (window.matchMedia("(max-width: 820px)").matches) $("index-details").open = false;
+  }
+  render();
+})();
+</script>
+</body>
+</html>
