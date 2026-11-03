@@ -387,6 +387,11 @@ form.f { display: flex; flex-direction: column; gap: 12px; }
   const state = {
     view: "mobile",
     role: "student",
+    prev: "s1",
+    legalTab: "terms",
+    resetStep: 1,
+    signupEmail: "",
+    googleName: "",
     screen: "s1",
     classId: "c1",
     q: "",
@@ -656,6 +661,92 @@ form.f { display: flex; flex-direction: column; gap: 12px; }
     <div class="row"><button type="button" class="link" data-act="legal">ข้อกำหนดการใช้งาน · นโยบายความเป็นส่วนตัว</button><button type="button" class="link" style="color:var(--red)" data-act="logout">ออกจากระบบ</button></div>`,
     ["อยากแก้อะไรในบัญชีได้เองบ้าง (ชื่อ, รูป, เบอร์โทร)?"]);
 
+  // ---------- sign-in / sign-up screens (role "guest": no tab bar) ----------
+  const googleBtn = (label) => `<button type="button" class="btn ghost block" data-act="google"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M23 12.3c0-.8-.1-1.6-.2-2.3H12v4.4h6.2a5.3 5.3 0 0 1-2.3 3.5v2.9h3.7c2.2-2 3.4-5 3.4-8.5z"/><path fill="#34A853" d="M12 23.5c3.1 0 5.7-1 7.6-2.8l-3.7-2.9c-1 .7-2.4 1.1-3.9 1.1-3 0-5.5-2-6.4-4.7H1.8v3a11.5 11.5 0 0 0 10.2 6.3z"/><path fill="#FBBC05" d="M5.6 14.2a6.9 6.9 0 0 1 0-4.4v-3H1.8a11.5 11.5 0 0 0 0 10.4z"/><path fill="#EA4335" d="M12 5.1c1.7 0 3.2.6 4.4 1.7l3.3-3.3A11.5 11.5 0 0 0 1.8 6.8l3.8 3C6.5 7.1 9 5.1 12 5.1z"/></svg>${label}</button>`;
+  const orLine = '<div class="row meta" style="gap:12px"><span style="flex:1;height:1px;background:var(--stone)"></span>หรือ<span style="flex:1;height:1px;background:var(--stone)"></span></div>';
+  const pwField = (id, label, auto) => `<div class="field"><label for="${id}">${label}</label><div style="position:relative"><input id="${id}" type="password" autocomplete="${auto}" required minlength="8" style="padding-right:64px"><button type="button" class="link" data-act="showpw" data-for="${id}" style="position:absolute;right:12px;top:50%;transform:translateY(-50%)">แสดง</button></div></div>`;
+
+  def("a1", "guest", "เข้าสู่ระบบ", "built", () => `
+    <div class="hello"><h2>เข้าสู่ระบบ</h2><p>ยินดีต้อนรับกลับ กรอกอีเมลและรหัสผ่านเพื่อเข้าใช้งาน</p></div>
+    <form class="f" data-form="login">
+      <div class="field"><label for="l-email">อีเมล</label><input id="l-email" type="email" autocomplete="email" placeholder="you@example.com" required></div>
+      ${pwField("l-pw", "รหัสผ่าน", "current-password")}
+      <div style="text-align:right"><button type="button" class="link" data-go="a5">ลืมรหัสผ่าน?</button></div>
+      <button class="btn primary block" type="submit">เข้าสู่ระบบ</button>
+    </form>
+    ${orLine}
+    ${googleBtn("เข้าสู่ระบบด้วย Google")}
+    <p style="text-align:center">ยังไม่มีบัญชี? <button type="button" class="link" data-go="a2">สมัครสมาชิก</button></p>`,
+    ["อยากเข้าสู่ระบบด้วยอะไรมากที่สุด (อีเมล, Google, LINE)?"]);
+
+  def("a2", "guest", "สมัครสมาชิก", "built", () => `
+    <div class="hello"><h2>สมัครสมาชิก</h2><p>ใช้บัญชีเดียวทั้งเรียนและสอน เริ่มจากนักเรียน แล้วเปิดโหมดติวเตอร์ทีหลังได้</p></div>
+    <form class="f" data-form="signup">
+      <div class="field"><label for="r-email">อีเมล</label><input id="r-email" type="email" autocomplete="email" placeholder="you@example.com" required></div>
+      ${pwField("r-pw", "รหัสผ่าน", "new-password")}
+      ${pwField("r-pw2", "ยืนยันรหัสผ่าน", "new-password")}
+      <small class="meta">อย่างน้อย 8 ตัวอักษร</small>
+      <button class="btn primary block" type="submit">สมัครสมาชิก</button>
+      <p class="meta" style="font-size:13px">หลังยืนยันอีเมล คุณจะต้องยอมรับ <button type="button" class="link" data-go="a6" data-legal="terms">ข้อกำหนดการใช้งาน</button> และ <button type="button" class="link" data-go="a6" data-legal="privacy">นโยบายความเป็นส่วนตัว</button></p>
+    </form>
+    ${orLine}
+    ${googleBtn("สมัครด้วย Google")}
+    <p style="text-align:center">มีบัญชีแล้ว? <button type="button" class="link" data-go="a1">เข้าสู่ระบบ</button></p>`,
+    ["ขั้นตอนสมัครยาวไปไหม?", "ถ้าต้องยืนยันอีเมลด้วยรหัส 6 หลัก จะรำคาญไหม?"]);
+
+  def("a3", "guest", "ยืนยันอีเมล", "built", () => `
+    <div class="hello"><h2>ยืนยันอีเมล</h2><p>เราส่งรหัสยืนยัน 6 หลักไปที่ <b>${esc(state.signupEmail || "mind@example.com")}</b> แล้ว (รหัสมีอายุ 10 นาที)</p></div>
+    <form class="f" data-form="otp">
+      <div class="field"><label for="otp">รหัสยืนยัน 6 หลัก</label><input id="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000" style="font-size:24px;letter-spacing:.4em;text-align:center;font-variant-numeric:tabular-nums" required></div>
+      <button class="btn primary block" type="submit">ยืนยัน</button>
+    </form>
+    <p class="meta" style="text-align:center">ไม่ได้รับอีเมล? ดูในโฟลเดอร์ Junk/Spam หรือ <button type="button" class="link" data-act="resend">ส่งรหัสอีกครั้ง</button></p>
+    <p class="meta" style="text-align:center;font-size:13px">ตัวอย่าง: ใส่ตัวเลข 6 หลักอะไรก็ได้</p>`,
+    ["ได้อีเมลช้าไหม หรือเข้า Junk ไหม?"]);
+
+  def("a4", "guest", "ตั้งค่าบัญชี + ยอมรับข้อตกลง", "built", () => `
+    <div class="hello"><h2>ยินดีต้อนรับสู่ Educare</h2><p>อีกขั้นเดียวก็เริ่มใช้งานได้</p></div>
+    <form class="card pad f" data-form="onboard">
+      <div class="field"><label for="ob-name">ชื่อที่ต้องการให้แสดง</label><input id="ob-name" value="${esc(state.googleName || "")}" placeholder="เช่น มายด์" required maxlength="50"><small>ติวเตอร์และผู้เรียนคนอื่นจะเห็นชื่อนี้</small></div>
+      <label class="check"><input type="checkbox" id="ob-terms" required> <span>ฉันยอมรับ <button type="button" class="link" data-go="a6" data-legal="terms">ข้อกำหนดการใช้งาน</button></span></label>
+      <label class="check"><input type="checkbox" id="ob-privacy" required> <span>ฉันยอมรับ <button type="button" class="link" data-go="a6" data-legal="privacy">นโยบายความเป็นส่วนตัว</button></span></label>
+      <label class="check"><input type="checkbox" id="ob-minor" data-act="minor"> <span>ฉันอายุต่ำกว่า 20 ปี</span></label>
+      <label class="check" id="ob-guardian-row" style="padding-left:28px" hidden><input type="checkbox" id="ob-guardian"> <span>ฉันรับรองว่าได้รับความยินยอมจากผู้ปกครองในการใช้งานและให้ข้อมูลส่วนบุคคลแล้ว</span></label>
+      <span class="err" id="ob-err" hidden></span>
+      <button class="btn primary" type="submit">เริ่มใช้งาน</button>
+    </form>`,
+    ["ข้อความยอมรับข้อตกลงเข้าใจง่ายไหม?", "ผู้ใช้อายุต่ำกว่า 20 สะดวกให้ผู้ปกครองรับรองแบบนี้ไหม?"]);
+
+  def("a5", "guest", "ลืมรหัสผ่าน", "built", () => state.resetStep === 2 ? `
+    <div class="hello"><h2>ตั้งรหัสผ่านใหม่</h2><p>ใส่รหัส 6 หลักที่ส่งไปทางอีเมล แล้วตั้งรหัสผ่านใหม่</p></div>
+    <form class="f" data-form="reset">
+      <div class="field"><label for="rs-otp">รหัสยืนยัน 6 หลัก</label><input id="rs-otp" inputmode="numeric" maxlength="6" placeholder="000000" required></div>
+      ${pwField("rs-pw", "รหัสผ่านใหม่", "new-password")}
+      ${pwField("rs-pw2", "ยืนยันรหัสผ่านใหม่", "new-password")}
+      <button class="btn primary block" type="submit">ตั้งรหัสผ่านใหม่</button>
+    </form>` : `
+    <div class="hello"><h2>ลืมรหัสผ่าน</h2><p>ใส่อีเมลที่ใช้สมัคร เราจะส่งรหัสยืนยันไปให้ ใช้ได้ทั้งลืมรหัสผ่าน และตั้งรหัสผ่านครั้งแรกสำหรับบัญชีที่สมัครด้วย Google</p></div>
+    <form class="f" data-form="forgot">
+      <div class="field"><label for="fp-email">อีเมล</label><input id="fp-email" type="email" placeholder="you@example.com" required></div>
+      <button class="btn primary block" type="submit">ส่งรหัสยืนยัน</button>
+    </form>
+    <p style="text-align:center"><button type="button" class="link" data-go="a1">‹ กลับไปเข้าสู่ระบบ</button></p>`,
+    ["เคยลืมรหัสผ่านเว็บอื่นแล้วกู้ยากไหม?"]);
+
+  const LEGAL = {
+    terms: ["ข้อกำหนดการใช้งาน", ["เกี่ยวกับบริการ", "บัญชีผู้ใช้", "ติวเตอร์และการลงประกาศคลาส", "การจองและการชำระเงิน", "การยกเลิกและการคืนเงิน", "ข้อห้าม", "การเปลี่ยนแปลงข้อกำหนด", "ติดต่อทีมงาน"]],
+    privacy: ["นโยบายความเป็นส่วนตัว", ["ข้อมูลที่เก็บ", "ข้อมูลการชำระเงิน", "วัตถุประสงค์การใช้ข้อมูล", "การเปิดเผยข้อมูล", "ที่จัดเก็บและการส่งข้อมูลไปต่างประเทศ", "ระยะเวลาการเก็บข้อมูล", "สิทธิของเจ้าของข้อมูล", "ติดต่อเรื่องข้อมูลส่วนบุคคล"]],
+  };
+  def("a6", "guest", "ข้อกำหนด + นโยบายความเป็นส่วนตัว", "built", () => {
+    const [title, secs] = LEGAL[state.legalTab];
+    return `
+    <button type="button" class="link" data-act="back">‹ ย้อนกลับ</button>
+    <div class="tabs"><button type="button" data-legaltab="terms" aria-pressed="${state.legalTab === "terms"}">ข้อกำหนดการใช้งาน</button><button type="button" data-legaltab="privacy" aria-pressed="${state.legalTab === "privacy"}">นโยบายความเป็นส่วนตัว</button></div>
+    <h2 style="font-size:24px">${title}</h2>
+    <div class="note warn"><b>หน้านี้แสดงแค่หัวข้อ</b>เนื้อหาจริงอยู่ระหว่างจัดทำ</div>
+    <div class="card list">${secs.map((h, i) => `<div class="li"><b style="font-variant-numeric:tabular-nums;width:20px">${i + 1}.</b><div class="grow"><span>${h}</span></div></div>`).join("")}</div>`;
+  }, ["อยากเห็นสรุปสั้นๆ ด้านบนก่อนเนื้อหาเต็มไหม?"]);
+
   // ---------- tutor screens ----------
   const approvalBanner = () => state.approved ? "" : `<div class="note warn"><b>รอทีมงานอนุมัติ</b>ระหว่างนี้แก้โปรไฟล์ได้ แต่ยังโพสต์คลาสไม่ได้ ทีมงานจะแจ้งทางอีเมลเมื่ออนุมัติแล้ว</div>`;
   const demoApproval = () => `<label class="check" style="font-size:13px;color:var(--muted)"><input type="checkbox" data-act="approve" ${state.approved ? "checked" : ""}> จำลอง: ทีมงานอนุมัติแล้ว</label>`;
@@ -802,7 +893,7 @@ form.f { display: flex; flex-direction: column; gap: 12px; }
     tutor: [["t1", "ภาพรวม"], ["t3", "คลาสของฉัน"], ["t5", "รายได้"], ["t7", "Demand Board"]],
   };
   const URLS = { s1: "", s2: "search", s3: "listings/c1", s4: "tutors/ton", s5: "bookings/new", s6: "bookings/pay", s7: "bookings/success", s8: "bookings/mine", s9: "wishlist", s10: "demand", s11: "notifications", s12: "account", t1: "tutor", t2: "listings/new", t3: "listings/mine", t4: "bookings/tutor-mine", t5: "tutor/earnings", t6: "tutor/payout", t7: "tutor/demand", t8: "tutor/profile" };
-  const NARROW = new Set(["s5", "s6", "s7", "s9", "s11", "s12", "t2", "t4", "t6", "t8"]);
+  const NARROW = new Set(["a1", "a2", "a3", "a4", "a5", "a6", "s5", "s6", "s7", "s9", "s11", "s12", "t2", "t4", "t6", "t8"]);
   const SPLIT = new Set(["s3"]);
   const $ = (id) => document.getElementById(id);
   // Site mode = the GitHub Pages build: full-screen app, layout follows the window width, helper menu in a side panel.
@@ -819,19 +910,22 @@ form.f { display: flex; flex-direction: column; gap: 12px; }
   function renderIndex() {
     const group = (role, label) => `<div class="idx-group"><h4>${label}</h4>${Object.values(S).filter((s) => s.role === role).map((s) =>
       `<button type="button" class="idx-item" data-go="${s.id}" aria-current="${state.screen === s.id}"><span class="code">${s.id.toUpperCase()}</span><span>${s.title}</span><i class="dot ${s.status}" title="${STATUS_TEXT[s.status]}"></i></button>`).join("")}</div>`;
-    $("index-list").innerHTML = group("student", "นักเรียน") + group("tutor", "ติวเตอร์");
+    $("index-list").innerHTML = group("guest", "เริ่มใช้งาน") + group("student", "นักเรียน") + group("tutor", "ติวเตอร์");
   }
 
   function render() {
     const s = S[state.screen];
-    state.role = s.role;
+    const guest = s.role === "guest";
+    if (!guest) state.role = s.role;
     clearInterval(state.payTimer);
     $("role-student").setAttribute("aria-pressed", String(state.role === "student"));
     $("role-tutor").setAttribute("aria-pressed", String(state.role === "tutor"));
     $("mode-tag").hidden = state.role !== "tutor";
     const unread = state.notifs.filter((n) => n.unread).length;
     $("bell").innerHTML = icon("bell") + (unread && state.role === "student" ? `<span class="badge-n">${unread}</span>` : "");
-    $("bell").hidden = state.role !== "student";
+    $("bell").hidden = guest || state.role !== "student";
+    $("tabbar").hidden = guest;
+    $("mode-tag").hidden = guest || state.role !== "tutor";
     const active = TAB_OF[s.id] || s.id;
     $("tabbar").innerHTML = TABS[state.role].map(([id, label, ic]) => `<button type="button" class="tab" data-go="${id}" aria-current="${active === id}">${icon(ic)}${label}</button>`).join("");
     const desk = state.view === "desk";
@@ -840,6 +934,7 @@ form.f { display: flex; flex-direction: column; gap: 12px; }
     $("view-mobile").setAttribute("aria-pressed", String(!desk));
     $("view-desk").setAttribute("aria-pressed", String(desk));
     ["browserbar", "topnav", "acct", "desk-hint"].forEach((k) => { $(k).hidden = !desk; });
+    if (guest) { $("topnav").hidden = true; $("acct").hidden = true; }
     $("url").textContent = "educare.example/" + URLS[s.id];
     const navActive = active === "s12" || active === "t8" ? "" : active;
     $("topnav").innerHTML = NAV[state.role].map(([id, label]) => `<button type="button" data-go="${id}" aria-current="${navActive === id}">${label}</button>`).join("");
@@ -857,6 +952,7 @@ form.f { display: flex; flex-direction: column; gap: 12px; }
 
   function go(id) {
     if (!S[id]) return;
+    if (id !== state.screen) state.prev = state.screen;
     state.screen = id;
     render();
     if (SITE) $("side").classList.remove("open");
@@ -912,6 +1008,8 @@ form.f { display: flex; flex-direction: column; gap: 12px; }
     if (d.role) return go(d.role === "student" ? "s1" : "t1");
     if (d.cid) state.classId = d.cid;
     if (d.tid) state.tutorId = d.tid;
+    if (d.legal) state.legalTab = d.legal;
+    if (d.legaltab) { state.legalTab = d.legaltab; return render(); }
     if (d.q !== undefined) { state.q = d.q; state.filter = "all"; return go("s2"); }
     if (d.filter) { state.filter = d.filter; return render(); }
     if (d.booktab) { state.bookTab = d.booktab; return render(); }
@@ -953,7 +1051,12 @@ form.f { display: flex; flex-direction: column; gap: 12px; }
       case "approve": state.approved = el.checked; return render();
       case "closeclass": return toast("ปิดรับจองแล้ว ผู้ที่จองไว้ยังเรียนได้ตามเดิม");
       case "legal": return toast("ในเว็บจริงจะเปิดหน้าเงื่อนไขการใช้งาน");
-      case "logout": return toast("ออกจากระบบ (จำลอง)");
+      case "logout": toast("ออกจากระบบแล้ว"); return go("a1");
+      case "google": state.googleName = "Mind S."; toast("เข้าสู่ระบบกับ Google ครั้งแรก ตั้งค่าบัญชีก่อนเริ่มใช้งาน"); return go("a4");
+      case "showpw": { const inp = $(d.for); const show = inp.type === "password"; inp.type = show ? "text" : "password"; el.textContent = show ? "ซ่อน" : "แสดง"; return; }
+      case "resend": return toast("ส่งรหัสใหม่แล้ว ส่งซ้ำได้อีกครั้งใน 60 วินาที");
+      case "minor": $("ob-guardian-row").hidden = !el.checked; return;
+      case "back": return go(state.prev && state.prev !== "a6" ? state.prev : "a1");
       case "toast": return toast(d.msg);
     }
   });
@@ -971,6 +1074,27 @@ form.f { display: flex; flex-direction: column; gap: 12px; }
     const f = e.target; e.preventDefault();
     switch (f.dataset.form) {
       case "search": state.q = f.q.value; state.filter = "all"; return go("s2");
+      case "login": toast("เข้าสู่ระบบแล้ว"); return go("s1");
+      case "signup":
+        if ($("r-pw").value.length < 8) return toast("รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร");
+        if ($("r-pw").value !== $("r-pw2").value) return toast("รหัสผ่านทั้งสองช่องไม่ตรงกัน");
+        state.signupEmail = $("r-email").value; state.googleName = ""; return go("a3");
+      case "otp":
+        if (!/^\d{6}$/.test($("otp").value)) return toast("ใส่รหัสตัวเลข 6 หลัก");
+        return go("a4");
+      case "onboard": {
+        const err = $("ob-err");
+        const msg = !$("ob-name").value.trim() ? "ใส่ชื่อที่ต้องการให้แสดง"
+          : !$("ob-terms").checked || !$("ob-privacy").checked ? "ต้องยอมรับข้อกำหนดการใช้งานและนโยบายความเป็นส่วนตัวก่อนเริ่มใช้งาน"
+          : $("ob-minor").checked && !$("ob-guardian").checked ? "ผู้ใช้อายุต่ำกว่า 20 ปีต้องรับรองว่าได้รับความยินยอมจากผู้ปกครอง" : "";
+        err.textContent = msg; err.hidden = !msg;
+        if (msg) return;
+        toast("พร้อมใช้งานแล้ว"); return go("s1");
+      }
+      case "forgot": state.resetStep = 2; toast("ส่งรหัสยืนยันไปที่อีเมลแล้ว"); return render();
+      case "reset":
+        if ($("rs-pw").value !== $("rs-pw2").value) return toast("รหัสผ่านทั้งสองช่องไม่ตรงกัน");
+        state.resetStep = 1; toast("ตั้งรหัสผ่านใหม่แล้ว เข้าสู่ระบบได้เลย"); return go("a1");
       case "wish": {
         const fd = new FormData(f), topic = String(fd.get("topic") || "").trim();
         if (!topic) return toast("ใส่สิ่งที่อยากเรียนก่อน");
