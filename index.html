@@ -8,7 +8,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Noto+Serif+Thai:wght@600;700&family=Inter:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Noto+Serif+Thai:wght@700&family=Inter:wght@400;500;600;700&display=swap">
 <style>
 /* Layout: sample menu on the left, the Educare website on the right inside a mobile- or desktop-sized frame.
    The website part (.app) copies the markup, spacing and breakpoints of the real app (frontend/src/app/globals.css and
@@ -67,8 +67,9 @@
   --shadow-toast: 0 10px 30px -10px rgba(0, 0, 0, 0.4);
   --shadow-side: -20px 0 50px -20px rgba(13, 27, 42, 0.45);
   --ribbon-line: rgba(255, 255, 255, 0.35);
-  --display: "Playfair Display", "Noto Serif Thai", Georgia, serif;
-  --body: "Inter", "Noto Sans Thai", system-ui, sans-serif;
+  /* Same stacks as the real app: Thai text falls back to the device's own Thai font. */
+  --display: "Playfair Display", Georgia, serif;
+  --body: "Inter", system-ui, sans-serif;
   color-scheme: light;
 }
 * { box-sizing: border-box; }
@@ -180,6 +181,7 @@ p { margin: 0; }
   line-height: normal;
 }
 .app button { line-height: normal; }
+.app :where(h1, h2, h3) { line-height: normal; } /* real app headings use the browser default */
 .app a, .lnk { color: var(--deep-blue); text-decoration: none; }
 .lnk { background: none; border: 0; padding: 0; font: inherit; cursor: pointer; }
 .lnk:hover { color: var(--teal); }
@@ -216,6 +218,7 @@ p { margin: 0; }
 .badge { display: inline-flex; align-items: center; height: 24px; padding: 0 10px; border-radius: 6px; font-size: 12px; font-weight: 600; white-space: nowrap; }
 .b-teal { background: var(--teal-soft); color: var(--teal); }
 .b-gold { background: var(--gold-soft); color: var(--amber-text); }
+.b-soon { background: var(--gold); color: var(--navy); }
 .b-blue { background: var(--blue-soft); color: var(--deep-blue); }
 .b-grey { background: var(--stone); color: var(--text-secondary); }
 .b-red { background: var(--cancel-bg); color: var(--cancel-text); }
@@ -255,36 +258,30 @@ p { margin: 0; }
 
 /* header (Header.tsx / TutorHeader.tsx / UserMenu.tsx): mobile first, the real one just wraps */
 .hdr { width: 100%; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--stone); background: var(--white); position: sticky; top: 0; z-index: 10; flex: none; }
-.hdr-in { width: 100%; max-width: 1280px; display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 4px 12px; padding: 10px 20px 8px; }
-.logo { grid-column: 1; grid-row: 1; background: none; border: 0; padding: 0; font-family: var(--display); font-size: 28px; font-weight: 700; color: var(--navy); line-height: 1.2; }
+/* Header.tsx: same at every width (the real app has no mobile header). */
+.hdr-in { width: 100%; max-width: 1280px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; padding: 16px 40px; }
+.hdr-l { display: flex; align-items: center; gap: 48px; flex-wrap: wrap; }
+.logo { background: none; border: 0; padding: 0; font-family: var(--display); font-size: 36px; font-weight: 700; color: var(--navy); line-height: normal; }
 .logo span { color: var(--gold); }
 .logo.lg { font-size: 32px; }
-.hdr-r { grid-column: 2; grid-row: 1; justify-self: end; display: flex; align-items: center; gap: 10px; }
-.hdr-nav { grid-column: 1 / -1; grid-row: 2; display: flex; align-items: center; flex-wrap: wrap; gap: 0 18px; }
-.nl { background: none; border: 0; padding: 6px 0; font-size: 14px; font-weight: 500; color: var(--navy); white-space: nowrap; }
+.hdr-r { display: flex; align-items: center; gap: 12px; }
+.hdr-r.t { gap: 16px; } /* TutorHeader */
+.hdr-nav { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 32px; } /* wraps only because of the extra Wish list / Demand Board links */
+.nl { background: none; border: 0; padding: 0; font-size: 15px; font-weight: 500; color: var(--navy); }
 .nl:hover { color: var(--teal); }
-.nl[aria-current="true"] { font-weight: 700; color: var(--deep-blue); }
-.um { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.nl.on { font-weight: 700; color: var(--deep-blue); }
+.um { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .um-id { display: flex; align-items: center; gap: 10px; background: none; border: 0; padding: 0; }
 .um-av { width: 36px; height: 36px; border-radius: 50%; background: var(--teal); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: var(--white); flex: none; }
 .um-av.tutor { background: var(--deep-blue); }
-.um-name { display: none; font-size: 14px; font-weight: 600; color: var(--navy); max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.um-btn { display: none; }
+.um-name { display: block; font-size: 14px; font-weight: 600; color: var(--navy); max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ibtn { position: relative; width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid var(--stone); background: var(--white); display: grid; place-items: center; color: var(--navy); padding: 0; }
 .ibtn:hover { border-color: var(--teal); color: var(--teal); }
 .ibtn .n { position: absolute; top: -4px; right: -4px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 99px; background: var(--err-icon); color: var(--white); font-size: 10px; font-weight: 700; display: grid; place-items: center; }
 .rpill { display: flex; align-items: center; background: var(--ivory); border: 1px solid var(--stone); border-radius: 999px; padding: 3px; gap: 2px; }
-.rpill button, .rpill span { border: 0; background: none; padding: 5px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+.rpill button, .rpill span { border: 0; background: none; padding: 6px 14px; border-radius: 999px; font-size: 13px; font-weight: 600; color: var(--text-secondary); }
 .rpill span { background: var(--navy); color: var(--white); }
-.desk .hdr-in { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 48px; padding: 16px 40px; }
-.desk .logo { font-size: 36px; }
-.desk .hdr-r { margin-left: auto; gap: 12px; }
-.desk .hdr-nav { gap: 0 32px; }
-.desk .nl { font-size: 15px; padding: 0; }
-.desk .um-name { display: block; }
-.desk .um-btn { display: inline-flex; }
-.hdr.co .hdr-in { display: flex; justify-content: space-between; max-width: 640px; padding: 0 24px; height: 64px; }
-.desk .hdr.co .hdr-in { height: 80px; padding: 0 24px; }
+.hdr.co .hdr-in { display: flex; flex-wrap: nowrap; gap: 0; justify-content: space-between; max-width: 640px; padding: 0 24px; height: 80px; }
 .hdr.co .back-x { display: flex; align-items: center; gap: 6px; background: none; border: 0; padding: 0; font-size: 14px; font-weight: 500; color: var(--text-secondary); text-align: right; }
 
 /* home (page.tsx, HeroSearch, PopularTopics, ListingSection, ListingCard, TrustSection, TutorCta, Footer) */
@@ -297,7 +294,7 @@ p { margin: 0; }
 .hs-wrap { display: flex; flex-direction: column; gap: 24px; }
 .hs { display: flex; align-items: center; gap: 8px; background: var(--white); border: 1.5px solid var(--stone); border-radius: 10px; padding: 6px 6px 6px 18px; box-shadow: var(--shadow-search); }
 .hs svg { flex: none; color: var(--text-secondary); }
-.hs input { flex: 1; min-width: 0; border: none; outline: none; font-size: 15px; color: var(--navy); background: transparent; font-family: var(--body); }
+.hs input { flex: 1; border: none; outline: none; font-size: 15px; color: var(--navy); background: transparent; font-family: var(--body); }
 .hs-pop span { font-size: 13px; color: var(--text-secondary); }
 .topics { padding: 48px 0; }
 .topics h2, .lsec h2 { font-size: 22px; color: var(--navy); }
@@ -313,7 +310,7 @@ p { margin: 0; }
 .lc-title { font-size: 15px; font-weight: 700; line-height: 1.35; color: var(--navy); }
 .lc-sub { font-size: 13px; color: var(--text-secondary); }
 .lc-when { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-secondary); }
-.lc-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 6px; border-top: 1px solid var(--stone); margin-top: auto; }
+.lc-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 6px; border-top: 1px solid var(--stone); }
 .lc-foot .baht-price { font-size: 19px; }
 .lc-static { cursor: default; }
 .empty-card { background: var(--white); border: 1px solid var(--stone); border-radius: 12px; padding: 24px; font-size: 14px; color: var(--text-secondary); text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px; }
@@ -327,17 +324,15 @@ p { margin: 0; }
 .trust-ic { width: 44px; height: 44px; border-radius: 10px; }
 .trust-it b { font-size: 15px; }
 .trust-it span { font-size: 13px; line-height: 20px; color: var(--text-secondary); }
-.cta { padding: 56px 20px; }
-.desk .cta { padding: 56px 40px; }
-.cta-in { background: var(--navy); border-radius: 20px; padding: 32px 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 32px; width: 100%; max-width: 1280px; margin: 0 auto; }
-.desk .cta-in { padding: 48px 56px; }
+.cta { padding: 56px 0; }
+.cta-in { background: var(--navy); border-radius: 20px; padding: 48px 56px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 32px; width: 100%; max-width: 1280px; margin: 0 auto; }
 .cta-in h2 { font-size: 28px; color: var(--white); }
 .cta-in h2 em { font-style: normal; color: var(--gold); }
 .cta-in p { font-size: 15px; line-height: 22px; color: var(--cta-text); }
 .cta-txt { display: flex; flex-direction: column; gap: 12px; max-width: 560px; }
 .foot { width: 100%; display: flex; justify-content: center; padding: 48px 0 32px; background: var(--white); border-top: 1px solid var(--stone); margin-top: auto; }
 .foot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 32px; }
-.foot-c { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+.foot-c { display: flex; flex-direction: column; gap: 10px; }
 .foot-c .logo-s { font-family: var(--display); font-size: 20px; font-weight: 700; color: var(--navy); }
 .foot-c .logo-s span { color: var(--gold); }
 .foot-c .blurb { font-size: 13px; line-height: 20px; color: var(--text-secondary); max-width: 220px; }
@@ -348,10 +343,9 @@ p { margin: 0; }
 .foot .container { display: flex; flex-direction: column; gap: 32px; }
 
 /* inner pages */
-.pg { width: 100%; display: flex; justify-content: center; padding: 28px 20px 64px; }
-.desk .pg { padding: 40px 40px 80px; }
-.pg.co { padding: 32px 20px 64px; }
-.desk .pg.co { padding: 48px 24px 80px; }
+.pg { --cx: 20px; width: 100%; display: flex; justify-content: center; padding: var(--pad, 28px 20px 64px); }
+.desk .pg { --cx: 40px; padding: var(--pad, 40px 40px 80px); }
+.pg.co { padding: 48px 24px 80px; }
 .pg > .col { width: 100%; max-width: var(--mw, 860px); gap: 24px; }
 .pg h1 { font-size: 28px; color: var(--navy); }
 .pg h1.s26 { font-size: 26px; }
@@ -365,8 +359,7 @@ p { margin: 0; }
 .cardx h3 { font-size: 20px; color: var(--navy); }
 .cardx .p { font-size: 14px; line-height: 22px; color: var(--text-secondary); }
 .warn-card { background: var(--warn-bg); border-color: var(--warn-border); }
-.formcard { display: flex; flex-direction: column; gap: 22px; background: var(--white); border: 1px solid var(--stone); border-radius: 16px; padding: 20px; }
-.desk .formcard { padding: 28px; }
+.formcard { display: flex; flex-direction: column; gap: 22px; background: var(--white); border: 1px solid var(--stone); border-radius: 16px; padding: 28px; }
 .shellcard { display: flex; flex-direction: column; gap: 18px; background: var(--white); border: 1px solid var(--stone); border-radius: 16px; padding: 28px 24px; }
 .row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
 .row.wrap { flex-wrap: wrap; }
@@ -378,8 +371,8 @@ p { margin: 0; }
 .inote.teal svg { color: var(--teal); }
 .stack { display: flex; flex-direction: column; gap: 14px; }
 .stack12 { display: flex; flex-direction: column; gap: 12px; }
-.g2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
-.desk .g2 { gap: 16px; }
+.g2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+.g3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 .pbox { display: flex; align-items: center; height: 44px; border-radius: 8px; border: 1.5px solid var(--stone); background: var(--white); padding: 0 14px; width: 100%; }
 .pbox input { border: none; outline: none; font-size: 14px; color: var(--navy); width: 100%; margin-left: 6px; background: transparent; font-family: var(--body); }
 .price-row { display: flex; align-items: center; gap: 10px; max-width: 220px; }
@@ -404,7 +397,7 @@ p { margin: 0; }
 .desk .d-card { position: sticky; top: 96px; }
 .d-price { display: flex; align-items: baseline; gap: 6px; }
 .d-price .baht-price { font-size: 30px; }
-.d-price span { font-size: 14px; color: var(--text-secondary); }
+.d-price > span:last-child { font-size: 14px; color: var(--text-secondary); }
 
 /* checkout, success, QR */
 .sumhead { font-size: 14px; font-weight: 700; color: var(--navy); }
@@ -427,11 +420,9 @@ p { margin: 0; }
 .ok-ic h2 { color: var(--navy); }
 
 /* lists: bookings, classes, wish list, demand board, notifications */
-.bcard { display: flex; gap: 14px; background: var(--white); border: 1px solid var(--stone); border-radius: 14px; padding: 16px; }
-.desk .bcard { gap: 18px; padding: 20px; }
+.bcard { display: flex; gap: 18px; background: var(--white); border: 1px solid var(--stone); border-radius: 14px; padding: 20px; }
 .bcard.dim { opacity: 0.75; }
-.b-th { width: 48px; height: 48px; border-radius: 10px; flex: none; }
-.desk .b-th { width: 64px; height: 64px; }
+.b-th { width: 64px; height: 64px; border-radius: 10px; flex: none; }
 .b-body { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 0; }
 .b-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .b-top .baht-price { font-size: 17px; }
@@ -463,7 +454,7 @@ p { margin: 0; }
 .stat b { font-family: var(--display); font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums; }
 .tgroup { display: flex; flex-direction: column; background: var(--white); border: 1px solid var(--stone); border-radius: 14px; padding: 20px; }
 .tg-h { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-bottom: 4px; }
-.trow { display: flex; align-items: center; justify-content: space-between; gap: 12px 16px; flex-wrap: wrap; padding: 14px 0; border-top: 1px solid var(--stone); }
+.trow { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 14px 0; border-top: 1px solid var(--stone); }
 .t-av { width: 32px; height: 32px; border-radius: 50%; background: var(--teal); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: var(--white); flex: none; }
 .t-av.off { background: var(--stone); color: var(--text-secondary); }
 .tbl { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
@@ -476,6 +467,7 @@ p { margin: 0; }
 .desk .t2g { grid-template-columns: minmax(0, 1fr) 360px; gap: 32px; }
 .t2side { display: flex; flex-direction: column; gap: 14px; }
 .desk .t2side { position: sticky; top: 104px; }
+.t2side .inote { padding: 0 4px; }
 .calc { display: flex; flex-direction: column; gap: 10px; background: var(--ivory); border: 1px solid var(--stone); border-radius: 12px; padding: 16px; }
 .calc .row { font-size: 14px; }
 
@@ -485,7 +477,7 @@ p { margin: 0; }
 .desk .auth-split-banner { display: flex; }
 .auth-split-banner .logo { font-size: 36px; color: var(--white); align-self: flex-start; }
 .auth-split-banner h2 { font-size: 34px; line-height: 44px; color: var(--white); }
-.auth-split-banner ul { display: flex; flex-direction: column; gap: 14px; padding: 0; margin: 0; list-style: none; }
+.auth-split-banner ul { display: flex; flex-direction: column; gap: 14px; padding: 0; margin: 16px 0; list-style: none; }
 .auth-split-banner li { display: flex; gap: 10px; font-size: 15px; line-height: 24px; color: var(--banner-text); }
 .auth-split-banner li i { font-style: normal; color: var(--gold); font-weight: 700; }
 .auth-split-banner p { font-size: 12px; color: var(--banner-foot); }
@@ -525,7 +517,7 @@ p { margin: 0; }
 .site .phone.desk > :not(.toast) { min-width: 0; }
 .site .app { overflow-y: auto; }
 .site .toast { position: absolute; bottom: 24px; }
-.site .screen-tag .status-chip { display: none; }
+.site .screen-tag, .site .tagwrap { display: none; }
 .site .ribbon { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: calc(6px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 6px max(16px, env(safe-area-inset-left, 0px)); background: var(--navy); color: var(--white); font-size: 12px; flex: none; }
 .ribbon button { border: 1px solid var(--ribbon-line); background: none; color: var(--white); border-radius: 99px; padding: 3px 12px; font-size: 12px; white-space: nowrap; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
@@ -617,12 +609,12 @@ p { margin: 0; }
     boss: { name: "ครูบอส", initials: "บ", headline: "Python และพื้นฐานโปรแกรมมิ่ง", since: "ต.ค. 2026", taught: 6, subjects: ["Python", "คอมพิวเตอร์"], bio: "Software engineer สอนมือใหม่ให้เขียนโปรแกรมแรกได้ภายในคลาสเดียว" },
   };
   const CLASSES = [
-    { id: "c1", title: "ติว TGAT ความถนัดทั่วไป: ตะลุยโจทย์ภาษาอังกฤษ", subject: "TGAT", level: "ม.6", tutor: "prae", when: "ส. 8 พ.ย. · 10:00–12:00", hours: "2 ชม.", seats: 8, booked: 5, price: 350, via: "Zoom" },
-    { id: "c2", title: "ฟิสิกส์ ม.5 ไฟฟ้ากระแส สรุปเนื้อหา + ทำโจทย์", subject: "ฟิสิกส์", level: "ม.5", tutor: "ton", when: "อา. 9 พ.ย. · 13:00–15:00", hours: "2 ชม.", seats: 6, booked: 2, price: 250, via: "Google Meet" },
-    { id: "c3", title: "IELTS Writing Task 2 ตัวต่อตัว", subject: "IELTS", level: "มหาลัย / ทำงาน", tutor: "jane", when: "อ. 11 พ.ย. · 19:00–20:30", hours: "1.5 ชม.", seats: 1, booked: 0, price: 590, via: "Zoom" },
-    { id: "c4", title: "คณิต ม.3 เตรียมสอบเข้า ม.4: ทฤษฎีบทพีทาโกรัส", subject: "คณิต", level: "ม.3", tutor: "ton", when: "พ. 12 พ.ย. · 18:00–19:30", hours: "1.5 ชม.", seats: 10, booked: 7, price: 180, via: "Google Meet" },
-    { id: "c6", title: "เคมี ม.4 ตารางธาตุ เข้าใจใน 90 นาที", subject: "เคมี", level: "ม.4", tutor: "prae", when: "พฤ. 13 พ.ย. · 17:30–19:00", hours: "1.5 ชม.", seats: 8, booked: 8, price: 220, via: "Zoom" },
-    { id: "c5", title: "Python เบื้องต้นสำหรับมือใหม่ (ครั้งที่ 1)", subject: "Python", level: "ทั่วไป", tutor: "boss", when: "ส. 15 พ.ย. · 09:30–12:00", hours: "2.5 ชม.", seats: 12, booked: 3, price: 290, via: "Zoom" },
+    { id: "c1", title: "ติว TGAT ความถนัดทั่วไป: ตะลุยโจทย์ภาษาอังกฤษ", subject: "TGAT", level: "ม.6", tutor: "prae", when: "8 พ.ย. 10:00 - 12:00", hours: "2 ชั่วโมง", seats: 8, booked: 5, price: 350, via: "Zoom" },
+    { id: "c2", title: "ฟิสิกส์ ม.5 ไฟฟ้ากระแส สรุปเนื้อหา + ทำโจทย์", subject: "ฟิสิกส์", level: "ม.5", tutor: "ton", when: "9 พ.ย. 13:00 - 15:00", hours: "2 ชั่วโมง", seats: 6, booked: 2, price: 250, via: "Google Meet" },
+    { id: "c3", title: "IELTS Writing Task 2 ตัวต่อตัว", subject: "IELTS", level: "มหาลัย / ทำงาน", tutor: "jane", when: "11 พ.ย. 19:00 - 20:30", hours: "1.5 ชั่วโมง", seats: 1, booked: 0, price: 590, via: "Zoom" },
+    { id: "c4", title: "คณิต ม.3 เตรียมสอบเข้า ม.4: ทฤษฎีบทพีทาโกรัส", subject: "คณิต", level: "ม.3", tutor: "ton", when: "12 พ.ย. 18:00 - 19:30", hours: "1.5 ชั่วโมง", seats: 10, booked: 7, price: 180, via: "Google Meet" },
+    { id: "c6", title: "เคมี ม.4 ตารางธาตุ เข้าใจใน 90 นาที", subject: "เคมี", level: "ม.4", tutor: "prae", when: "13 พ.ย. 17:30 - 19:00", hours: "1.5 ชั่วโมง", seats: 8, booked: 8, price: 220, via: "Zoom" },
+    { id: "c5", title: "Python เบื้องต้นสำหรับมือใหม่ (ครั้งที่ 1)", subject: "Python", level: "ทั่วไป", tutor: "boss", when: "15 พ.ย. 09:30 - 12:00", hours: "2.5 ชั่วโมง", seats: 12, booked: 3, price: 290, via: "Zoom" },
   ];
   const cls = (id) => CLASSES.find((c) => c.id === id) || CLASSES[0];
 
@@ -663,7 +655,7 @@ p { margin: 0; }
     bookings: [
       { id: "b1", classId: "c1", status: "paid" },
       { id: "b2", classId: "c4", status: "pending" },
-      { id: "b3", title: "เคมี ม.4 พันธะเคมี", when: "ศ. 31 ต.ค. · 17:30–19:00", tutor: "prae", price: 220, status: "done" },
+      { id: "b3", title: "เคมี ม.4 พันธะเคมี", when: "31 ต.ค. 17:30 - 19:00", tutor: "prae", price: 220, status: "done" },
     ],
     notifs: [
       { t: "มีคลาสตรงกับ Wish list “ฟิสิกส์ ม.5 เรื่องไฟฟ้า”", d: "ครูต้นเปิดคลาส อา. 9 พ.ย. เหลือ 4 ที่", go: "s3", cid: "c2", unread: true },
@@ -695,7 +687,7 @@ p { margin: 0; }
   const badge = (txt, kind) => `<span class="badge ${kind}">${txt}</span>`;
   const gradOf = (c) => GRADS[Math.max(0, CLASSES.indexOf(c)) % GRADS.length];
   const kindText = (c) => (c.seats === 1 ? "ตัวต่อตัว" : "กลุ่มเรียน");
-  const seatBadge = (c) => (c.booked >= c.seats ? badge("เต็มแล้ว", "b-red") : badge(`เหลือ ${c.seats - c.booked} ที่`, "b-teal"));
+  const timingBadge = (c) => (c.soon ? badge("เริ่มเร็วๆ นี้", "b-soon") : "");
   const field = (id, label, control, hint) => `<div class="fld g8"><label class="field-label" for="${id}">${label}</label>${control}${hint ? `<span class="field-hint">${hint}</span>` : ""}</div>`;
   const notice = (tone, html) => `<div class="notice ${tone}" role="${tone === "error" ? "alert" : "status"}">${html}</div>`;
   const inote = (ic, html, cls = "") => `<div class="inote ${cls}">${icon(ic, 15)}<span>${html}</span></div>`;
@@ -704,11 +696,12 @@ p { margin: 0; }
 
   // ListingCard (components/ListingCard.tsx)
   const lcardInner = (c) => `
-    <span class="lc-top" style="background:${gradOf(c)}">${badge(kindText(c), c.seats === 1 ? "b-glass-strong" : "b-glass")}${seatBadge(c)}</span>
+    <span class="lc-top" style="background:${gradOf(c)}">${badge(kindText(c), c.seats === 1 ? "b-glass-strong" : "b-glass")}${timingBadge(c)}</span>
     <span class="lc-body">
       <span class="lc-title">${esc(c.title)}</span>
       <span class="lc-sub">${esc(c.subject)} · สอนโดย ${esc(TUTORS[c.tutor].name)}</span>
       <span class="lc-when">${icon("cal", 14)}${esc(c.when)}</span>
+      <span style="flex:1"></span>
       <span class="lc-foot"><span class="baht-price" style="font-size:19px">${baht(c.price)}<small> /คน</small></span><span class="btn btn-ghost btn-ghost-sm">ดูรายละเอียด</span></span>
     </span>`;
   const lcard = (c) => `<button type="button" class="lc" data-go="s3" data-cid="${c.id}">${lcardInner(c)}</button>`;
@@ -722,7 +715,7 @@ p { margin: 0; }
     ["ราคาชัดเจนตั้งแต่แรก", "เห็นราคารวมตั้งแต่หน้าค้นหา ไม่มีค่าใช้จ่ายแอบแฝง", "var(--blue-soft)"],
     ["เปิดกว้างสำหรับติวเตอร์ทุกคน", "ใครก็เปิดคลาสสอนได้ กำหนดราคาและเวลาด้วยตัวเอง", "var(--purple-soft)"],
   ];
-  const POPULAR = ["TGAT", "ฟิสิกส์", "IELTS", "คณิต", "Python", "ชีวะ"];
+  const POPULAR = ["แคลคูลัส", "TGAT", "ฟิสิกส์ ม.ปลาย", "TU101", "ภาษาอังกฤษ"];
 
   const heroSection = (filtered) => `
     <section class="hero"><div class="container"><div class="hero-in">
@@ -757,9 +750,9 @@ p { margin: 0; }
     <footer class="foot"><div class="container">
       <div class="foot-grid">
         <div class="foot-c"><div class="logo-s">educ<span>are</span></div><div class="blurb">แพลตฟอร์มรวมติวเตอร์รายย่อย ตอบโจทย์ทุกความต้องการเรียนรู้</div></div>
-        <div class="foot-c"><h4>สำหรับผู้เรียน</h4><button type="button" class="flink" data-go="s1">ค้นหาคลาส</button><button type="button" class="flink" data-go="s9">Wish list</button></div>
+        <div class="foot-c"><h4>สำหรับผู้เรียน</h4><button type="button" class="flink" data-go="s1">ค้นหาคลาส</button><button type="button" class="flink" data-act="toast" data-msg="หน้านี้ยังเป็นแค่ตัวอย่าง">วิธีการใช้งาน</button></div>
         <div class="foot-c"><h4>สำหรับติวเตอร์</h4><button type="button" class="flink" data-act="becometutor">สมัครเป็นติวเตอร์</button><button type="button" class="flink" data-act="toast" data-msg="หน้านี้ยังเป็นแค่ตัวอย่าง">วิธีเปิดคลาส</button></div>
-        <div class="foot-c"><h4>เกี่ยวกับเรา</h4><button type="button" class="flink" data-go="a6" data-legal="terms">ข้อกำหนดการใช้งาน</button><button type="button" class="flink" data-go="a6" data-legal="privacy">นโยบายความเป็นส่วนตัว</button></div>
+        <div class="foot-c"><h4>เกี่ยวกับเรา</h4><button type="button" class="flink" data-act="toast" data-msg="หน้านี้ยังเป็นแค่ตัวอย่าง">เกี่ยวกับ Educare</button><button type="button" class="flink" data-act="toast" data-msg="หน้านี้ยังเป็นแค่ตัวอย่าง">ติดต่อเรา</button></div>
       </div>
       <div class="copy">© 2026 Educare. All rights reserved.</div>
     </div></footer>`;
@@ -784,11 +777,11 @@ p { margin: 0; }
     ${heroSection(filtered)}
     ${topicsSection()}
     <section class="sect lsec" id="results"><div class="container col">
-      <div class="lsec-h"><h2>${filtered ? "ผลการค้นหา" : "คลาสที่เปิดสอนตอนนี้"}</h2>${isF ? '<button type="button" class="lnk w6" style="font-size:14px" data-q="">ล้างตัวกรอง</button>' : ""}</div>
+      <div class="lsec-h"><h2>${filtered ? "ผลการค้นหา" : "คลาสที่เปิดสอนตอนนี้"}</h2>${isF ? '<a href="#" role="button" class="lnk w6" style="font-size:14px" data-q="">ล้างตัวกรอง</a>' : ""}</div>
       ${filtered ? `<div class="chips">${f("all", "ทั้งหมด")}${f("group", "เรียนกลุ่ม")}${f("one", "ตัวต่อตัว")}${f("cheap", "ไม่เกิน ฿250")}</div>
         ${list.length ? `<span class="t14" style="font-size:13px">พบ ${list.length} คลาส${q ? ` สำหรับ “${esc(state.q)}”` : ""}</span>` : ""}` : ""}
       ${results}
-      ${list.length ? `<div class="hint-card"><div><b>หาไม่เจอ?</b><span>ตั้ง Wish list ไว้ พอมีติวเตอร์เปิดคลาสที่ตรงกัน เราจะแจ้งให้ทันที</span></div><button type="button" class="btn btn-ghost" data-go="s9">ตั้ง Wish list</button></div>` : ""}
+      ${filtered && list.length ? `<div class="hint-card"><div><b>หาไม่เจอ?</b><span>ตั้ง Wish list ไว้ พอมีติวเตอร์เปิดคลาสที่ตรงกัน เราจะแจ้งให้ทันที</span></div><button type="button" class="btn btn-ghost" data-go="s9">ตั้ง Wish list</button></div>` : ""}
     </div></section>
     ${trustSection()}
     ${ctaSection()}`;
@@ -801,13 +794,13 @@ p { margin: 0; }
     ["ตัวกรองไหนสำคัญที่สุด: วันเวลา, ราคา, ระดับชั้น, เรียนกลุ่ม/ตัวต่อตัว?", "ลองค้นคำที่ไม่มี (เช่น “ชีวะ”) — ถ้าเจอหน้านี้ จะตั้ง Wish list ไหม?"]);
 
   def("s3", "student", "รายละเอียดคลาส", "built", () => {
-    const c = cls(state.classId), t = TUTORS[c.tutor], full = c.booked >= c.seats, rest = c.seats - c.booked;
+    const c = cls(state.classId), t = TUTORS[c.tutor];
     return `
     <button type="button" class="back" data-go="s1">${icon("chev", 16)}กลับไปหน้าค้นหา</button>
     <div class="detail">
       <div class="d-main">
         <div class="d-head">
-          <div class="chips" style="gap:10px">${badge(kindText(c), c.seats === 1 ? "b-teal" : "b-blue")}<span class="tag">${esc(c.subject)}</span><span class="tag">${esc(c.level)}</span>${full ? badge("เต็มแล้ว", "b-red") : badge("เปิดรับ", "b-teal")}</div>
+          <div class="row" style="justify-content:flex-start;gap:10px">${badge(kindText(c), c.seats === 1 ? "b-teal" : "b-blue")}<span class="tag">${esc(c.subject)}</span></div>
           <h1>${esc(c.title)}</h1>
           <button type="button" class="d-tutor" data-go="s4" data-tid="${c.tutor}">
             <span class="d-av">${t.initials}</span>
@@ -823,15 +816,14 @@ p { margin: 0; }
           <div class="d-facts">
             <div class="d-fact">${icon("cal")}<span>${esc(c.when)} น. (${c.hours})</span></div>
             <div class="d-fact">${icon("video")}<span>เรียนออนไลน์ผ่าน ${c.via} — ลิงก์จะส่งให้หลังชำระเงินสำเร็จ</span></div>
-            <div class="d-fact">${icon("users")}<span>รับสูงสุด ${c.seats} คน · จองแล้ว ${c.booked} คน</span></div>
+            <div class="d-fact">${icon("users")}<span>รับสูงสุด ${c.seats} คน</span></div>
           </div>
         </div>
-        ${notice("warning", "<strong>ยกเลิกและคืนเงิน</strong><br>ติดต่อทีมงานเพื่อขอคืนเงิน ทีมงานจะตรวจสอบและโอนคืนให้")}
       </div>
       <aside class="d-card">
         <div class="d-price"><span class="baht-price">${baht(c.price)}</span><span>/ คน</span></div>
-        <div style="font-size:13px;color:var(--text-secondary)">${full ? "เต็มแล้ว ไม่รับจองเพิ่ม" : `เปิดรับ · เหลือ ${rest} ที่ จาก ${c.seats} ที่นั่ง`}</div>
-        <button type="button" class="btn btn-secondary" style="width:100%;height:48px;font-size:15px" data-go="s5" ${full ? "disabled" : ""}>${full ? "เต็มแล้ว" : "จองเลย"}</button>
+        <div style="font-size:13px;color:var(--text-secondary)">รับสูงสุด ${c.seats} คน</div>
+        <button type="button" class="btn btn-secondary" style="width:100%;height:48px;font-size:15px" data-go="s5">จองเลย</button>
         ${inote("info", "ระบบไม่มีแชทกับผู้สอนก่อนจอง กรุณาอ่านรายละเอียดคลาสให้ครบก่อนกดจองเลย")}
         <div class="hr"></div>
         ${inote("shield", "เงินพักไว้ในระบบก่อน โอนให้ติวเตอร์เมื่อเรียนจบ", "teal")}
@@ -904,7 +896,7 @@ p { margin: 0; }
       <div class="row"><span class="k">ยอดที่ชำระ</span><span class="baht-price" style="font-size:22px">${baht(c.price)}</span></div>
       <div class="row"><span class="k">สถานะการจอง</span>${badge("ยืนยันแล้ว", "b-teal")}</div>
       <div class="hr"></div>
-      <p class="p" style="font-size:13px;line-height:20px">ลิงก์ห้องเรียน ${c.via} จะอยู่ในหน้า <button type="button" class="lnk w6" data-go="s8" style="color:var(--teal)">การจองของฉัน</button> เราส่งใบยืนยันไปที่อีเมลของคุณแล้ว และจะส่งอีเมลเตือนก่อนเริ่มคลาส 1 ชั่วโมง</p>
+      <p class="p" style="font-size:13px;line-height:20px">ลิงก์ห้องเรียน ${c.via} จะอยู่ในหน้า <a href="#" role="button" class="lnk w6" data-go="s8" style="color:var(--teal)">การจองของฉัน</a> เราส่งใบยืนยันไปที่อีเมลของคุณแล้ว และจะส่งอีเมลเตือนก่อนเริ่มคลาส 1 ชั่วโมง</p>
       <button type="button" class="btn btn-secondary btn-block" data-go="s8">ดูการจองของฉัน</button>
       <button type="button" class="btn btn-ghost btn-block" data-go="s1">หาคลาสอื่นต่อ</button>
     </div>`;
@@ -920,7 +912,7 @@ p { margin: 0; }
       const sbadge = b.status === "paid" ? badge("ยืนยันแล้ว", "b-teal") : b.status === "pending" ? badge("รอชำระเงิน", "b-gold") : badge("เรียนจบแล้ว", "b-grey");
       const action = b.status === "paid" ? `<div class="b-note">ลิงก์ห้องเรียนจากติวเตอร์ · กดเข้าได้ตลอด</div><div class="b-act"><button type="button" class="btn btn-secondary" data-act="zoom">เข้าห้องเรียน (${c.via})</button><button type="button" class="btn btn-ghost" data-go="s3" data-cid="${c.id}">ดูรายละเอียด</button></div>`
         : b.status === "pending" ? `<div class="b-warn">${icon("clock", 13)}QR หมดอายุใน 18 นาที กรุณาชำระก่อนที่นั่งจะถูกปล่อยคืน</div><div class="b-act"><button type="button" class="btn btn-secondary" data-go="s6" data-cid="${b.classId}">ชำระเงินตอนนี้</button></div>`
-        : `<div class="b-act"><span class="b-note">เรียนจบแล้ว</span></div>`;
+        : `<div class="b-act"><button type="button" class="btn btn-ghost" data-go="s3" data-cid="${b.classId || "c6"}">ดูรายละเอียด</button></div>`;
       return `<div class="bcard${b.status === "done" ? " dim" : ""}"><div class="b-th" style="background:${th}"></div><div class="b-body">
         <div class="b-top">${sbadge}<span class="baht-price">${baht(price)}</span></div>
         <div class="b-title">${esc(title)}</div><div class="b-meta">สอนโดย ${tutor} · ${when} น.</div>${action}</div></div>`;
@@ -993,7 +985,7 @@ p { margin: 0; }
     </div></div>
     <div class="cardx"><div class="sumhead">สอนเองได้ไหม?</div><p class="p" style="font-size:13px;line-height:20px">เปิดโหมดติวเตอร์ แล้วรอทีมงานอนุมัติก่อนโพสต์คลาสแรก ใช้บัญชีเดียวกันทั้งเรียนและสอน</p>
       <div><button type="button" class="btn btn-secondary" data-act="becometutor">${state.tutorOn ? "ไปโหมดติวเตอร์" : "เปิดโหมดติวเตอร์"}</button></div></div>
-    <div class="row wrap"><button type="button" class="lnk" style="font-size:14px" data-go="a6" data-legal="terms">ข้อกำหนดการใช้งาน · นโยบายความเป็นส่วนตัว</button><button type="button" class="btn btn-ghost btn-ghost-sm" data-act="logout">ออกจากระบบ</button></div>`,
+    <div class="row wrap"><a href="#" role="button" class="lnk" style="font-size:14px" data-go="a6" data-legal="terms">ข้อกำหนดการใช้งาน · นโยบายความเป็นส่วนตัว</a><button type="button" class="btn btn-ghost btn-ghost-sm" data-act="logout">ออกจากระบบ</button></div>`,
     ["อยากแก้อะไรในบัญชีได้เองบ้าง (ชื่อ, รูป, เบอร์โทร)?"]);
 
   // ---------- sign-in / sign-up screens (AuthSplit / AuthShell) ----------
@@ -1005,12 +997,12 @@ p { margin: 0; }
     <div class="form g18">
       <form class="form" data-form="login">
         <label class="fld"><span class="field-label">อีเมล</span><input class="input" id="l-email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" required></label>
-        ${pwField("l-pw", "รหัสผ่าน", "current-password", "", '<button type="button" class="lnk w5" style="font-size:13px" data-go="a5">ลืมรหัสผ่าน?</button>')}
+        ${pwField("l-pw", "รหัสผ่าน", "current-password", "", '<a href="#" role="button" class="lnk w5" style="font-size:13px" data-go="a5">ลืมรหัสผ่าน?</a>')}
         <button class="btn btn-primary btn-lg" type="submit">เข้าสู่ระบบ</button>
       </form>
       <div class="divider">หรือ</div>
       ${googleBtn("เข้าสู่ระบบด้วย Google")}
-      <p class="t14 ctr">ยังไม่มีบัญชี? <button type="button" class="lnk w6" data-go="a2">สมัครสมาชิก</button></p>
+      <p class="t14 ctr">ยังไม่มีบัญชี? <a href="#" role="button" class="lnk w6" data-go="a2">สมัครสมาชิก</a></p>
     </div>`,
     ["อยากเข้าสู่ระบบด้วยอะไรมากที่สุด (อีเมล, Google, LINE)?"]);
 
@@ -1018,14 +1010,12 @@ p { margin: 0; }
     ${hgroup("สมัครสมาชิก", "สร้างบัญชีด้วยอีเมลและรหัสผ่าน ใช้ได้ทั้งเป็นนักเรียนและติวเตอร์")}
     <form class="form" data-form="signup">
       <label class="fld"><span class="field-label">อีเมล</span><input class="input" id="r-email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" required><span class="field-hint">เราจะส่งรหัสยืนยัน 6 หลักไปที่อีเมลนี้เพื่อยืนยันความเป็นเจ้าของ</span></label>
-      ${pwField("r-pw", "รหัสผ่าน", "new-password", "ความยาวอย่างน้อย 8 ตัวอักษร ไม่ต้องมีอักขระพิเศษ แต่ห้ามตรงกับอีเมล")}
+      ${pwField("r-pw", "รหัสผ่าน", "new-password", "ความยาว 8–128 ตัวอักษร ไม่ต้องมีอักขระพิเศษ แต่ห้ามตรงกับอีเมล")}
       ${pwField("r-pw2", "ยืนยันรหัสผ่าน", "new-password", "")}
       <button class="btn btn-primary btn-lg" type="submit">สมัครสมาชิกและส่งรหัสยืนยัน</button>
-      <p class="field-hint ctr">หลังยืนยันอีเมล คุณจะต้องยอมรับ <button type="button" class="lnk" data-go="a6" data-legal="terms">ข้อกำหนดการใช้งาน</button> และ <button type="button" class="lnk" data-go="a6" data-legal="privacy">นโยบายความเป็นส่วนตัว</button> ก่อนเริ่มใช้งาน</p>
+      <p class="field-hint ctr">หลังยืนยันอีเมล คุณจะต้องยอมรับ <a href="#" role="button" class="lnk" data-go="a6" data-legal="terms">ข้อกำหนดการใช้งาน</a> และ <a href="#" role="button" class="lnk" data-go="a6" data-legal="privacy">นโยบายความเป็นส่วนตัว</a> ก่อนเริ่มใช้งาน</p>
     </form>
-    <div class="divider">หรือ</div>
-    ${googleBtn("สมัครด้วย Google")}
-    <p class="t14 ctr">มีบัญชีอยู่แล้ว? <button type="button" class="lnk w6" data-go="a1">เข้าสู่ระบบ</button></p>`,
+    <p class="t14 ctr">มีบัญชีอยู่แล้ว? <a href="#" role="button" class="lnk w6" data-go="a1">เข้าสู่ระบบ</a></p>`,
     ["ขั้นตอนสมัครยาวไปไหม?", "ถ้าต้องยืนยันอีเมลด้วยรหัส 6 หลัก จะรำคาญไหม?"]);
 
   def("a3", "guest", "ยืนยันอีเมล", "built", () => `
@@ -1036,7 +1026,7 @@ p { margin: 0; }
       <button class="btn btn-primary btn-lg" type="submit">ยืนยันและสร้างบัญชี</button>
       <div class="two-btn"><button type="button" class="btn btn-text" style="font-size:13px" data-act="resend">ขอรหัสใหม่</button><button type="button" class="btn btn-text" style="font-size:13px" data-go="a2">เปลี่ยนอีเมล</button></div>
     </form>
-    <p class="t14 ctr">มีบัญชีอยู่แล้ว? <button type="button" class="lnk w6" data-go="a1">เข้าสู่ระบบ</button></p>`,
+    <p class="t14 ctr">มีบัญชีอยู่แล้ว? <a href="#" role="button" class="lnk w6" data-go="a1">เข้าสู่ระบบ</a></p>`,
     ["ได้อีเมลช้าไหม หรือเข้า Junk ไหม?"]);
 
   def("a4", "guest", "ตั้งค่าบัญชี + ยอมรับข้อตกลง", "built", () => `
@@ -1045,8 +1035,8 @@ p { margin: 0; }
       <form class="form g18" data-form="onboard">
         <label class="fld"><span class="field-label">ชื่อที่ต้องการให้แสดง</span><input class="input" id="ob-name" value="${esc(state.googleName || "")}" placeholder="เช่น มายด์" required maxlength="50" autocomplete="nickname"><span class="field-hint">ชื่อนี้จะแสดงกับติวเตอร์/นักเรียนคนอื่น ไม่ต้องใช้ชื่อจริงก็ได้</span></label>
         <div class="stack12">
-          <label class="cb"><input type="checkbox" id="ob-terms" required><span>ฉันยอมรับ <button type="button" class="lnk" data-go="a6" data-legal="terms">ข้อกำหนดการใช้งาน</button></span></label>
-          <label class="cb"><input type="checkbox" id="ob-privacy" required><span>ฉันยอมรับ <button type="button" class="lnk" data-go="a6" data-legal="privacy">นโยบายความเป็นส่วนตัว</button></span></label>
+          <label class="cb"><input type="checkbox" id="ob-terms" required><span>ฉันยอมรับ <a href="#" role="button" class="lnk" data-go="a6" data-legal="terms">ข้อกำหนดการใช้งาน</a></span></label>
+          <label class="cb"><input type="checkbox" id="ob-privacy" required><span>ฉันยอมรับ <a href="#" role="button" class="lnk" data-go="a6" data-legal="privacy">นโยบายความเป็นส่วนตัว</a></span></label>
           <label class="cb"><input type="checkbox" id="ob-minor" data-act="minor"><span>ฉันอายุต่ำกว่า 20 ปี</span></label>
           <label class="cb" id="ob-guardian-row" style="padding-left:28px" hidden><input type="checkbox" id="ob-guardian"><span>ฉันรับรองว่าได้รับความยินยอมจากผู้ปกครองในการใช้งานและให้ข้อมูลส่วนบุคคลแล้ว</span></label>
         </div>
@@ -1057,12 +1047,12 @@ p { margin: 0; }
     ["ข้อความยอมรับข้อตกลงเข้าใจง่ายไหม?", "ผู้ใช้อายุต่ำกว่า 20 สะดวกให้ผู้ปกครองรับรองแบบนี้ไหม?"]);
 
   def("a5", "guest", "ลืมรหัสผ่าน", "built", () => `
-    ${hgroup("ลืมรหัสผ่าน / ตั้งรหัสผ่าน", "กรอกอีเมลของบัญชี เราจะส่งรหัสยืนยันให้เพื่อตั้งรหัสผ่านใหม่ ผู้ใช้เดิมที่ยังไม่เคยตั้งรหัสผ่านให้ตั้งที่หน้านี้ (รวมถึงบัญชีที่สมัครด้วย Google)")}
+    ${hgroup("ลืมรหัสผ่าน / ตั้งรหัสผ่าน", "กรอกอีเมลของบัญชี เราจะส่งรหัสยืนยันให้เพื่อตั้งรหัสผ่านใหม่ ผู้ใช้เดิมที่ยังไม่เคยตั้งรหัสผ่านให้ตั้งที่หน้านี้")}
     ${state.resetStep === 2 ? `
     <form class="form" data-form="reset">
       ${notice("info", "ถ้ามีบัญชีที่ใช้อีเมลนี้ เราได้ส่งรหัส 6 หลักไปให้แล้ว (รหัสมีอายุ 10 นาที) หากไม่พบ ลองตรวจสอบโฟลเดอร์สแปม")}
       <label class="fld"><span class="field-label">รหัสยืนยัน 6 หลัก</span><input class="input code-in" id="rs-otp" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000" required></label>
-      ${pwField("rs-pw", "รหัสผ่านใหม่", "new-password", "ความยาวอย่างน้อย 8 ตัวอักษร ไม่ต้องมีอักขระพิเศษ แต่ห้ามตรงกับอีเมล")}
+      ${pwField("rs-pw", "รหัสผ่านใหม่", "new-password", "ความยาว 8–128 ตัวอักษร ไม่ต้องมีอักขระพิเศษ แต่ห้ามตรงกับอีเมล")}
       ${pwField("rs-pw2", "ยืนยันรหัสผ่านใหม่", "new-password", "")}
       <button class="btn btn-primary btn-lg" type="submit">ตั้งรหัสผ่านใหม่และเข้าสู่ระบบ</button>
       <div class="two-btn"><button type="button" class="btn btn-text" style="font-size:13px" data-act="resend">ขอรหัสใหม่</button><button type="button" class="btn btn-text" style="font-size:13px" data-act="resetback">เปลี่ยนอีเมล</button></div>
@@ -1071,22 +1061,38 @@ p { margin: 0; }
       <label class="fld"><span class="field-label">อีเมล</span><input class="input" id="fp-email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" required></label>
       <button class="btn btn-primary btn-lg" type="submit">ส่งรหัสยืนยัน</button>
     </form>`}
-    <p class="t14 ctr"><button type="button" class="lnk w6" data-go="a1">กลับไปหน้าเข้าสู่ระบบ</button></p>`,
+    <p class="t14 ctr"><a href="#" role="button" class="lnk w6" data-go="a1">กลับไปหน้าเข้าสู่ระบบ</a></p>`,
     ["เคยลืมรหัสผ่านเว็บอื่นแล้วกู้ยากไหม?"]);
 
+  // Same draft text as frontend/src/app/legal/{terms,privacy}/page.tsx (LegalDraftPage).
   const LEGAL = {
-    terms: ["ข้อกำหนดการใช้งาน", ["เกี่ยวกับบริการ", "บัญชีผู้ใช้", "ติวเตอร์และการลงประกาศคลาส", "การจองและการชำระเงิน", "การยกเลิกและการคืนเงิน", "ข้อห้าม", "การเปลี่ยนแปลงข้อกำหนด", "ติดต่อทีมงาน"]],
-    privacy: ["นโยบายความเป็นส่วนตัว", ["ข้อมูลที่เก็บ", "ข้อมูลการชำระเงิน", "วัตถุประสงค์การใช้ข้อมูล", "การเปิดเผยข้อมูล", "ที่จัดเก็บและการส่งข้อมูลไปต่างประเทศ", "ระยะเวลาการเก็บข้อมูล", "สิทธิของเจ้าของข้อมูล", "ติดต่อเรื่องข้อมูลส่วนบุคคล"]],
+    terms: ["ข้อกำหนดการใช้งาน", [
+      ["1. เกี่ยวกับบริการ", "Educare เป็นพื้นที่ให้ติวเตอร์ลงประกาศคลาสเรียนพร้อมวันเวลาไว้ล่วงหน้า และให้นักเรียนค้นหาแล้วจองได้ทันที การเรียนการสอนจริงเกิดขึ้นนอกแพลตฟอร์ม (เช่น Zoom หรือ Google Meet) ตามที่ติวเตอร์นัดหมายกับผู้เรียน Educare ไม่มีระบบวิดีโอคอลหรือแชทในตัว และไม่ได้เป็นผู้สอนหรือรับรองเนื้อหาการสอน"],
+      ["2. บัญชีผู้ใช้", "ผู้ใช้ต้องให้ข้อมูลที่ถูกต้อง ยืนยันอีเมลของตนเอง และเก็บรักษารหัสผ่านไว้เป็นความลับ บัญชีเดียวใช้ได้ทั้งในฐานะนักเรียนและติวเตอร์ ผู้ใช้ที่อายุต่ำกว่า 20 ปีต้องได้รับความยินยอมจากผู้ปกครองหรือผู้แทนโดยชอบธรรมก่อนใช้งาน"],
+      ["3. ติวเตอร์และการลงประกาศคลาส", "ผู้ใช้เปิดโหมดติวเตอร์ได้ แต่จะลงประกาศคลาสได้หลังทีมงานอนุมัติแล้วเท่านั้น ทีมงานอาจไม่อนุมัติหรือยกเลิกการอนุมัติได้ ซึ่งจะทำให้คลาสที่ยังไม่เริ่มถูกปิดรับจอง ติวเตอร์รับผิดชอบความถูกต้องของรายละเอียดคลาส และต้องสอนตามวันเวลาที่ประกาศไว้ ติวเตอร์จองคลาสของตนเองไม่ได้"],
+      ["4. การจองและการชำระเงิน", "การจองจะยืนยันเมื่อชำระเงินผ่านผู้ให้บริการชำระเงินสำเร็จ Educare พักเงินไว้จนคลาสจบ และจะจ่ายให้ติวเตอร์หลังเวลาจบคลาสไม่น้อยกว่า 24 ชั่วโมง โดยหักค่าคอมมิชชันของแพลตฟอร์ม อัตราค่าคอมมิชชันที่ใช้คืออัตรา ณ เวลาที่เกิดการจอง และไม่เปลี่ยนตามอัตราที่ปรับภายหลัง"],
+      ["5. การยกเลิกและการคืนเงิน", "ในช่วงเปิดให้บริการเริ่มต้น การคืนเงินดำเนินการโดยทีมงาน หากคลาสไม่เกิดขึ้นหรือมีปัญหาเกี่ยวกับการจอง ให้ติดต่อทีมงานพร้อมรายละเอียดการจอง ทีมงานจะพิจารณาเป็นรายกรณีและคืนเงินผ่านช่องทางเดิมที่ชำระ หากชำระเงินเข้ามาหลังการจองหมดอายุหรือถูกยกเลิกแล้ว ทีมงานจะคืนเงินให้"],
+      ["6. ข้อห้าม", "ห้ามให้ข้อมูลเท็จ ลงประกาศเนื้อหาที่ผิดกฎหมายหรือละเมิดสิทธิผู้อื่น คุกคามผู้ใช้อื่น หรือใช้ระบบในทางที่ทำให้บริการเสียหาย ทีมงานอาจระงับหรือปิดบัญชีที่ฝ่าฝืนข้อกำหนดนี้"],
+      ["7. การเปลี่ยนแปลงข้อกำหนด", "Educare อาจปรับปรุงข้อกำหนดนี้ โดยแต่ละฉบับมีหมายเลขเวอร์ชันกำกับ และจะแจ้งให้ผู้ใช้ทราบเมื่อมีการเปลี่ยนแปลงที่สำคัญ"],
+      ["8. ติดต่อทีมงาน", "ช่องทางติดต่อทีมงานจะระบุไว้ในฉบับที่ใช้จริง"]]],
+    privacy: ["นโยบายความเป็นส่วนตัว", [
+      ["1. ข้อมูลที่เก็บ", "อีเมล ชื่อที่แสดง รหัสผ่าน (เก็บเป็นค่าแฮชทางเดียว ไม่เก็บรหัสผ่านจริง) การรับรองอายุและความยินยอมผู้ปกครอง ประวัติการยอมรับข้อกำหนดและนโยบาย (เวอร์ชันและเวลา) ข้อมูลโปรไฟล์และประกาศคลาสของติวเตอร์ ประวัติการจองและสถานะการชำระเงิน และหมายเลข IP กับข้อมูลอุปกรณ์เพื่อความปลอดภัยของระบบ"],
+      ["2. ข้อมูลการชำระเงิน", "การชำระเงินดำเนินการโดยผู้ให้บริการชำระเงิน Educare ไม่เก็บหมายเลขบัตรหรือข้อมูลบัญชีธนาคารของผู้ชำระเงิน เก็บเฉพาะเลขอ้างอิงรายการ จำนวนเงิน และสถานะ"],
+      ["3. วัตถุประสงค์การใช้ข้อมูล", "เพื่อสร้างและยืนยันบัญชี ให้บริการค้นหา จอง และชำระเงิน จ่ายเงินให้ติวเตอร์ ติดต่อเรื่องการจอง ป้องกันการใช้งานในทางมิชอบ (เช่น จำกัดการขอรหัสยืนยันและการเดารหัสผ่าน) และปฏิบัติตามกฎหมายที่เกี่ยวข้อง"],
+      ["4. การเปิดเผยข้อมูล", "Educare ไม่ขายข้อมูลส่วนบุคคล ข้อมูลจะเปิดเผยเท่าที่จำเป็นแก่ผู้ให้บริการที่ช่วยดำเนินงาน ได้แก่ ผู้ให้บริการโฮสติ้งและฐานข้อมูล ผู้ให้บริการส่งอีเมล และผู้ให้บริการชำระเงิน หรือเมื่อกฎหมายกำหนด"],
+      ["5. ที่จัดเก็บและการส่งข้อมูลไปต่างประเทศ", "ระบบและฐานข้อมูลของ Educare ตั้งอยู่บนผู้ให้บริการคลาวด์ในประเทศสิงคโปร์ ข้อมูลของผู้ใช้จึงถูกส่งไปจัดเก็บนอกประเทศไทย"],
+      ["6. ระยะเวลาการเก็บข้อมูล", "รหัสยืนยันทางอีเมลและข้อมูลประกอบ (อีเมล, IP) ถูกลบภายในประมาณ 24 ชั่วโมงหลังขอรหัส เซสชันการเข้าสู่ระบบหมดอายุใน 30 วัน (บัญชีแอดมิน 12 ชั่วโมง) ข้อมูลบัญชีเก็บไว้ตลอดที่บัญชียังใช้งาน ส่วนข้อมูลการจองและการเงินเก็บตามระยะเวลาที่กฎหมายบัญชีและภาษีกำหนด"],
+      ["7. สิทธิของเจ้าของข้อมูล", "ตามพระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 (PDPA) ผู้ใช้มีสิทธิขอเข้าถึง ขอสำเนา ขอแก้ไข ขอลบ ขอระงับหรือคัดค้านการใช้ข้อมูล ขอโอนย้ายข้อมูล และถอนความยินยอม รวมถึงร้องเรียนต่อสำนักงานคณะกรรมการคุ้มครองข้อมูลส่วนบุคคล"],
+      ["8. ติดต่อเรื่องข้อมูลส่วนบุคคล", "ชื่อผู้ควบคุมข้อมูลและช่องทางติดต่อจะระบุไว้ในฉบับที่ใช้จริง"]]],
   };
   def("a6", "guest", "ข้อกำหนด + นโยบายความเป็นส่วนตัว", "built", () => {
     const [title, secs] = LEGAL[state.legalTab];
     return `
     <div class="shellcard">
-      ${notice("warning", "<strong>หน้านี้แสดงแค่หัวข้อ</strong><br>เนื้อหาจริงอยู่ระหว่างจัดทำ")}
-      <div class="chips"><button type="button" class="chip" data-legaltab="terms" aria-pressed="${state.legalTab === "terms"}">ข้อกำหนดการใช้งาน</button><button type="button" class="chip" data-legaltab="privacy" aria-pressed="${state.legalTab === "privacy"}">นโยบายความเป็นส่วนตัว</button></div>
-      <h1 style="font-size:26px;color:var(--navy)">${title}</h1>
-      ${secs.map((h, i) => `<div class="hgroup" style="gap:6px"><h2 style="font-size:17px;color:var(--navy)">${i + 1}. ${h}</h2></div>`).join("")}
-      <div><button type="button" class="lnk w5" style="font-size:14px" data-act="back">‹ ย้อนกลับ</button></div>
+      ${notice("warning", "<strong>ฉบับร่าง — ยังไม่ใช่ข้อความทางกฎหมายที่มีผลบังคับใช้</strong><br>เอกสารนี้เป็นเนื้อหาชั่วคราวระหว่างช่วงทดสอบระบบ และจะถูกแทนที่ด้วยฉบับจริงที่ผ่านการตรวจสอบก่อนเปิดให้บริการจริง")}
+      <div class="hgroup" style="gap:4px"><h1 style="font-size:26px;color:var(--navy)">${title}</h1><span style="font-size:13px;color:var(--text-secondary)">เวอร์ชัน: draft-2026-10-29 (ฉบับร่าง)</span></div>
+      ${secs.map(([h, b]) => `<div class="hgroup" style="gap:6px"><h2 style="font-size:17px;color:var(--navy)">${h}</h2><p style="font-size:14px;line-height:24px;color:var(--text-secondary)">${b}</p></div>`).join("")}
+      <div><a href="#" role="button" class="lnk w5" style="font-size:14px" data-go="s1">กลับหน้าหลัก</a></div>
     </div>`;
   }, ["อยากเห็นสรุปสั้นๆ ด้านบนก่อนเนื้อหาเต็มไหม?"]);
 
@@ -1105,7 +1111,7 @@ p { margin: 0; }
     <div class="stats">
       ${stat("คลาสที่เปิดรับ", "2")}${stat("ที่นั่งถูกจอง", "9")}${stat("รายได้รอปล่อย", baht(sum(["held", "grace"])))}${stat("พร้อมโอน", baht(sum(["ready"])))}
     </div>
-    <div class="d-sec"><div class="lsec-h"><h2 class="s20">คลาสถัดไป</h2><button type="button" class="lnk w6" style="font-size:14px" data-go="t3">คลาสทั้งหมด</button></div>
+    <div class="d-sec"><div class="lsec-h"><h2 class="s20">คลาสถัดไป</h2><a href="#" role="button" class="lnk w6" style="font-size:14px" data-go="t3">คลาสทั้งหมด</a></div>
       <div class="cardx"><div class="b-title">${esc(cls("c2").title)}</div><div class="b-meta">${cls("c2").when} · จองแล้ว 2/6</div>
       <div><button type="button" class="btn btn-ghost" data-go="t4" data-cid="c2">ดูผู้จองและลิงก์ห้องเรียน</button></div></div></div>
     <div class="cardx"><div class="sumhead">มี 2 คำขอบน Demand Board ที่ตรงวิชาของคุณ</div><div class="b-meta">รวม 15 คนอยากเรียน</div><div><button type="button" class="btn btn-ghost" data-go="t7">ดูคำขอ</button></div></div>
@@ -1122,76 +1128,74 @@ p { margin: 0; }
     ${p.from ? notice("info", `<strong>เปิดคลาสจากคำขอ “${esc(p.from)}”</strong><br>เมื่อโพสต์แล้ว ผู้ที่กด +1 ไว้ ${p.count} คนจะได้รับแจ้งเตือน`) : ""}
     <div class="t2g">
       <form class="formcard" id="post-form" data-form="post">
-        ${field("p-title", "ชื่อคลาส", `<input class="input" id="p-title" required maxlength="200" value="${esc(p.title || "")}" placeholder="เช่น ฟิสิกส์ ม.5 ไฟฟ้ากระแส สรุป + โจทย์">`)}
-        ${field("p-desc", "รายละเอียดคลาส", `<textarea class="textarea" id="p-desc" rows="4" placeholder="สรุปเนื้อหาที่จะสอน เหมาะกับใคร ฯลฯ"></textarea>`)}
-        <div class="g2">${field("p-subject", "หมวดวิชา", `<input class="input" id="p-subject" value="${esc(p.subject || "ฟิสิกส์")}" placeholder="เช่น แคลคูลัส">`, "พิมพ์เป็นคำค้นที่นักเรียนน่าจะใช้ค้นหา")}
-          ${field("p-level", "ระดับ", `<input class="input" id="p-level" value="${esc(p.level || "ม.5")}">`)}</div>
+        ${field("p-title", "ชื่อคลาส", `<input class="input" id="p-title" required maxlength="200" value="${esc(p.title || "")}" placeholder="เช่น Calculus I ตะลุยโจทย์ก่อน Midterm">`)}
+        ${field("p-desc", "รายละเอียดคลาส", `<textarea class="textarea" id="p-desc" rows="4" required maxlength="5000" placeholder="สรุปเนื้อหาที่จะสอน เหมาะกับใคร ฯลฯ"></textarea>`)}
+        <div class="g2">${field("p-subject", "หมวดวิชา", `<input class="input" id="p-subject" required maxlength="100" value="${esc(p.subject || "")}" placeholder="เช่น แคลคูลัส">`, "พิมพ์เป็นคำค้นที่นักเรียนน่าจะใช้ค้นหา")}
+          ${field("p-seats", "จำนวนที่รับ", `<input class="input" id="p-seats" type="number" required min="1" step="1" value="1">`, "ใส่ 1 = คลาสตัวต่อตัว, มากกว่า 1 = คลาสกลุ่ม")}</div>
         <div class="hr"></div>
-        <div class="g2">${field("p-date", "วันที่เรียน", `<input class="input" id="p-date" type="date" value="2026-11-22" min="2026-11-04">`)}
-          ${field("p-time", "เวลาเริ่ม", `<input class="input" id="p-time" type="time" value="13:00">`)}</div>
-        <div class="g2">${field("p-dur", "ระยะเวลา", `<select class="input" id="p-dur"><option>1 ชม.</option><option selected>1.5 ชม.</option><option>2 ชม.</option><option>3 ชม.</option></select>`)}
-          ${field("p-seats", "จำนวนที่รับ", `<input class="input" id="p-seats" type="number" min="1" max="50" step="1" value="6">`, "ใส่ 1 = คลาสตัวต่อตัว, มากกว่า 1 = คลาสกลุ่ม")}</div>
-        ${field("p-via", "เรียนผ่าน", `<select class="input" id="p-via"><option>Zoom</option><option>Google Meet</option></select>`, "ลิงก์ห้องเรียนส่งให้ผู้เรียนหลังชำระเงิน ใส่ทีหลังได้")}
+        <div class="g3">${field("p-date", "วันที่เรียน", `<input class="input" id="p-date" type="date" required value="2026-11-06">`)}
+          ${field("p-time", "เวลาเริ่ม", `<input class="input" id="p-time" type="time" required value="19:00">`)}
+          ${field("p-end", "เวลาสิ้นสุด", `<input class="input" id="p-end" type="time" required value="21:00">`)}</div>
         <div class="hr"></div>
-        <div class="fld g8"><label class="field-label" for="p-price">ราคาต่อคน (ขั้นต่ำ 20 บาท)</label>
-          <div class="price-row"><div class="pbox"><span class="baht">฿</span><input id="p-price" type="number" min="20" step="1" value="250" required></div><span>/ คน</span></div>
-          <span class="errline" id="p-price-err" hidden>ราคาขั้นต่ำ 20 บาท</span>
-          <span class="field-hint">ราคานี้คือยอดที่นักเรียนจ่าย ระบบจะหักค่าคอมมิชชันให้อัตโนมัติก่อนโอนให้คุณ</span></div>
-        <div class="calc" id="p-calc"></div>
+        ${field("p-price", "ราคาต่อคน", `<div class="price-row"><div class="pbox"><span class="baht">฿</span><input id="p-price" type="number" required min="20" step="0.01"></div><span>/ คน</span></div><span class="errline" id="p-price-err" hidden>ราคาขั้นต่ำ 20 บาท</span>`, "ราคานี้คือยอดที่นักเรียนจ่าย ระบบจะหักค่าคอมมิชชันให้อัตโนมัติก่อนโอนให้คุณ")}
       </form>
       <div class="t2side">
         <span class="field-label" style="color:var(--text-secondary)">ตัวอย่างการ์ดที่นักเรียนจะเห็น</span>
         <div class="lc lc-static" id="p-prev"></div>
-        ${inote("info", "คลาสจะขึ้นในผลค้นหาก็ต่อเมื่อกด “โพสต์คลาส” เท่านั้น")}
-        <button type="submit" form="post-form" class="btn btn-secondary" style="width:100%;margin-top:6px">โพสต์คลาส</button>
+        ${inote("info", "คลาสจะขึ้นในผลค้นหาก็ต่อเมื่อกด \"เผยแพร่คลาส\" เท่านั้น — บันทึกร่างไว้ยังไม่แสดงให้นักเรียนเห็น")}
+        <div class="stack" style="gap:10px;padding-top:8px">
+          <button type="submit" form="post-form" class="btn btn-secondary" style="width:100%">เผยแพร่คลาส</button>
+          <button type="button" class="btn btn-ghost" style="width:100%" data-act="toast" data-msg="บันทึกเป็นฉบับร่างแล้ว (จำลอง)">บันทึกเป็นฉบับร่าง</button>
+        </div>
       </div>
     </div>`;
-  }, ["ช่องไหนกรอกยาก หรือไม่จำเป็น?", "อยากตั้งคลาสซ้ำทุกสัปดาห์ได้ไหม (ตอนนี้ทำทีละคลาส)?", "ค่าธรรมเนียมแสดงแบบนี้เข้าใจไหม?"]);
+  }, ["ช่องไหนกรอกยาก หรือไม่จำเป็น?", "อยากตั้งคลาสซ้ำทุกสัปดาห์ได้ไหม (ตอนนี้ทำทีละคลาส)?", "อยากเห็นว่าหักค่าธรรมเนียมแล้วจะได้เงินเท่าไหร่ไหม?"]);
 
   const v = (id, d = "") => { const el = document.getElementById(id); return el ? el.value : d; };
   const hhmm = (m) => String(Math.floor(m / 60) % 24).padStart(2, "0") + ":" + String(m % 60).padStart(2, "0");
-  const calcBox = () => {
-    const price = Number(v("p-price", 0)), seats = Number(v("p-seats", 0)) || 1;
-    const err = document.getElementById("p-price-err"); if (err) err.hidden = price >= 20;
-    const fee = Math.round(price * FEE) / 100, net = price - fee;
-    const box = document.getElementById("p-calc");
-    if (box) box.innerHTML = `<div class="row"><span>ผู้เรียนจ่ายต่อที่นั่ง</span><span class="baht-price" style="font-size:17px">${baht(price)}</span></div>
-      <div class="row"><span class="k">ค่าธรรมเนียมแพลตฟอร์ม (ตัวอย่าง ${FEE}%)</span><span class="k">−${baht(fee)}</span></div>
-      <div class="row"><b>คุณได้รับต่อที่นั่ง</b><span class="baht-price" style="font-size:17px">${baht(net)}</span></div>
-      <div class="row"><span class="k">ถ้าเต็ม ${seats} ที่</span><span class="baht-price" style="font-size:17px">${baht(net * seats)}</span></div>
-      <p class="field-hint">% ค่าธรรมเนียมจะล็อกไว้ตอนผู้เรียนจอง ถ้าแพลตฟอร์มเปลี่ยนอัตราภายหลัง การจองเดิมไม่เปลี่ยน</p>`;
+  const checkPrice = () => {
+    const err = document.getElementById("p-price-err"), raw = v("p-price");
+    if (err) err.hidden = raw === "" || Number(raw) >= 20;
   };
   const previewBox = () => {
     const box = document.getElementById("p-prev"); if (!box) return;
-    const [hh, mm] = (v("p-time", "13:00") || "13:00").split(":").map(Number);
-    const dur = parseFloat(v("p-dur", "1.5")) || 1.5, start = hh * 60 + mm;
-    const date = v("p-date");
+    const date = v("p-date"), from = v("p-time"), to = v("p-end");
     const c = {
       title: v("p-title").trim() || "ชื่อคลาสของคุณ", subject: v("p-subject").trim() || "หมวดวิชา", tutor: "ton",
-      when: `${date ? thaiDate(date) : "วันที่เรียน"} · ${hhmm(start)}–${hhmm(start + Math.round(dur * 60))}`,
+      when: date && from && to ? `${thaiDate(date)} ${from} - ${to}` : "1 ม.ค. 00:00 - 00:00",
       price: Math.max(0, Number(v("p-price", 0)) || 0), seats: Math.max(1, Number(v("p-seats", 1)) || 1), booked: 0,
     };
     box.innerHTML = lcardInner(c);
   };
 
+  // listings/mine: ListingItemCard (status badge + price, schedule · capacity, actions by status).
+  const GRADS4 = ["linear-gradient(135deg, #0D1B2A, #1E3A8A)", "linear-gradient(135deg, #0FA3A3, #0D1B2A)", "linear-gradient(135deg, #1E3A8A, #0FA3A3)", "linear-gradient(135deg, #8A8F98, #5B6472)"];
+  const MY_CLASSES = [
+    { classId: "c2", status: "published" },
+    { classId: "c4", status: "published" },
+    { title: "ฟิสิกส์ ม.6 คลื่นและแสง (ร่าง)", when: "29 พ.ย. 13:00 - 15:00", price: 250, seats: 6, status: "draft" },
+    { title: "คณิต ม.3 เศษส่วน", when: "5 พ.ย. 18:00 - 19:30", price: 180, seats: 8, status: "closed" },
+  ];
+  const LISTING_BADGE = { draft: ["ฉบับร่าง", "b-grey"], published: ["เผยแพร่อยู่", "b-teal"], closed: ["ปิดรับที่นั่งแล้ว", "b-blue"], cancelled: ["ยกเลิกแล้ว", "b-red"] };
   def("t3", "tutor", "คลาสของฉัน", "built", () => {
-    const mine = { open: [["c2", 2, 6], ["c4", 7, 10]], done: [["คณิต ม.3 อสมการ", 5, 10, "3 พ.ย."], ["ฟิสิกส์ ม.5 แรงและการเคลื่อนที่", 4, 6, "2 พ.ย."]], closed: [["คณิต ม.3 เศษส่วน (ปิดรับเอง)", 0, 8, "5 พ.ย."]] }[state.tclassTab];
-    const tabs = { open: "เปิดรับ", done: "จบแล้ว", closed: "ปิดรับ" };
-    const sb = { open: badge("เปิดรับ", "b-teal"), done: badge("จบแล้ว", "b-grey"), closed: badge("ปิดรับ", "b-blue") }[state.tclassTab];
+    const cards = MY_CLASSES.map((m, i) => {
+      const c = m.classId ? cls(m.classId) : m;
+      const editBtn = '<button type="button" class="btn btn-ghost" disabled title="ฟีเจอร์นี้ยังไม่เปิดใช้งาน">แก้ไข</button>';
+      const act = m.status === "draft"
+        ? `<div style="font-size:12px;color:var(--text-secondary)">ร่างนี้ยังไม่แสดงให้นักเรียนเห็น</div><div class="b-act">${editBtn}<button type="button" class="btn btn-secondary" style="height:40px" data-act="toast" data-msg="เผยแพร่คลาสแล้ว (จำลอง)">เผยแพร่คลาส</button><button type="button" class="btn btn-text" style="color:var(--cancel-text)" data-act="toast" data-msg="ลบร่างแล้ว (จำลอง)">ลบร่างนี้</button></div>`
+        : m.status === "published"
+          ? `<div class="b-act">${editBtn}<button type="button" class="btn btn-text" data-go="s3" data-cid="${m.classId}">ดูหน้าคลาส</button><button type="button" class="btn btn-text" style="color:var(--cancel-text)" data-act="closeclass">ยกเลิกคลาสนี้</button></div>`
+          : `<div style="font-size:12px;color:var(--text-secondary);padding-top:6px">คลาสนี้ปิดรับที่นั่งแล้ว</div>`;
+      const [bt, bk] = LISTING_BADGE[m.status];
+      return `<div class="bcard${m.status === "closed" ? " dim" : ""}"><div class="b-th" style="background:${GRADS4[i % 4]}"></div><div class="b-body">
+        <div class="b-top">${badge(bt, bk)}<span class="baht-price">${baht(c.price)}<small> /คน</small></span></div>
+        <div class="b-title">${esc(c.title)}</div><div class="b-meta">${c.when} น. · รับสูงสุด ${c.seats} คน</div>
+        ${act}</div></div>`;
+    }).join("");
     return `
-    <div class="row wrap"><h1>คลาสของฉัน</h1><button type="button" class="btn btn-secondary" data-go="t2" ${state.approved ? "" : "disabled"}>${icon("plus", 16, 2.2)}สร้างคลาสใหม่</button></div>
+    <div class="row wrap"><h1>คลาสของฉัน</h1><button type="button" class="btn btn-secondary" style="height:44px" data-go="t2">${icon("plus", 16, 2.2)}สร้างคลาสใหม่</button></div>
     ${approvalNotice(true)}
-    <div class="chips">${Object.entries(tabs).map(([k, v2]) => `<button type="button" class="chip" data-tclasstab="${k}" aria-pressed="${state.tclassTab === k}">${v2}</button>`).join("")}</div>
-    <div class="stack" style="gap:24px">${mine.map((m, i) => {
-      const c = typeof m[0] === "string" && m[0].startsWith("c") && m[0].length < 4 ? cls(m[0]) : null;
-      const title = c ? c.title : m[0], when = c ? c.when : m[3], full = m[1] >= m[2];
-      const th = c ? gradOf(c) : GRADS[(i + 3) % 4];
-      return `<div class="bcard${state.tclassTab === "open" ? "" : " dim"}"><div class="b-th" style="background:${th}"></div><div class="b-body">
-        <div class="b-top">${state.tclassTab === "open" && full ? badge("เต็มแล้ว", "b-red") : sb}<span class="b-meta">จองแล้ว ${m[1]}/${m[2]}</span></div>
-        <div class="b-title">${esc(title)}</div><div class="b-meta">${when} น.</div>
-        <div class="bar" aria-hidden="true"><i style="width:${(m[1] / m[2]) * 100}%"></i></div>
-        ${c ? `<div class="b-act"><button type="button" class="btn btn-ghost" data-go="t4" data-cid="${c.id}">ดูผู้จอง</button><button type="button" class="btn btn-text btn-danger" data-act="closeclass">ปิดรับจอง</button></div>` : ""}</div></div>`;
-    }).join("")}</div>`;
+    <div class="stack" style="gap:24px">${cards}</div>`;
   }, ["อยากแก้คลาสหลังมีคนจองแล้วได้แค่ไหน (เวลา, ราคา)?"]);
 
   def("t4", "tutor", "ผู้จองและลิงก์ห้องเรียน", "partial", () => {
@@ -1201,10 +1205,16 @@ p { margin: 0; }
       // Like the real tutor bookings page, students are numbered, not named (privacy).
       const people = [["นักเรียนคนที่ 1", "ชำระแล้ว"], ["นักเรียนคนที่ 2", "ชำระแล้ว"], ["นักเรียนคนที่ 3", "รอชำระเงิน"]].slice(0, Math.max(2, Math.min(3, c.booked + 1)));
       const net = Math.round(c.price * (100 - FEE)) / 100;
+      // Release time = class end + 24 h (TutorBookingRow); sample dates never cross a month end.
+      const [, d, mon, endT] = c.when.match(/^(\d+) (\S+) \S+ - (\S+)$/);
+      const releaseAt = `${Number(d) + 1} ${mon} ${endT} น.`;
       return `<div class="tgroup">
         <div class="tg-h"><div class="stack" style="gap:4px"><div class="b-title">${esc(c.title)}</div><div class="b-meta">${c.when} น. · ${people.length} การจอง</div></div>${badge("ยังไม่ถึงเวลาเรียน", "b-blue")}</div>
-        ${people.map(([n, s]) => { const paid = s === "ชำระแล้ว"; return `<div class="trow"><div class="row" style="justify-content:flex-start;gap:10px"><span class="t-av${paid ? "" : " off"}">${n.slice(-1)}</span><div class="stack" style="gap:2px"><span style="font-size:13px;font-weight:600">${n}</span>${paid ? badge("ยืนยันแล้ว · เงินพักไว้แล้ว", "b-teal") : badge("รอนักเรียนชำระเงิน", "b-gold")}</div></div>
-          ${paid ? `<span style="font-size:14px;font-weight:700">คุณจะได้รับ ${baht(net)}</span>` : `<span class="t14" style="font-size:13px">ยังจบคลาสไม่ได้จนกว่าจะชำระเงิน</span>`}</div>`; }).join("")}
+        <div style="font-size:12px;color:var(--text-secondary);padding-top:4px">กดปล่อยเงินแยกทีละที่นั่ง หลังนักเรียนแต่ละคนเรียนจบแล้ว</div>
+        ${people.map(([n, s], i) => { const paid = s === "ชำระแล้ว"; return `<div class="trow"><div class="row" style="justify-content:flex-start;gap:10px"><span class="t-av${paid ? "" : " off"}">น${i + 1}</span><div class="stack" style="gap:2px"><span style="font-size:13px;font-weight:600">${n}</span>${paid ? badge("ยืนยันแล้ว · เงินพักไว้แล้ว", "b-teal") : badge("รอนักเรียนชำระเงิน", "b-gold")}</div></div>
+          <div class="row" style="gap:14px;flex-wrap:wrap">${paid ? `<span style="font-size:14px;font-weight:700">คุณจะได้รับ ${baht(net)}</span>
+            <div class="stack" style="align-items:flex-end;gap:4px"><button type="button" class="btn btn-secondary" disabled title="ปล่อยเงินได้หลัง ${releaseAt}">จบคลาสนี้ (ปล่อยเงิน)</button>
+            <span style="font-size:11px;line-height:16px;color:var(--text-secondary);text-align:right">ปล่อยเงินได้หลัง ${releaseAt}<br>(รอ 24 ชั่วโมงหลังคลาสจบ เพื่อความปลอดภัยของทั้งสองฝ่าย)</span></div>` : `<span class="t14" style="font-size:13px">ยังจบคลาสไม่ได้จนกว่าจะชำระเงิน</span>`}</div></div>`; }).join("")}
         <form class="stack" style="gap:12px;border-top:1px solid var(--stone);padding-top:16px" data-form="zoom">
           ${field("z-link-" + id, `ลิงก์ห้องเรียน (${c.via})`, `<input class="input" id="z-link-${id}" type="url" value="${esc(state.zoom)}">`, "ผู้เรียนที่ชำระแล้วเห็นลิงก์นี้ในหน้าการจอง และได้อีเมลเตือนก่อนเริ่ม 1 ชม.")}
           <div><button class="btn btn-secondary" type="submit">บันทึกลิงก์</button></div>
@@ -1265,8 +1275,11 @@ p { margin: 0; }
   // ---------- chrome ----------
   // Which header each page uses (the real app has separate headers for checkout and for sign-in pages).
   const CHROME = { a1: "split", a2: "split", a3: "split", a5: "split", a4: "shell", a6: "shell", s1: "home", s2: "home", s5: "co", s6: "co", s7: "co" };
+  // Vertical padding of each real page's main <section> (same at every width in the real app).
+  const PAD = { s3: "32px var(--cx) 72px", s8: "40px 40px 80px", t2: "40px 40px 80px", t3: "40px 40px 80px", t4: "40px 40px 80px" };
   const MW = { s3: "1200px", s4: "860px", s5: "560px", s6: "560px", s7: "560px", s8: "860px", t1: "960px", t2: "1180px", t3: "960px", t4: "900px", t5: "960px", t6: "640px", t7: "900px", t8: "640px" };
-  const NAV_OF = { s2: "s1", s3: "s1", s4: "s1", s5: "s8", s6: "s8", s7: "s8", t2: "t3", t6: "t5" };
+  // Bold nav link, only on pages whose real header has one.
+  const ACTIVE_NAV = { s8: "s8", t2: "t3", t3: "t3", t4: "t4" };
   const NAV = {
     student: [["s1", "ค้นหาคลาส"], ["s8", "การจองของฉัน"], ["s9", "Wish list"], ["s10", "Demand Board"]],
     tutor: [["t1", "ภาพรวม"], ["t3", "คลาสของฉัน"], ["t4", "การจองที่เข้ามา"], ["t5", "รายได้"], ["t7", "Demand Board"]],
@@ -1288,8 +1301,7 @@ p { margin: 0; }
   // Header.tsx (student) and TutorHeader.tsx (tutor mode): logo, links, then the signed-in user menu.
   function headerHTML(s) {
     const tutor = state.role === "tutor";
-    const active = NAV_OF[s.id] || s.id;
-    const link = ([id, label]) => `<button type="button" class="nl" data-go="${id}" aria-current="${active === id}">${label}</button>`;
+        const link = ([id, label]) => `<button type="button" class="nl${ACTIVE_NAV[s.id] === id ? " on" : ""}" data-go="${id}">${label}</button>`;
     const nav = NAV[state.role].map(link).join("") + (tutor ? "" : '<button type="button" class="nl" data-act="tutorcta">สำหรับติวเตอร์</button>');
     const unread = state.notifs.filter((n) => n.unread).length;
     const right = tutor
@@ -1300,7 +1312,7 @@ p { margin: 0; }
          <div class="um"><button type="button" class="um-id" data-go="s12" aria-label="บัญชีของฉัน"><span class="um-av">ม</span><span class="um-name">มายด์</span></button>
          ${state.tutorOn ? '<button type="button" class="btn btn-secondary btn-ghost-sm um-btn" data-go="t1">โหมดติวเตอร์</button>' : '<button type="button" class="btn btn-secondary btn-ghost-sm um-btn" data-act="becometutor">เปิดโหมดติวเตอร์</button>'}
          <button type="button" class="btn btn-ghost btn-ghost-sm um-btn" data-act="logout">ออกจากระบบ</button></div>`;
-    return `<header class="hdr"><div class="hdr-in">${logoBtn()}<nav class="hdr-nav" aria-label="เมนูหลัก">${nav}</nav><div class="hdr-r">${right}</div></div></header>`;
+    return `<header class="hdr"><div class="hdr-in"><div class="hdr-l">${logoBtn()}<nav class="hdr-nav" aria-label="เมนูหลัก">${nav}</nav></div><div class="hdr-r${tutor ? " t" : ""}">${right}</div></div></header>`;
   }
   function checkoutHeader(id) {
     const [label, to] = id === "s5" ? ["ยกเลิกและกลับไปหน้าคลาส", "s3"] : id === "s6" ? ["กลับไปการจองของฉัน", "s8"] : ["ไปหน้าแรก", "s1"];
@@ -1337,7 +1349,7 @@ p { margin: 0; }
       html = `<div class="auth-split"><aside class="auth-split-banner">${logoBtn("")}
         <div class="banner-mid"><h2>ติวเตอร์ที่ใช่<br>จองได้ในไม่กี่ขั้นตอน</h2><ul>${["เลือกคลาสที่เปิดรับ เห็นราคาและค่าบริการชัดเจนก่อนจอง", "จองได้ทันที ไม่ต้องแชทหรือต่อรองกับติวเตอร์", "เงินถูกพักไว้อย่างปลอดภัย โอนให้ติวเตอร์หลังคลาสเสร็จสิ้น", "เรียนผ่าน Zoom / Google Meet ตามนัดหมายของติวเตอร์"].map((t) => `<li><i>✓</i><span>${t}</span></li>`).join("")}</ul></div>
         <p>Educare — แพลตฟอร์มคลาสเรียนพิเศษกับติวเตอร์รายย่อย</p></aside>
-        <div class="auth-split-main"><div class="auth-split-mobile-logo">${logoBtn("")}</div><div class="auth-split-card">${asks}${body}${tag}</div></div></div>`;
+        <div class="auth-split-main"><div class="auth-split-mobile-logo">${logoBtn("lg")}</div><div class="auth-split-card">${asks}${body}${tag}</div></div></div>`;
     } else if (kind === "shell") {
       html = `<div class="auth-shell"><header class="auth-shell-h"><div>${logoBtn("lg")}</div></header>
         <section class="auth-shell-s"><div class="auth-shell-col" style="--mw:${s.id === "a6" ? "720px" : "460px"}">${asks}${body}${tag}</div></section></div>`;
@@ -1345,14 +1357,15 @@ p { margin: 0; }
       html = `${headerHTML(s)}<main class="pgm">${asks ? `<div class="container" style="padding-top:16px">${asks}</div>` : ""}${body}</main>${footerHTML()}<div class="container tagwrap">${tag}</div>`;
     } else {
       const header = kind === "co" ? checkoutHeader(s.id) : headerHTML(s);
-      html = `${header}<main class="pgm"><div class="pg${kind === "co" ? " co" : ""}"><div class="col" style="--mw:${MW[s.id] || "860px"}">${asks}${body}${tag}</div></div></main>`;
+      const pad = PAD[s.id] ? ` style="--pad:${PAD[s.id]}"` : "";
+      html = `${header}<main class="pgm"><div class="pg${kind === "co" ? " co" : ""}"${pad}><div class="col" style="--mw:${MW[s.id] || "860px"}">${asks}${body}${tag}</div></div></main>`;
     }
     screenEl.innerHTML = html;
     screenEl.scrollTop = 0;
     renderIndex();
     try { history.replaceState(null, "", "#" + s.id); } catch (e) { /* hash is a convenience only */ }
     if (s.id === "s6") startPay();
-    if (s.id === "t2" && state.approved) { calcBox(); previewBox(); }
+    if (s.id === "t2" && state.approved) { checkPrice(); previewBox(); }
   }
 
   function go(id) {
@@ -1404,8 +1417,9 @@ p { margin: 0; }
 
   // ---------- events ----------
   document.addEventListener("click", (e) => {
-    const el = e.target.closest("button, [data-plus], input[data-act]");
+    const el = e.target.closest("button, a.lnk, [data-plus], input[data-act]");
     if (!el) return;
+    if (el.tagName === "A") e.preventDefault();
     const d = el.dataset;
     if (d.view) {
       state.view = d.view;
@@ -1464,7 +1478,7 @@ p { margin: 0; }
       }
       case "tostudent": return go("s12");
       case "approve": state.approved = el.checked; return render();
-      case "closeclass": return toast("ปิดรับจองแล้ว ผู้ที่จองไว้ยังเรียนได้ตามเดิม");
+      case "closeclass": return toast("ยกเลิกคลาสแล้ว (จำลอง)");
       case "logout": toast("ออกจากระบบแล้ว"); return go("a1");
       case "google": state.googleName = "Mind S."; toast("เข้าสู่ระบบกับ Google ครั้งแรก ตั้งค่าบัญชีก่อนเริ่มใช้งาน"); return go("a4");
       case "showpw": { const inp = $(d.for); const show = inp.type === "password"; inp.type = show ? "text" : "password"; el.textContent = show ? "ซ่อน" : "แสดง"; el.setAttribute("aria-label", show ? "ซ่อนรหัสผ่าน" : "แสดงรหัสผ่าน"); return; }
@@ -1483,7 +1497,7 @@ p { margin: 0; }
       w.notify = el.checked; toast(el.checked ? "เปิดแจ้งเตือนแล้ว" : "ปิดแจ้งเตือนรายการนี้แล้ว");
     }
   });
-  document.addEventListener("input", (e) => { if (e.target.id && e.target.id.startsWith("p-")) { calcBox(); previewBox(); } });
+  document.addEventListener("input", (e) => { if (e.target.id && e.target.id.startsWith("p-")) { checkPrice(); previewBox(); } });
 
   document.addEventListener("submit", (e) => {
     const f = e.target; e.preventDefault();
@@ -1524,7 +1538,7 @@ p { margin: 0; }
         if (price < 20) { $("p-price-err").hidden = false; return toast("ราคาขั้นต่ำ 20 บาท"); }
         const from = state.postPrefill && state.postPrefill.from;
         if (from) { const it = state.demand.find((x) => x.topic === from); if (it) it.opened = "c2"; }
-        toast(from ? `โพสต์แล้ว แจ้งผู้ที่อยากเรียน ${state.postPrefill.count} คนแล้ว` : "โพสต์คลาสแล้ว");
+        toast(from ? `เผยแพร่แล้ว แจ้งผู้ที่อยากเรียน ${state.postPrefill.count} คนแล้ว` : "เผยแพร่คลาสสำเร็จ");
         state.postPrefill = null; state.tclassTab = "open"; return go("t3");
       }
       case "zoom": return toast("บันทึกลิงก์แล้ว ผู้เรียนเห็นลิงก์ใหม่ทันที");
