@@ -8,29 +8,33 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Noto+Serif+Thai:wght@700&family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap">
 <style>
 /* Layout: sample menu on the left, the Educare website on the right inside a mobile- or desktop-sized frame.
-   The website part (.app) copies the markup, spacing and breakpoints of the real app (frontend/src/app/globals.css and
-   frontend/src/components/*). The app is light-only, so every color is set explicitly from the tokens below.
    Mobile vs desktop is chosen by the .desk class on the frame (.phone), not by the window width, because the
-   mobile frame is also shown on a desktop screen. */
+   mobile frame is also shown on a desktop screen. The app is light-only, so every color is set from the tokens below. */
 :root {
-  /* Educare design tokens (same names and values as the real app) */
+  /* ---- brand colors (unchanged Educare palette) ---- */
   --navy: #0d1b2a;
+  --navy-hover: #1c2e44;
   --deep-blue: #1e3a8a;
   --teal: #0fa3a3;
+  --teal-ink: #0b7474;      /* teal for text: 5:1 on white (plain teal is only 3:1) */
   --gold: #f2c94c;
+  --gold-hover: #e9bc32;
   --ivory: #f7f6f2;
   --stone: #e6e8eb;
+  --stone-strong: #d2d6dc;  /* hover borders */
   --text-secondary: #5b6472;
   --white: #ffffff;
-  /* tints the real components use inline */
+  /* ---- tints ---- */
   --teal-soft: #e6f7f5;
   --gold-soft: #fdf3d9;
   --blue-soft: #e9eefb;
   --purple-soft: #f1eafb;
-  --amber-text: #92620a;
+  --purple-ink: #5b3a9e;
+  --slate-soft: #eef1f5;
+  --amber-text: #8a5d06;
   --info-text: #0b6b6b;
   --info-border: #7fd1cb;
   --warn-bg: #fff8e6;
@@ -44,16 +48,33 @@
   --banner-text: #d5dae3;
   --banner-foot: #9aa4b5;
   --cta-text: #c9d1db;
-  --glass-strong: rgba(255, 255, 255, 0.85);
-  --glass: rgba(255, 255, 255, 0.15);
-  --g1: linear-gradient(135deg, #0d1b2a, #1e3a8a);
-  --g2: linear-gradient(135deg, #0fa3a3, #0d1b2a);
-  --g3: linear-gradient(135deg, #1e3a8a, #0fa3a3);
-  --g4: linear-gradient(135deg, #f2c94c, #0d1b2a);
   --g-banner: linear-gradient(160deg, #0d1b2a 0%, #1e3a8a 100%);
-  --shadow-search: 0 2px 8px rgba(13, 27, 42, 0.06);
-  --shadow-card: 0 8px 24px rgba(13, 27, 42, 0.08);
-  /* prototype frame and sample menu only */
+  --scrim: rgba(13, 27, 42, 0.45);
+  /* ---- type ---- */
+  --display: "Playfair Display", Georgia, serif;          /* logo only */
+  --body: "Inter", "Noto Sans Thai", system-ui, sans-serif; /* Latin in Inter, Thai in Noto Sans Thai */
+  --fs-h1: 28px;
+  --fs-h2: 21px;
+  --fs-h3: 17px;
+  --fs-body: 15px;
+  --fs-sm: 14px;
+  --fs-xs: 13px;
+  --fs-cap: 12px;
+  --lh-body: 1.6;   /* Thai needs room for vowels and tone marks */
+  --lh-head: 1.35;
+  /* ---- spacing (4px grid) ---- */
+  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px; --sp-5: 20px; --sp-6: 24px; --sp-8: 32px; --sp-10: 40px; --sp-12: 48px; --sp-16: 64px;
+  /* ---- radius ---- */
+  --r-xs: 6px; --r-sm: 8px; --r-md: 12px; --r-lg: 16px; --r-xl: 20px; --r-pill: 999px;
+  /* ---- elevation: used sparingly (search bar, booking card, menus, hover) ---- */
+  --sh-xs: 0 1px 2px rgba(13, 27, 42, 0.05);
+  --sh-sm: 0 2px 8px rgba(13, 27, 42, 0.06);
+  --sh-md: 0 10px 28px -12px rgba(13, 27, 42, 0.22);
+  --sh-lg: 0 24px 48px -20px rgba(13, 27, 42, 0.35);
+  --ring: 0 0 0 3px rgba(15, 163, 163, 0.28);
+  --dur: 0.16s;
+  --ease: cubic-bezier(0.2, 0.7, 0.3, 1);
+  /* ---- prototype frame and sample menu only ---- */
   --page: #ecebe5;
   --page-edge: #d8d7cf;
   --page-dash: #d5d4cc;
@@ -61,15 +82,9 @@
   --bar-dot: #cfcdc4;
   --ask-border: #ecd9a0;
   --ask-text: #7a5d00;
-  --chip-teal-text: #0b7474;
   --shadow-phone: 0 24px 60px -30px rgba(13, 27, 42, 0.45);
   --shadow-knob: 0 1px 2px rgba(0, 0, 0, 0.2);
-  --shadow-toast: 0 10px 30px -10px rgba(0, 0, 0, 0.4);
-  --shadow-side: -20px 0 50px -20px rgba(13, 27, 42, 0.45);
   --ribbon-line: rgba(255, 255, 255, 0.35);
-  /* Same stacks as the real app: Thai text falls back to the device's own Thai font. */
-  --display: "Playfair Display", Georgia, serif;
-  --body: "Inter", system-ui, sans-serif;
   color-scheme: light;
 }
 * { box-sizing: border-box; }
@@ -80,8 +95,8 @@ body {
   background: var(--page);
   color: var(--navy);
   font-family: var(--body);
-  font-size: 15px;
-  line-height: 1.55;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
   padding-block: 20px 28px;
@@ -90,23 +105,16 @@ body {
 button, input, select, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; }
 :focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
-h1, h2, h3 { font-family: var(--display); margin: 0; line-height: 1.25; }
+h1, h2, h3, h4 { font-family: var(--body); margin: 0; line-height: var(--lh-head); font-weight: 700; letter-spacing: -0.005em; }
 p { margin: 0; }
-.baht { font-family: "Noto Serif Thai", serif; }
+.baht { font-family: var(--body); }
 
 /* ---------- shell (sample menu + frame) ---------- */
-.shell {
-  display: grid;
-  grid-template-columns: 300px minmax(0, 420px);
-  gap: 36px;
-  justify-content: center;
-  align-items: start;
-  max-width: 1100px;
-  margin: 0 auto;
-}
+.shell { display: grid; grid-template-columns: 300px minmax(0, 420px); gap: 36px; justify-content: center; align-items: start; max-width: 1100px; margin: 0 auto; }
+.shell.desk { grid-template-columns: 260px minmax(0, 1fr); max-width: 1560px; }
 .side { display: flex; flex-direction: column; gap: 18px; position: sticky; top: 20px; }
 .brand { display: flex; flex-direction: column; gap: 6px; }
-.brand h1 { font-size: 30px; letter-spacing: -0.01em; }
+.brand h1 { font-family: var(--display); font-size: 30px; letter-spacing: -0.01em; }
 .brand h1 span { color: var(--teal); }
 .brand p { color: var(--text-secondary); font-size: 14px; }
 .controls { display: flex; flex-direction: column; gap: 10px; }
@@ -114,14 +122,14 @@ p { margin: 0; }
 .seg button { border: 0; background: none; padding: 8px 10px; border-radius: 8px; font-weight: 600; font-size: 14px; color: var(--text-secondary); }
 .seg button[aria-pressed="true"] { background: var(--navy); color: var(--white); }
 .check { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; color: var(--navy); }
-.check input { margin-top: 4px; accent-color: var(--teal); }
+.check input { margin-top: 5px; accent-color: var(--teal); }
 .index { background: var(--white); border: 1px solid var(--stone); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 14px; }
 .index summary { font-weight: 700; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; }
 .index summary::-webkit-details-marker { display: none; }
 .index summary::after { content: "▾"; color: var(--text-secondary); }
 .index details:not([open]) summary::after { content: "▸"; }
 .idx-group { display: flex; flex-direction: column; gap: 2px; }
-.idx-group h4 { margin: 10px 0 4px; font-family: var(--body); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); font-weight: 600; }
+.idx-group h4 { margin: 10px 0 4px; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); font-weight: 600; }
 .idx-item { display: grid; grid-template-columns: 30px 1fr auto; gap: 8px; align-items: center; border: 0; background: none; text-align: left; padding: 6px 8px; border-radius: 8px; font-size: 14px; }
 .idx-item:hover { background: var(--ivory); }
 .idx-item[aria-current="true"] { background: var(--teal-soft); font-weight: 600; }
@@ -146,26 +154,33 @@ p { margin: 0; }
   overflow: hidden;
   position: relative;
   min-width: 0;
+  transform: translateZ(0); /* fixed-position overlays (drawer, filter sheet) stay inside the frame */
 }
 .phone.desk { border-radius: 12px; }
 .browserbar { display: flex; align-items: center; gap: 14px; padding: 9px 16px; background: var(--bar); border-bottom: 1px solid var(--page-edge); flex: none; }
 .browserbar .dots { display: flex; gap: 6px; }
 .browserbar .dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--bar-dot); display: block; }
 .browserbar .url { flex: 1; max-width: 520px; background: var(--white); border-radius: 8px; padding: 4px 12px; font-size: 12px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.toast { position: absolute; left: 50%; bottom: 24px; transform: translateX(-50%); background: var(--navy); color: var(--white); padding: 10px 16px; border-radius: 10px; font-size: 14px; max-width: calc(100% - 40px); text-align: center; box-shadow: var(--shadow-toast); z-index: 40; }
+.toast { position: absolute; left: 50%; bottom: 24px; transform: translateX(-50%); display: flex; align-items: center; gap: 10px; background: var(--navy); color: var(--white); padding: 11px 16px; border-radius: var(--r-md); font-size: 14px; max-width: calc(100% - 40px); box-shadow: var(--sh-lg); z-index: 60; }
+.toast svg { flex: none; color: var(--gold); }
+.toast.err svg { color: #ff9f9f; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.app:focus { outline: none; }
 .screen-tag { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 12px; color: var(--text-secondary); border-top: 1px dashed var(--page-dash); padding-top: 12px; margin-top: 8px; }
 .screen-tag strong { color: var(--navy); font-variant-numeric: tabular-nums; }
 .tagwrap { padding-top: 16px; padding-bottom: 20px; }
 .status-chip { display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px; border-radius: 99px; font-weight: 600; font-size: 11px; }
-.status-chip.built { background: var(--teal-soft); color: var(--chip-teal-text); }
+.status-chip.built { background: var(--teal-soft); color: var(--teal-ink); }
 .status-chip.partial { background: var(--gold-soft); color: var(--ask-text); }
 .status-chip.new { background: var(--blue-soft); color: var(--deep-blue); }
 .ask { background: var(--gold-soft); border: 1px solid var(--ask-border); border-radius: 12px; padding: 12px 14px; font-size: 14px; line-height: 1.55; display: flex; flex-direction: column; gap: 6px; }
 .ask b { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ask-text); }
 .ask ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
+.demo-ctl { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-secondary); border: 1px dashed var(--stone-strong); border-radius: var(--r-pill); padding: 4px 12px 4px 8px; width: fit-content; }
+.demo-ctl input { accent-color: var(--navy); margin: 0; }
 
 /* =====================================================================
-   The website (copy of the real app's styles)
+   The website
    ===================================================================== */
 .app {
   flex: 1;
@@ -177,308 +192,606 @@ p { margin: 0; }
   background: var(--ivory);
   color: var(--navy);
   font-family: var(--body);
-  font-size: 16px;
-  line-height: normal;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  scroll-behavior: smooth;
 }
-.app button { line-height: normal; }
-.app :where(h1, h2, h3) { line-height: normal; } /* real app headings use the browser default */
 .app a, .lnk { color: var(--deep-blue); text-decoration: none; }
-.lnk { background: none; border: 0; padding: 0; font: inherit; cursor: pointer; }
-.lnk:hover { color: var(--teal); }
+.lnk { background: none; border: 0; padding: 0; font: inherit; cursor: pointer; border-radius: 4px; }
+.lnk:hover { color: var(--teal-ink); text-decoration: underline; text-underline-offset: 3px; }
 .lnk.w5 { font-weight: 500; }
 .lnk.w6 { font-weight: 600; }
 .pgm { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-.container { width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 20px; }
-.desk .container { padding: 0 40px; }
+.container { width: 100%; max-width: 1240px; margin: 0 auto; padding: 0 var(--sp-4); }
+.desk .container { padding: 0 var(--sp-10); }
 .sect { width: 100%; display: flex; justify-content: center; }
-.col { display: flex; flex-direction: column; gap: 20px; }
+.col { display: flex; flex-direction: column; gap: var(--sp-5); }
+.ic { flex: none; }
 
-/* buttons, chips, badges, form controls: globals.css */
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 22px; border-radius: 8px; font-weight: 600; font-size: 14px; border: none; cursor: pointer; white-space: nowrap; text-decoration: none; }
+/* ---------- buttons ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-2);
+  height: 44px; padding: 0 var(--sp-5); border-radius: var(--r-sm);
+  font-weight: 600; font-size: var(--fs-sm); line-height: 1; border: 1.5px solid transparent; cursor: pointer;
+  white-space: nowrap; text-decoration: none; position: relative;
+  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease), color var(--dur) var(--ease), box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+.btn:active:not(:disabled) { transform: translateY(1px); }
 .btn-primary { background: var(--navy); color: var(--white); }
-.btn-secondary { background: var(--gold); color: var(--navy); }
-.btn-ghost { background: transparent; color: var(--navy); border: 1.5px solid var(--stone); }
-.btn-ghost-sm { height: 36px; padding: 0 14px; font-size: 13px; }
-.btn-text { background: transparent; color: var(--text-secondary); height: auto; padding: 0; font-weight: 500; }
-.btn-danger { color: var(--cancel-text); }
+.btn-primary:hover:not(:disabled) { background: var(--navy-hover); }
+.btn-accent { background: var(--gold); color: var(--navy); }            /* the one conversion action per screen */
+.btn-accent:hover:not(:disabled) { background: var(--gold-hover); }
+.btn-ghost { background: var(--white); color: var(--navy); border-color: var(--stone); }
+.btn-ghost:hover:not(:disabled) { border-color: var(--navy); }
+.btn-ghost-sm, .btn-sm { height: 38px; padding: 0 var(--sp-4); font-size: var(--fs-xs); }
+.btn-text { background: transparent; color: var(--text-secondary); height: 38px; padding: 0 var(--sp-2); margin: 0 calc(var(--sp-2) * -1); font-weight: 500; }
+.btn-text:hover:not(:disabled) { color: var(--navy); background: var(--ivory); }
+.btn-danger, .btn-text.btn-danger { color: var(--cancel-text); }
+.btn-danger:hover:not(:disabled) { color: var(--err-text); background: var(--cancel-bg); }
 .btn-block { width: 100%; }
-.btn-lg { height: 48px; }
-.btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.chip { display: inline-flex; align-items: center; height: 36px; padding: 0 16px; border-radius: 999px; background: var(--white); border: 1px solid var(--stone); font-size: 13px; font-weight: 500; color: var(--navy); cursor: pointer; white-space: nowrap; }
-.chip:hover { border-color: var(--teal); color: var(--teal); }
+.btn-lg { height: 50px; font-size: var(--fs-body); padding: 0 var(--sp-6); }
+.btn:disabled { background: var(--stone); color: var(--text-secondary); border-color: var(--stone); cursor: not-allowed; }
+.btn.is-loading { color: transparent !important; pointer-events: none; }
+.btn.is-loading::after { content: ""; position: absolute; width: 18px; height: 18px; border-radius: 50%; border: 2px solid currentColor; border-color: var(--navy) transparent var(--navy) transparent; animation: spin 0.7s linear infinite; }
+.btn-primary.is-loading::after { border-color: var(--white) transparent var(--white) transparent; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.ibtn { position: relative; width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--stone); background: var(--white); display: grid; place-items: center; color: var(--navy); padding: 0; flex: none; transition: border-color var(--dur), color var(--dur); }
+.ibtn:hover { border-color: var(--navy); }
+.ibtn.plain { border-color: transparent; }
+.ibtn.plain:hover { background: var(--ivory); }
+.ibtn .n { position: absolute; top: -3px; right: -3px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 99px; background: var(--err-icon); color: var(--white); font-size: 10px; font-weight: 700; display: grid; place-items: center; border: 2px solid var(--white); }
+
+/* ---------- chips, tags, badges ---------- */
+.chip { display: inline-flex; align-items: center; gap: 6px; height: 38px; padding: 0 var(--sp-4); border-radius: var(--r-pill); background: var(--white); border: 1px solid var(--stone); font-size: var(--fs-xs); font-weight: 500; color: var(--navy); cursor: pointer; white-space: nowrap; transition: border-color var(--dur), background var(--dur), color var(--dur); }
+.chip:hover { border-color: var(--navy); }
 .chip.active, .chip[aria-pressed="true"] { background: var(--navy); border-color: var(--navy); color: var(--white); }
-.chips { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-.tag { display: inline-flex; align-items: center; height: 30px; padding: 0 14px; border-radius: 999px; background: var(--white); border: 1px solid var(--stone); font-size: 13px; font-weight: 500; color: var(--navy); }
-.field-label { font-size: 13px; font-weight: 600; color: var(--navy); }
-.field-hint { font-size: 12px; color: var(--text-secondary); }
-.input { height: 44px; border-radius: 8px; border: 1.5px solid var(--stone); background: var(--white); padding: 0 14px; font-family: var(--body); font-size: 14px; color: var(--navy); width: 100%; min-width: 0; }
-.textarea { border-radius: 8px; border: 1.5px solid var(--stone); background: var(--white); padding: 12px 14px; font-family: var(--body); font-size: 14px; color: var(--navy); width: 100%; resize: none; line-height: 20px; }
-.input:focus, .textarea:focus { outline: none; border-color: var(--deep-blue); }
-.input[readonly] { background: var(--ivory); }
-.badge { display: inline-flex; align-items: center; height: 24px; padding: 0 10px; border-radius: 6px; font-size: 12px; font-weight: 600; white-space: nowrap; }
-.b-teal { background: var(--teal-soft); color: var(--teal); }
+.chip .x { display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--stone); color: var(--navy); margin-right: -6px; }
+.chips { display: flex; flex-wrap: wrap; gap: var(--sp-2); align-items: center; }
+.chips.scroll { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin: 0 calc(var(--sp-4) * -1); padding: 2px var(--sp-4); }
+.chips.scroll::-webkit-scrollbar { display: none; }
+.desk .chips.scroll { flex-wrap: wrap; overflow: visible; margin: 0; padding: 0; }
+.tag { display: inline-flex; align-items: center; height: 28px; padding: 0 var(--sp-3); border-radius: var(--r-pill); background: var(--white); border: 1px solid var(--stone); font-size: var(--fs-xs); font-weight: 500; color: var(--navy); }
+.badge { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 var(--sp-2); border-radius: var(--r-xs); font-size: var(--fs-cap); font-weight: 600; white-space: nowrap; line-height: 1; }
+.badge.st::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex: none; }
+.b-teal { background: var(--teal-soft); color: var(--teal-ink); }
 .b-gold { background: var(--gold-soft); color: var(--amber-text); }
 .b-soon { background: var(--gold); color: var(--navy); }
 .b-blue { background: var(--blue-soft); color: var(--deep-blue); }
 .b-grey { background: var(--stone); color: var(--text-secondary); }
 .b-red { background: var(--cancel-bg); color: var(--cancel-text); }
 .b-solid { background: var(--gold); color: var(--navy); }
-.b-glass-strong { background: var(--glass-strong); color: var(--navy); }
-.b-glass { background: var(--glass); color: var(--white); }
-.baht-price { font-family: var(--display); font-weight: 700; color: var(--navy); }
-.baht-price small { font-family: var(--body); font-size: 11px; font-weight: 500; color: var(--text-secondary); }
+.b-white { background: var(--white); color: var(--navy); box-shadow: var(--sh-xs); }
+.b-navy { background: var(--navy); color: var(--white); }
 
-/* form pieces (FormNotice, PasswordField, onboarding checkboxes) */
+/* ---------- money ---------- */
+.baht-price { font-family: var(--body); font-weight: 700; color: var(--navy); font-variant-numeric: tabular-nums; letter-spacing: -0.01em; white-space: nowrap; }
+.baht-price small { font-size: var(--fs-cap); font-weight: 500; color: var(--text-secondary); letter-spacing: 0; }
+
+/* ---------- form controls ---------- */
+.field-label { font-size: var(--fs-xs); font-weight: 600; color: var(--navy); }
+.field-hint { font-size: var(--fs-cap); line-height: 1.55; color: var(--text-secondary); }
+.input, .textarea { border-radius: var(--r-sm); border: 1.5px solid var(--stone); background: var(--white); font-family: var(--body); font-size: var(--fs-sm); color: var(--navy); width: 100%; min-width: 0; transition: border-color var(--dur), box-shadow var(--dur); }
+.input { height: 44px; padding: 0 14px; }
+.textarea { padding: 12px 14px; resize: vertical; line-height: 1.6; }
+.input:hover, .textarea:hover { border-color: var(--stone-strong); }
+.input:focus, .textarea:focus { outline: none; border-color: var(--teal); box-shadow: var(--ring); }
+.input[readonly] { background: var(--ivory); }
+.input[aria-invalid="true"] { border-color: var(--err-border); }
+select.input { appearance: none; padding-right: 36px; background: var(--white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235b6472' stroke-width='2.5' stroke-linecap='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 14px center; }
 .fld { display: flex; flex-direction: column; gap: 6px; }
 .fld.g8 { gap: 8px; }
 .lab-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
 .pw { position: relative; }
 .pw .input { padding-right: 72px; }
-.pw-t { position: absolute; right: 4px; top: 0; height: 44px; min-width: 56px; padding: 0 10px; background: transparent; border: none; font-size: 13px; font-weight: 600; color: var(--deep-blue); }
-.form { display: flex; flex-direction: column; gap: 16px; }
+.pw-t { position: absolute; right: 4px; top: 4px; height: 36px; min-width: 56px; padding: 0 10px; background: transparent; border: none; border-radius: var(--r-xs); font-size: 13px; font-weight: 600; color: var(--deep-blue); }
+.pw-t:hover { background: var(--ivory); }
+.form { display: flex; flex-direction: column; gap: var(--sp-4); }
 .form.g18 { gap: 18px; }
-.notice { border-radius: 10px; padding: 12px 14px; font-size: 13px; line-height: 20px; border: 1px solid; }
+.notice { border-radius: var(--r-md); padding: 12px 14px; font-size: var(--fs-xs); line-height: 1.6; border: 1px solid; }
 .notice.info { background: var(--teal-soft); border-color: var(--info-border); color: var(--info-text); }
-.notice.warning { background: var(--gold-soft); border-color: var(--gold); color: var(--amber-text); }
+.notice.warning { background: var(--warn-bg); border-color: var(--warn-border); color: var(--amber-text); }
 .notice.error { background: var(--err-bg); border-color: var(--err-border); color: var(--err-text); }
 .errline { font-size: 13px; color: var(--err-text); }
-.cb { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; line-height: 22px; color: var(--navy); }
-.cb input { margin: 4px 0 0; width: 18px; height: 18px; flex: none; accent-color: var(--navy); }
+.cb { display: flex; align-items: flex-start; gap: 10px; font-size: var(--fs-sm); line-height: 1.6; color: var(--navy); cursor: pointer; }
+.cb input { margin: 3px 0 0; width: 18px; height: 18px; flex: none; accent-color: var(--navy); cursor: pointer; }
 .cb small { font-size: 12px; color: var(--text-secondary); }
 .code-in { letter-spacing: 6px; font-size: 20px; text-align: center; }
 .two-btn { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .divider { display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--text-secondary); }
 .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--stone); }
-.hr { height: 1px; background: var(--stone); }
+.hr { height: 1px; background: var(--stone); flex: none; }
 .ctr { text-align: center; }
-.t14 { font-size: 14px; color: var(--text-secondary); }
-.h1-28 { font-size: 28px; color: var(--navy); }
-.sub14 { font-size: 14px; line-height: 22px; color: var(--text-secondary); }
+.t14 { font-size: var(--fs-sm); color: var(--text-secondary); }
+.h1-28 { font-size: var(--fs-h1); color: var(--navy); }
+.sub14 { font-size: var(--fs-sm); line-height: 1.6; color: var(--text-secondary); }
 .hgroup { display: flex; flex-direction: column; gap: 6px; }
 
-/* header (Header.tsx / TutorHeader.tsx / UserMenu.tsx): mobile first, the real one just wraps */
-.hdr { width: 100%; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--stone); background: var(--white); position: sticky; top: 0; z-index: 10; flex: none; }
-/* Header.tsx: same at every width (the real app has no mobile header). */
-.hdr-in { width: 100%; max-width: 1280px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; padding: 16px 40px; }
-.hdr-l { display: flex; align-items: center; gap: 48px; flex-wrap: wrap; }
-.logo { background: none; border: 0; padding: 0; font-family: var(--display); font-size: 36px; font-weight: 700; color: var(--navy); line-height: normal; }
+/* ---------- header: mobile = logo + bell + menu button; desktop = logo | nav | actions ---------- */
+.hdr { width: 100%; background: var(--white); border-bottom: 1px solid var(--stone); position: sticky; top: 0; z-index: 20; flex: none; }
+.hdr-in { width: 100%; max-width: 1240px; margin: 0 auto; height: 60px; padding: 0 var(--sp-2) 0 var(--sp-4); display: flex; align-items: center; gap: var(--sp-3); }
+.desk .hdr-in { height: 72px; padding: 0 var(--sp-10); display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--sp-6); }
+.logo { background: none; border: 0; padding: 0; font-family: var(--display); font-size: 28px; font-weight: 700; color: var(--navy); line-height: 1; margin-right: auto; white-space: nowrap; }
+.desk .logo { font-size: 32px; }
 .logo span { color: var(--gold); }
-.logo.lg { font-size: 32px; }
-.hdr-r { display: flex; align-items: center; gap: 12px; }
-.hdr-r.t { gap: 16px; } /* TutorHeader */
-.hdr-nav { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 32px; } /* wraps only because of the extra Wish list / Demand Board links */
-.nl { background: none; border: 0; padding: 0; font-size: 15px; font-weight: 500; color: var(--navy); }
-.nl:hover { color: var(--teal); }
-.nl.on { font-weight: 700; color: var(--deep-blue); }
-.um { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.um-id { display: flex; align-items: center; gap: 10px; background: none; border: 0; padding: 0; }
-.um-av { width: 36px; height: 36px; border-radius: 50%; background: var(--teal); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: var(--white); flex: none; }
+.logo.lg { font-size: 30px; }
+.hdr-nav { display: none; }
+.desk .hdr-nav { display: flex; align-items: center; justify-content: center; gap: var(--sp-1); min-width: 0; }
+.nl { position: relative; background: none; border: 0; padding: 0 var(--sp-3); height: 40px; border-radius: var(--r-sm); font-size: var(--fs-sm); font-weight: 500; color: var(--text-secondary); white-space: nowrap; transition: color var(--dur), background var(--dur); }
+.nl:hover { color: var(--navy); background: var(--ivory); }
+.nl.on { color: var(--navy); font-weight: 600; }
+.nl.on::after { content: ""; position: absolute; left: var(--sp-3); right: var(--sp-3); bottom: -16px; height: 2px; border-radius: 2px; background: var(--teal); }
+.hdr-r { display: flex; align-items: center; gap: var(--sp-2); }
+.desk .hdr-r { gap: var(--sp-3); }
+.hdr-full { display: none; }
+.desk .hdr-full { display: flex; align-items: center; gap: var(--sp-3); }
+.desk .hdr-burger { display: none; }
+.um-wrap { position: relative; }
+.um-id { display: flex; align-items: center; gap: var(--sp-2); background: none; border: 1.5px solid transparent; border-radius: var(--r-pill); padding: 2px 10px 2px 2px; height: 44px; color: var(--navy); }
+.um-id:hover, .um-id[aria-expanded="true"] { border-color: var(--stone); background: var(--white); }
+.um-av { width: 36px; height: 36px; border-radius: 50%; background: var(--teal); display: grid; place-items: center; font-size: 14px; font-weight: 700; color: var(--white); flex: none; }
 .um-av.tutor { background: var(--deep-blue); }
-.um-name { display: block; font-size: 14px; font-weight: 600; color: var(--navy); max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.ibtn { position: relative; width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid var(--stone); background: var(--white); display: grid; place-items: center; color: var(--navy); padding: 0; }
-.ibtn:hover { border-color: var(--teal); color: var(--teal); }
-.ibtn .n { position: absolute; top: -4px; right: -4px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 99px; background: var(--err-icon); color: var(--white); font-size: 10px; font-weight: 700; display: grid; place-items: center; }
-.rpill { display: flex; align-items: center; background: var(--ivory); border: 1px solid var(--stone); border-radius: 999px; padding: 3px; gap: 2px; }
-.rpill button, .rpill span { border: 0; background: none; padding: 6px 14px; border-radius: 999px; font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+.um-av.lg { width: 48px; height: 48px; font-size: 18px; }
+.um-name { font-size: var(--fs-sm); font-weight: 600; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.menu { position: absolute; right: 0; top: calc(100% + 8px); min-width: 240px; background: var(--white); border: 1px solid var(--stone); border-radius: var(--r-md); box-shadow: var(--sh-lg); padding: var(--sp-2); display: flex; flex-direction: column; z-index: 30; }
+.menu-h { display: flex; flex-direction: column; padding: var(--sp-2) var(--sp-3) var(--sp-3); border-bottom: 1px solid var(--stone); margin-bottom: var(--sp-1); }
+.menu-h b { font-size: var(--fs-sm); }
+.menu-h span { font-size: var(--fs-cap); color: var(--text-secondary); }
+.mi { display: flex; align-items: center; gap: var(--sp-3); width: 100%; height: 42px; padding: 0 var(--sp-3); border: 0; background: none; border-radius: var(--r-sm); font-size: var(--fs-sm); font-weight: 500; color: var(--navy); text-align: left; }
+.mi:hover { background: var(--ivory); }
+.mi svg { color: var(--text-secondary); }
+.mi.danger, .mi.danger svg { color: var(--cancel-text); }
+.rpill { display: flex; align-items: center; background: var(--ivory); border: 1px solid var(--stone); border-radius: var(--r-pill); padding: 3px; gap: 2px; }
+.rpill button, .rpill span { border: 0; background: none; height: 32px; padding: 0 14px; border-radius: var(--r-pill); font-size: 13px; font-weight: 600; color: var(--text-secondary); display: inline-flex; align-items: center; white-space: nowrap; }
+.rpill button:hover { color: var(--navy); }
 .rpill span { background: var(--navy); color: var(--white); }
-.hdr.co .hdr-in { display: flex; flex-wrap: nowrap; gap: 0; justify-content: space-between; max-width: 640px; padding: 0 24px; height: 80px; }
-.hdr.co .back-x { display: flex; align-items: center; gap: 6px; background: none; border: 0; padding: 0; font-size: 14px; font-weight: 500; color: var(--text-secondary); text-align: right; }
+/* mid-size desktops: keep one line by dropping the name next to the avatar */
+@container hdr (max-width: 1180px) { .desk .um-name { display: none; } .desk .um-id { padding-right: 2px; } .desk .hdr-in { gap: var(--sp-4); } }
+@container hdr (max-width: 1040px) { .desk .nl { padding: 0 var(--sp-2); } .desk .nl.on::after { left: var(--sp-2); right: var(--sp-2); } }
 
-/* home (page.tsx, HeroSearch, PopularTopics, ListingSection, ListingCard, TrustSection, TutorCta, Footer) */
-.hero { width: 100%; display: flex; justify-content: center; padding: 72px 0 64px; background: var(--white); }
-.hero-in { display: flex; flex-direction: column; gap: 24px; }
-.eyebrow { font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--teal); }
-.hero h1 { font-size: 40px; line-height: 1.15; color: var(--navy); }
-.hero h1 b { color: var(--gold); font-weight: inherit; }
-.hero p { font-size: 16px; line-height: 24px; color: var(--text-secondary); max-width: 460px; }
-.hs-wrap { display: flex; flex-direction: column; gap: 24px; }
-.hs { display: flex; align-items: center; gap: 8px; background: var(--white); border: 1.5px solid var(--stone); border-radius: 10px; padding: 6px 6px 6px 18px; box-shadow: var(--shadow-search); }
-.hs svg { flex: none; color: var(--text-secondary); }
-.hs input { flex: 1; border: none; outline: none; font-size: 15px; color: var(--navy); background: transparent; font-family: var(--body); }
-.hs-pop span { font-size: 13px; color: var(--text-secondary); }
-.topics { padding: 48px 0; }
-.topics h2, .lsec h2 { font-size: 22px; color: var(--navy); }
-.topic-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; }
-.topic { display: flex; flex-direction: column; align-items: center; gap: 10px; background: var(--white); border: 1px solid var(--stone); border-radius: 12px; padding: 22px 12px; }
-.topic span { font-size: 13px; font-weight: 600; text-align: center; }
-.lsec { padding: 24px 0 56px; }
-.lsec-h { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-.lgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
-.lc { display: flex; flex-direction: column; background: var(--white); border: 1px solid var(--stone); border-radius: 14px; overflow: hidden; color: inherit; padding: 0; text-align: left; width: 100%; font: inherit; }
-.lc-top { height: 96px; display: flex; align-items: flex-start; justify-content: space-between; padding: 12px; }
-.lc-body { padding: 16px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
-.lc-title { font-size: 15px; font-weight: 700; line-height: 1.35; color: var(--navy); }
-.lc-sub { font-size: 13px; color: var(--text-secondary); }
-.lc-when { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-secondary); }
-.lc-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 6px; border-top: 1px solid var(--stone); }
-.lc-foot .baht-price { font-size: 19px; }
-.lc-static { cursor: default; }
-.empty-card { background: var(--white); border: 1px solid var(--stone); border-radius: 12px; padding: 24px; font-size: 14px; color: var(--text-secondary); text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px; }
-.hint-card { background: var(--white); border: 1px solid var(--stone); border-radius: 12px; padding: 20px 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; }
-.hint-card b { font-size: 15px; display: block; }
-.hint-card span { font-size: 13px; color: var(--text-secondary); line-height: 20px; }
-.trust { width: 100%; display: flex; justify-content: center; padding: 56px 0; background: var(--white); border-top: 1px solid var(--stone); border-bottom: 1px solid var(--stone); }
-.trust h2 { font-size: 26px; text-align: center; color: var(--navy); }
-.trust-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; }
-.trust-it { display: flex; flex-direction: column; gap: 12px; }
-.trust-ic { width: 44px; height: 44px; border-radius: 10px; }
-.trust-it b { font-size: 15px; }
-.trust-it span { font-size: 13px; line-height: 20px; color: var(--text-secondary); }
-.cta { padding: 56px 0; }
-.cta-in { background: var(--navy); border-radius: 20px; padding: 48px 56px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 32px; width: 100%; max-width: 1280px; margin: 0 auto; }
-.cta-in h2 { font-size: 28px; color: var(--white); }
+/* drawer (mobile menu) and bottom sheet share the overlay */
+.overlay { position: fixed; inset: 0; z-index: 50; display: flex; }
+.scrim { position: absolute; inset: 0; background: var(--scrim); border: 0; padding: 0; cursor: default; animation: fade var(--dur) var(--ease); }
+.drawer { position: relative; margin-left: auto; width: min(320px, 86%); height: 100%; background: var(--white); display: flex; flex-direction: column; box-shadow: var(--sh-lg); animation: slide-l 0.22s var(--ease); overflow-y: auto; }
+.drawer-h { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); padding: var(--sp-3) var(--sp-3) var(--sp-3) var(--sp-5); border-bottom: 1px solid var(--stone); }
+.drawer-user { display: flex; align-items: center; gap: var(--sp-3); padding: var(--sp-5); }
+.drawer-user b { display: block; font-size: var(--fs-body); }
+.drawer-user span { font-size: var(--fs-cap); color: var(--text-secondary); }
+.drawer nav { display: flex; flex-direction: column; padding: 0 var(--sp-3); gap: 2px; }
+.dl { display: flex; align-items: center; gap: var(--sp-3); height: 48px; padding: 0 var(--sp-3); border: 0; background: none; border-radius: var(--r-sm); font-size: var(--fs-body); font-weight: 500; color: var(--navy); text-align: left; width: 100%; }
+.dl svg { color: var(--text-secondary); }
+.dl:hover { background: var(--ivory); }
+.dl.on { background: var(--teal-soft); color: var(--teal-ink); font-weight: 600; }
+.dl.on svg { color: var(--teal-ink); }
+.dl .n { margin-left: auto; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 99px; background: var(--err-icon); color: var(--white); font-size: 11px; font-weight: 700; display: grid; place-items: center; }
+.drawer-f { margin-top: auto; padding: var(--sp-4) var(--sp-5) calc(var(--sp-5) + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; gap: var(--sp-3); border-top: 1px solid var(--stone); }
+.drawer .sep { height: 1px; background: var(--stone); margin: var(--sp-3) var(--sp-3); }
+.drawer .lbl { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-secondary); padding: var(--sp-2) var(--sp-3) var(--sp-1); }
+@keyframes fade { from { opacity: 0; } }
+@keyframes slide-l { from { transform: translateX(24px); opacity: 0; } }
+@keyframes slide-up { from { transform: translateY(32px); opacity: 0; } }
+
+/* checkout header */
+.hdr.co .hdr-in { display: flex; justify-content: space-between; max-width: 640px; padding: 0 var(--sp-4); height: 60px; }
+.desk .hdr.co .hdr-in { height: 68px; padding: 0 var(--sp-6); }
+.hdr.co .logo { margin-right: 0; }
+.back-x { display: flex; align-items: center; gap: 6px; background: none; border: 0; padding: 0 var(--sp-2); height: 40px; border-radius: var(--r-sm); font-size: var(--fs-xs); font-weight: 500; color: var(--text-secondary); text-align: right; }
+.back-x:hover { color: var(--navy); background: var(--ivory); }
+
+/* ---------- home ---------- */
+.hero { width: 100%; background: var(--white); border-bottom: 1px solid var(--stone); padding: var(--sp-8) 0 var(--sp-6); overflow: hidden; }
+.desk .hero { padding: var(--sp-12) 0; }
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--sp-8); align-items: center; }
+.desk .hero-grid { grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: var(--sp-12); }
+.hero-in { display: flex; flex-direction: column; gap: var(--sp-4); }
+.desk .hero-in { gap: var(--sp-5); }
+.eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: var(--fs-cap); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--teal-ink); }
+.eyebrow::before { content: ""; width: 18px; height: 2px; background: var(--teal); border-radius: 2px; }
+.hero h1 { font-size: 30px; line-height: 1.3; color: var(--navy); letter-spacing: -0.01em; }
+.desk .hero h1 { font-size: 46px; line-height: 1.22; }
+.hero h1 b { font-weight: inherit; background: linear-gradient(transparent 62%, var(--gold) 62%, var(--gold) 92%, transparent 92%); padding: 0 2px; }
+.hero p.lead { font-size: var(--fs-body); line-height: 1.65; color: var(--text-secondary); max-width: 520px; }
+.desk .hero p.lead { font-size: 17px; }
+.hs-wrap { display: flex; flex-direction: column; gap: var(--sp-3); padding-top: var(--sp-1); }
+.desk .hs-wrap { gap: var(--sp-4); padding-top: var(--sp-2); }
+.hs { display: flex; align-items: center; gap: var(--sp-2); background: var(--white); border: 1.5px solid var(--stone-strong); border-radius: var(--r-md); padding: 5px 5px 5px 14px; box-shadow: var(--sh-sm); transition: border-color var(--dur), box-shadow var(--dur); }
+.hs:focus-within { border-color: var(--teal); box-shadow: var(--ring), var(--sh-sm); }
+.desk .hs { padding: 7px 7px 7px 18px; }
+.hs > svg { flex: none; color: var(--text-secondary); }
+.hs input { flex: 1; min-width: 0; height: 40px; border: none; outline: none; font-size: var(--fs-body); color: var(--navy); background: transparent; font-family: var(--body); }
+.hs input::placeholder { color: #7b838f; }
+.hs .btn { height: 44px; padding: 0 var(--sp-4); }
+.desk .hs .btn { height: 48px; padding: 0 var(--sp-6); }
+.hs-pop { gap: var(--sp-2); }
+.hs-pop .lbl { font-size: var(--fs-cap); font-weight: 600; color: var(--text-secondary); white-space: nowrap; margin-right: 2px; }
+.hs-pop .chip { height: 34px; background: var(--ivory); border-color: transparent; }
+.hs-pop .chip:hover { border-color: var(--navy); background: var(--white); }
+.hero-art { display: none; }
+.desk .hero-art { display: block; }
+.hero-art svg { width: 100%; height: auto; display: block; }
+.home-sec { padding: var(--sp-8) 0; }
+.desk .home-sec { padding: var(--sp-12) 0; }
+.home-sec + .home-sec { padding-top: 0; }
+.sec-h { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: var(--sp-2) var(--sp-3); }
+.sec-h h2 { font-size: var(--fs-h2); }
+.desk .sec-h h2 { font-size: 24px; }
+.sec-h p { font-size: var(--fs-xs); color: var(--text-secondary); }
+.sec-h .lnk { font-size: var(--fs-sm); display: inline-flex; align-items: center; gap: 4px; }
+.topic-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-3); }
+.desk .topic-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--sp-4); }
+.topic { display: flex; align-items: center; gap: var(--sp-3); background: var(--white); border: 1px solid var(--stone); border-radius: var(--r-md); padding: var(--sp-3) var(--sp-4); text-align: left; min-height: 64px; transition: border-color var(--dur), box-shadow var(--dur), transform var(--dur); }
+.topic:hover { border-color: var(--stone-strong); box-shadow: var(--sh-md); transform: translateY(-1px); }
+.topic i { width: 38px; height: 38px; border-radius: var(--r-sm); display: grid; place-items: center; flex: none; }
+.topic span { font-size: var(--fs-xs); font-weight: 600; line-height: 1.4; }
+
+/* ---------- class card (marketplace listing) ---------- */
+.lgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 264px), 1fr)); gap: var(--sp-4); }
+.desk .lgrid { gap: var(--sp-5); }
+.lc { position: relative; display: flex; flex-direction: column; background: var(--white); border: 1px solid var(--stone); border-radius: var(--r-lg); overflow: hidden; color: inherit; text-align: left; transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease); }
+.lc:hover { border-color: var(--stone-strong); box-shadow: var(--sh-md); transform: translateY(-2px); }
+.lc:focus-within { outline: 2px solid var(--teal); outline-offset: 2px; }
+.lc-th { position: relative; height: 100px; display: flex; align-items: flex-end; justify-content: flex-end; padding: var(--sp-3); background-color: var(--th-bg, var(--slate-soft)); color: var(--th-fg, var(--navy)); background-image: radial-gradient(currentColor 1px, transparent 1.4px); background-size: 14px 14px; background-position: 0 0; overflow: hidden; }
+.lc-th::before { content: ""; position: absolute; inset: 0; background: var(--th-bg, var(--slate-soft)); opacity: 0.86; }
+.lc-th > svg { position: absolute; right: -4px; bottom: -16px; width: 100px; height: 100px; opacity: 0.5; }
+.lc-th .lc-badges { z-index: 1; position: absolute; top: var(--sp-3); left: var(--sp-3); right: var(--sp-3); display: flex; justify-content: space-between; gap: var(--sp-2); }
+.lc-body { padding: var(--sp-4); display: flex; flex-direction: column; gap: var(--sp-2); flex: 1; }
+.lc-meta { font-size: var(--fs-cap); font-weight: 600; color: var(--teal-ink); letter-spacing: 0.01em; }
+.lc-title { font-size: 16px; font-weight: 700; line-height: 1.45; color: var(--navy); margin: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: calc(16px * 1.45 * 2); }
+.lc-link { all: unset; cursor: pointer; }
+.lc-link::after { content: ""; position: absolute; inset: 0; z-index: 1; } /* whole card is the click target, one interactive element */
+.lc-link:focus-visible { outline: none; }
+.lc-tutor { display: flex; align-items: center; gap: var(--sp-2); font-size: var(--fs-xs); color: var(--text-secondary); }
+.av-sm { width: 24px; height: 24px; border-radius: 50%; background: var(--navy); color: var(--white); font-size: 11px; font-weight: 700; display: grid; place-items: center; flex: none; }
+.lc-facts { list-style: none; margin: 0; padding: var(--sp-1) 0 0; display: flex; flex-direction: column; gap: 6px; }
+.lc-facts li { display: flex; align-items: center; gap: var(--sp-2); font-size: var(--fs-xs); color: var(--navy); }
+.lc-facts svg { color: var(--text-secondary); }
+.seat-low { color: var(--amber-text); font-weight: 600; }
+.seat-full { color: var(--cancel-text); font-weight: 600; }
+.lc-foot { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2); margin-top: auto; padding-top: var(--sp-3); border-top: 1px solid var(--stone); }
+.lc-foot .baht-price { font-size: 20px; }
+.lc-cta { display: inline-flex; align-items: center; gap: 4px; font-size: var(--fs-xs); font-weight: 600; color: var(--navy); padding: 0 var(--sp-3); height: 34px; border-radius: var(--r-sm); background: var(--ivory); transition: background var(--dur), color var(--dur); }
+.lc:hover .lc-cta { background: var(--navy); color: var(--white); }
+.lc.is-full .lc-th > svg { filter: grayscale(1); opacity: 0.3; }
+.lc.lc-static { pointer-events: none; }
+.lc.lc-static:hover { transform: none; box-shadow: none; }
+.sk { border-radius: var(--r-lg); background: var(--white); border: 1px solid var(--stone); overflow: hidden; }
+.sk i { display: block; background: linear-gradient(90deg, var(--stone) 25%, #f0f1f3 50%, var(--stone) 75%); background-size: 200% 100%; animation: shimmer 1.2s linear infinite; border-radius: 6px; }
+.sk .sk-th { height: 100px; border-radius: 0; }
+.sk .sk-b { padding: var(--sp-4); display: flex; flex-direction: column; gap: 10px; }
+@keyframes shimmer { to { background-position: -200% 0; } }
+
+.empty-card { background: var(--white); border: 1px dashed var(--stone-strong); border-radius: var(--r-lg); padding: var(--sp-8) var(--sp-6); font-size: var(--fs-sm); color: var(--text-secondary); text-align: center; display: flex; flex-direction: column; align-items: center; gap: var(--sp-3); }
+.empty-card .empty-ic { width: 56px; height: 56px; border-radius: 50%; background: var(--ivory); display: grid; place-items: center; color: var(--text-secondary); }
+.empty-card b { font-size: var(--fs-body); color: var(--navy); }
+.empty-card .row { justify-content: center; flex-wrap: wrap; }
+.hint-card { background: var(--white); border: 1px solid var(--stone); border-radius: var(--r-lg); padding: var(--sp-5); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--sp-3); }
+.hint-card b { font-size: var(--fs-body); display: block; }
+.hint-card span { font-size: var(--fs-xs); color: var(--text-secondary); line-height: 1.6; }
+.trust { width: 100%; background: var(--white); border-top: 1px solid var(--stone); border-bottom: 1px solid var(--stone); padding: var(--sp-10) 0; }
+.desk .trust { padding: var(--sp-16) 0; }
+.trust h2 { font-size: var(--fs-h2); }
+.desk .trust h2 { font-size: 26px; text-align: center; }
+.trust-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--sp-5); }
+.desk .trust-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--sp-8); }
+.trust-it { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 4px var(--sp-4); align-items: start; }
+.desk .trust-it { display: flex; flex-direction: column; gap: var(--sp-3); }
+.trust-ic { width: 44px; height: 44px; border-radius: var(--r-md); display: grid; place-items: center; grid-row: span 2; }
+.trust-it b { font-size: var(--fs-body); }
+.trust-it span { font-size: var(--fs-xs); line-height: 1.6; color: var(--text-secondary); }
+.cta { padding: var(--sp-10) 0; }
+.desk .cta { padding: var(--sp-16) 0; }
+.cta-in { background: var(--navy); border-radius: var(--r-xl); padding: var(--sp-8) var(--sp-6); display: flex; flex-direction: column; align-items: flex-start; gap: var(--sp-6); position: relative; overflow: hidden; }
+.desk .cta-in { flex-direction: row; align-items: center; justify-content: space-between; padding: var(--sp-12) 56px; }
+.cta-in::after { content: ""; position: absolute; right: -60px; top: -60px; width: 220px; height: 220px; border-radius: 50%; border: 36px solid rgba(242, 201, 76, 0.12); pointer-events: none; }
+.cta-in h2 { font-size: 22px; color: var(--white); line-height: 1.4; }
+.desk .cta-in h2 { font-size: 28px; }
 .cta-in h2 em { font-style: normal; color: var(--gold); }
-.cta-in p { font-size: 15px; line-height: 22px; color: var(--cta-text); }
-.cta-txt { display: flex; flex-direction: column; gap: 12px; max-width: 560px; }
-.foot { width: 100%; display: flex; justify-content: center; padding: 48px 0 32px; background: var(--white); border-top: 1px solid var(--stone); margin-top: auto; }
-.foot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 32px; }
-.foot-c { display: flex; flex-direction: column; gap: 10px; }
-.foot-c .logo-s { font-family: var(--display); font-size: 20px; font-weight: 700; color: var(--navy); }
+.cta-in p { font-size: var(--fs-body); line-height: 1.6; color: var(--cta-text); }
+.cta-txt { display: flex; flex-direction: column; gap: var(--sp-3); max-width: 560px; position: relative; z-index: 1; }
+.cta-in .btn { position: relative; z-index: 1; }
+.foot { width: 100%; background: var(--white); border-top: 1px solid var(--stone); margin-top: auto; padding: var(--sp-10) 0 var(--sp-6); }
+.foot-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-8) var(--sp-5); }
+.desk .foot-grid { grid-template-columns: 1.4fr 1fr 1fr 1fr; }
+.foot-c { display: flex; flex-direction: column; gap: var(--sp-2); }
+.foot-c:first-child { grid-column: 1 / -1; }
+.desk .foot-c:first-child { grid-column: auto; }
+.foot-c .logo-s { font-family: var(--display); font-size: 22px; font-weight: 700; color: var(--navy); }
 .foot-c .logo-s span { color: var(--gold); }
-.foot-c .blurb { font-size: 13px; line-height: 20px; color: var(--text-secondary); max-width: 220px; }
-.foot-c h4 { margin: 0; font-family: var(--body); font-size: 13px; font-weight: 700; color: var(--navy); }
-.flink { background: none; border: 0; padding: 0; font-size: 13px; color: var(--text-secondary); text-align: left; }
-.flink:hover { color: var(--teal); }
-.copy { border-top: 1px solid var(--stone); padding-top: 20px; font-size: 12px; color: var(--text-secondary); }
-.foot .container { display: flex; flex-direction: column; gap: 32px; }
+.foot-c .blurb { font-size: var(--fs-xs); line-height: 1.6; color: var(--text-secondary); max-width: 260px; }
+.foot-c h4 { font-size: var(--fs-xs); font-weight: 700; color: var(--navy); margin-bottom: 2px; }
+.flink { background: none; border: 0; padding: 4px 0; font-size: var(--fs-xs); color: var(--text-secondary); text-align: left; width: fit-content; }
+.flink:hover { color: var(--navy); text-decoration: underline; text-underline-offset: 3px; }
+.copy { border-top: 1px solid var(--stone); padding-top: var(--sp-5); font-size: var(--fs-cap); color: var(--text-secondary); }
+.foot .container { display: flex; flex-direction: column; gap: var(--sp-8); }
 
-/* inner pages */
-.pg { --cx: 20px; width: 100%; display: flex; justify-content: center; padding: var(--pad, 28px 20px 64px); }
-.desk .pg { --cx: 40px; padding: var(--pad, 40px 40px 80px); }
-.pg.co { padding: 48px 24px 80px; }
-.pg > .col { width: 100%; max-width: var(--mw, 860px); gap: 24px; }
-.pg h1 { font-size: 28px; color: var(--navy); }
-.pg h1.s26 { font-size: 26px; }
-.pg h2.s20 { font-size: 20px; color: var(--navy); }
-.cardx { display: flex; flex-direction: column; gap: 14px; background: var(--white); border: 1px solid var(--stone); border-radius: 14px; padding: 20px; }
-.cardx.p24 { padding: 24px; }
-.cardx.p32 { padding: 32px 24px; align-items: flex-start; gap: 10px; }
-.cardx.r16 { border-radius: 16px; }
+/* ---------- search results + filters ---------- */
+.sbar { width: 100%; background: var(--white); border-bottom: 1px solid var(--stone); padding: var(--sp-4) 0; }
+.desk .sbar { padding: var(--sp-6) 0; }
+.sbar .hs { box-shadow: none; }
+.srch { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--sp-6); align-items: start; padding: var(--sp-5) 0 var(--sp-12); }
+.desk .srch { grid-template-columns: 264px minmax(0, 1fr); gap: var(--sp-8); padding: var(--sp-8) 0 var(--sp-16); }
+.res { display: flex; flex-direction: column; gap: var(--sp-4); min-width: 0; }
+.res-bar { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); flex-wrap: wrap; }
+.res-bar h1 { font-size: 20px; }
+.desk .res-bar h1 { font-size: 24px; }
+.res-count { font-size: var(--fs-xs); color: var(--text-secondary); }
+.res-tools { display: flex; align-items: center; gap: var(--sp-2); }
+.res-tools .input { height: 40px; width: auto; font-size: var(--fs-xs); font-weight: 500; }
+.fbtn .n { min-width: 20px; height: 20px; padding: 0 6px; border-radius: 99px; background: var(--teal); color: var(--white); font-size: 11px; display: grid; place-items: center; }
+.desk .fbtn { display: none; }
+.active-f { display: flex; flex-wrap: wrap; gap: var(--sp-2); align-items: center; }
+.active-f .chip { height: 32px; padding: 0 var(--sp-3); background: var(--teal-soft); border-color: transparent; color: var(--teal-ink); font-weight: 600; }
+.active-f .chip:hover { border-color: var(--teal); }
+.active-f .chip .x { background: transparent; color: var(--teal-ink); }
+.fpanel { display: none; }
+.desk .fpanel { display: flex; flex-direction: column; background: var(--white); border: 1px solid var(--stone); border-radius: var(--r-lg); position: sticky; top: 96px; }
+.fp-h, .fp-f { display: none; }
+.fp-b { display: flex; flex-direction: column; }
+.fg { border: 0; margin: 0; padding: var(--sp-4) var(--sp-5); display: flex; flex-direction: column; gap: var(--sp-2); border-bottom: 1px solid var(--stone); min-width: 0; }
+.fg:last-child { border-bottom: 0; }
+.fg legend { padding: 0; margin-bottom: var(--sp-2); font-size: var(--fs-xs); font-weight: 700; color: var(--navy); float: left; width: 100%; }
+.fg legend + * { clear: both; }
+.fg .cb { font-size: var(--fs-xs); line-height: 1.5; }
+.fg .cb input { width: 16px; height: 16px; margin-top: 2px; accent-color: var(--teal); }
+.fg .cb .cnt { margin-left: auto; color: var(--text-secondary); font-variant-numeric: tabular-nums; font-size: var(--fs-cap); }
+.fg .cb > span { flex: 1; display: flex; gap: var(--sp-2); }
+.seg2 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); background: var(--ivory); border-radius: var(--r-sm); padding: 3px; gap: 2px; }
+.seg2 label { position: relative; }
+.seg2 input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.seg2 span { display: grid; place-items: center; height: 34px; border-radius: 6px; font-size: var(--fs-cap); font-weight: 600; color: var(--text-secondary); text-align: center; transition: background var(--dur), color var(--dur); }
+.seg2 input:checked + span { background: var(--white); color: var(--navy); box-shadow: var(--sh-xs); }
+.seg2 input:focus-visible + span { outline: 2px solid var(--teal); outline-offset: 1px; }
+/* mobile: the same panel becomes a bottom sheet */
+.fpanel.open { display: flex; position: fixed; inset: 0; z-index: 55; flex-direction: column; justify-content: flex-end; background: none; border: 0; }
+.fpanel.open .scrim { display: block; }
+.fpanel .scrim { display: none; }
+.fpanel.open .fp-sheet { position: relative; background: var(--white); border-radius: var(--r-xl) var(--r-xl) 0 0; max-height: 88%; display: flex; flex-direction: column; animation: slide-up 0.24s var(--ease); box-shadow: var(--sh-lg); }
+.fp-sheet { display: flex; flex-direction: column; min-height: 0; }
+.fpanel.open .fp-h { display: flex; align-items: center; justify-content: space-between; padding: var(--sp-3) var(--sp-3) var(--sp-3) var(--sp-5); border-bottom: 1px solid var(--stone); }
+.fpanel.open .fp-h h2 { font-size: var(--fs-h3); }
+.fpanel.open .fp-b { overflow-y: auto; }
+.fpanel.open .fp-f { display: flex; gap: var(--sp-3); padding: var(--sp-3) var(--sp-5) calc(var(--sp-4) + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--stone); }
+.fpanel.open .fp-f .btn-primary { flex: 1; }
+.fp-clear { display: none; }
+.desk .fp-clear { display: flex; padding: var(--sp-3) var(--sp-5); border-top: 1px solid var(--stone); }
+
+/* ---------- inner pages ---------- */
+.pg { --cx: var(--sp-4); width: 100%; display: flex; justify-content: center; padding: var(--pad, var(--sp-6) var(--sp-4) var(--sp-16)); }
+.desk .pg { --cx: var(--sp-10); padding: var(--pad, var(--sp-10) var(--sp-10) 80px); }
+.pg.co { padding: var(--sp-6) var(--sp-4) var(--sp-16); }
+.desk .pg.co { padding: var(--sp-10) var(--sp-6) 80px; }
+.pg > .col { width: 100%; max-width: var(--mw, 860px); gap: var(--sp-6); }
+.pg h1 { font-size: 24px; color: var(--navy); }
+.desk .pg h1 { font-size: var(--fs-h1); }
+.pg h1.s26 { font-size: 24px; }
+.pg h2.s20 { font-size: 18px; color: var(--navy); }
+.desk .pg h2.s20 { font-size: 20px; }
+.page-h { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--sp-3); flex-wrap: wrap; }
+.cardx { display: flex; flex-direction: column; gap: var(--sp-3); background: var(--white); border: 1px solid var(--stone); border-radius: var(--r-lg); padding: var(--sp-5); }
+.cardx.p24 { padding: var(--sp-6); }
+.cardx.p32 { padding: var(--sp-8) var(--sp-6); align-items: flex-start; gap: 10px; }
+.cardx.r16 { border-radius: var(--r-lg); }
 .cardx.ctr-c { align-items: center; text-align: center; }
-.cardx h2 { font-size: 18px; color: var(--navy); }
-.cardx h3 { font-size: 20px; color: var(--navy); }
-.cardx .p { font-size: 14px; line-height: 22px; color: var(--text-secondary); }
+.cardx h2 { font-size: var(--fs-h3); color: var(--navy); }
+.cardx h3 { font-size: 18px; color: var(--navy); }
+.cardx .p { font-size: var(--fs-sm); line-height: 1.6; color: var(--text-secondary); }
+.card-h { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); flex-wrap: wrap; }
+.card-h h2 { font-size: var(--fs-h3); }
+.card-h .lnk { font-size: var(--fs-xs); display: inline-flex; align-items: center; gap: 4px; }
 .warn-card { background: var(--warn-bg); border-color: var(--warn-border); }
-.formcard { display: flex; flex-direction: column; gap: 22px; background: var(--white); border: 1px solid var(--stone); border-radius: 16px; padding: 28px; }
-.shellcard { display: flex; flex-direction: column; gap: 18px; background: var(--white); border: 1px solid var(--stone); border-radius: 16px; padding: 28px 24px; }
+.formcard { display: flex; flex-direction: column; gap: 22px; background: var(--white); border: 1px solid var(--stone); border-radius: var(--r-lg); padding: var(--sp-5); }
+.desk .formcard { padding: 28px; }
+.shellcard { display: flex; flex-direction: column; gap: 18px; background: var(--white); border: 1px solid var(--stone); border-radius: var(--r-lg); padding: 28px 24px; }
 .row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
 .row.wrap { flex-wrap: wrap; }
-.row .k { font-size: 14px; color: var(--text-secondary); }
-.back { display: flex; align-items: center; gap: 6px; background: none; border: 0; padding: 0; font-size: 14px; font-weight: 500; color: var(--text-secondary); width: fit-content; }
-.back:hover { color: var(--teal); }
-.inote { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; line-height: 18px; color: var(--text-secondary); }
+.row .k { font-size: var(--fs-sm); color: var(--text-secondary); }
+.back { display: inline-flex; align-items: center; gap: 4px; background: none; border: 0; padding: 0 var(--sp-2) 0 var(--sp-1); margin-left: calc(var(--sp-1) * -1); height: 36px; border-radius: var(--r-sm); font-size: var(--fs-xs); font-weight: 500; color: var(--text-secondary); width: fit-content; }
+.back:hover { color: var(--navy); background: var(--white); }
+.inote { display: flex; align-items: flex-start; gap: 8px; font-size: var(--fs-cap); line-height: 1.6; color: var(--text-secondary); }
 .inote svg { flex: none; margin-top: 2px; }
-.inote.teal svg { color: var(--teal); }
+.inote.teal svg { color: var(--teal-ink); }
 .stack { display: flex; flex-direction: column; gap: 14px; }
 .stack12 { display: flex; flex-direction: column; gap: 12px; }
-.g2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
-.g3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-.pbox { display: flex; align-items: center; height: 44px; border-radius: 8px; border: 1.5px solid var(--stone); background: var(--white); padding: 0 14px; width: 100%; }
+.g2 { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--sp-4); }
+.desk .g2 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.g3 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--sp-4); }
+.g3 > :first-child { grid-column: 1 / -1; }
+.desk .g3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.desk .g3 > :first-child { grid-column: auto; }
+.pbox { display: flex; align-items: center; height: 44px; border-radius: var(--r-sm); border: 1.5px solid var(--stone); background: var(--white); padding: 0 14px; width: 100%; transition: border-color var(--dur), box-shadow var(--dur); }
+.pbox:focus-within { border-color: var(--teal); box-shadow: var(--ring); }
 .pbox input { border: none; outline: none; font-size: 14px; color: var(--navy); width: 100%; margin-left: 6px; background: transparent; font-family: var(--body); }
 .price-row { display: flex; align-items: center; gap: 10px; max-width: 220px; }
 .price-row span { font-size: 13px; color: var(--text-secondary); white-space: nowrap; }
 
-/* class detail (listings/[id]) */
-.detail { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; align-items: start; }
-.desk .detail { grid-template-columns: minmax(0, 1fr) 380px; gap: 40px; }
-.d-main { display: flex; flex-direction: column; gap: 28px; }
-.d-head { display: flex; flex-direction: column; gap: 14px; }
-.d-head h1 { font-size: 28px; line-height: 1.25; }
-.desk .d-head h1 { font-size: 34px; }
-.d-tutor { display: flex; align-items: center; gap: 12px; padding: 4px 0 0; background: none; border: 0; text-align: left; width: 100%; }
-.d-av { width: 44px; height: 44px; border-radius: 50%; background: var(--navy); display: flex; align-items: center; justify-content: center; font-family: var(--display); font-size: 17px; font-weight: 700; color: var(--white); flex: none; }
+/* ---------- class detail ---------- */
+.detail { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--sp-6); align-items: start; }
+.desk .detail { grid-template-columns: minmax(0, 1fr) 360px; gap: var(--sp-12); }
+.d-main { display: flex; flex-direction: column; gap: var(--sp-6); min-width: 0; }
+.d-head { display: flex; flex-direction: column; gap: var(--sp-3); }
+.d-head .chips { gap: 6px; }
+.d-head h1 { font-size: 24px; line-height: 1.4; }
+.desk .d-head h1 { font-size: 32px; line-height: 1.35; }
+.d-tutor { display: flex; align-items: center; gap: var(--sp-3); padding: var(--sp-3); margin: 0 calc(var(--sp-3) * -1); background: none; border: 0; border-radius: var(--r-md); text-align: left; width: calc(100% + var(--sp-6)); transition: background var(--dur); }
+.d-tutor:hover { background: var(--white); }
+.d-av { width: 44px; height: 44px; border-radius: 50%; background: var(--navy); display: grid; place-items: center; font-size: 17px; font-weight: 700; color: var(--white); flex: none; }
 .d-av.lg { width: 72px; height: 72px; font-size: 26px; }
-.d-sec { display: flex; flex-direction: column; gap: 12px; }
-.d-sec p { font-size: 15px; line-height: 24px; color: var(--text-secondary); }
-.d-facts { display: flex; flex-direction: column; gap: 14px; background: var(--white); border: 1px solid var(--stone); border-radius: 12px; padding: 20px; }
-.d-fact { display: flex; align-items: flex-start; gap: 12px; font-size: 14px; }
-.d-fact svg { flex: none; color: var(--text-secondary); margin-top: 1px; }
-.d-card { display: flex; flex-direction: column; gap: 16px; background: var(--white); border: 1px solid var(--stone); border-radius: 16px; padding: 24px; box-shadow: var(--shadow-card); }
-.desk .d-card { position: sticky; top: 96px; }
+.d-sec { display: flex; flex-direction: column; gap: var(--sp-3); }
+.d-sec p { font-size: var(--fs-body); line-height: 1.75; color: var(--text-secondary); }
+.facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--stone); border: 1px solid var(--stone); border-radius: var(--r-lg); overflow: hidden; }
+.desk .facts { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.fact { background: var(--white); padding: var(--sp-4); display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.fact svg { color: var(--teal-ink); margin-bottom: 4px; }
+.fact span { font-size: var(--fs-cap); color: var(--text-secondary); }
+.fact b { font-size: var(--fs-sm); line-height: 1.45; }
+.checklist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--sp-3); }
+.checklist li { display: flex; gap: var(--sp-3); align-items: flex-start; font-size: var(--fs-sm); line-height: 1.6; color: var(--text-secondary); }
+.checklist li svg { flex: none; margin-top: 3px; color: var(--teal-ink); }
+.checklist li b { color: var(--navy); font-weight: 600; }
+.d-card { display: none; }
+.desk .d-card { display: flex; flex-direction: column; gap: var(--sp-4); background: var(--white); border: 1px solid var(--stone); border-radius: var(--r-lg); padding: var(--sp-6); box-shadow: var(--sh-md); position: sticky; top: 96px; }
 .d-price { display: flex; align-items: baseline; gap: 6px; }
 .d-price .baht-price { font-size: 30px; }
-.d-price > span:last-child { font-size: 14px; color: var(--text-secondary); }
-
-/* checkout, success, QR */
-.sumhead { font-size: 14px; font-weight: 700; color: var(--navy); }
-.sum-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 14px; color: var(--text-secondary); }
-.sum-total { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.sum-total b { font-size: 15px; }
-.sum-total .baht-price { font-size: 22px; }
-.mini { display: flex; gap: 14px; background: var(--white); border: 1px solid var(--stone); border-radius: 14px; padding: 18px; text-align: left; width: 100%; }
-.mini-th { width: 56px; height: 56px; border-radius: 10px; flex: none; }
-.mini-b { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 0; }
-.mini-b .t { font-size: 15px; font-weight: 700; color: var(--navy); line-height: 1.3; }
-.mini-b .m { font-size: 13px; color: var(--text-secondary); }
-.qr { align-items: center; }
-.qr canvas { width: 200px; height: 200px; max-width: 100%; image-rendering: pixelated; }
-.timer { font-family: var(--display); font-size: 30px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--deep-blue); }
-.flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; font-size: 11px; text-align: center; color: var(--text-secondary); }
-.flow div { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-.flow i { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-style: normal; font-weight: 700; color: var(--white); background: var(--deep-blue); font-size: 12px; }
-.ok-ic { display: flex; align-items: center; gap: 10px; color: var(--teal); }
-.ok-ic h2 { color: var(--navy); }
-
-/* lists: bookings, classes, wish list, demand board, notifications */
-.bcard { display: flex; gap: 18px; background: var(--white); border: 1px solid var(--stone); border-radius: 14px; padding: 20px; }
-.bcard.dim { opacity: 0.75; }
-.b-th { width: 64px; height: 64px; border-radius: 10px; flex: none; }
-.b-body { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 0; }
-.b-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.b-top .baht-price { font-size: 17px; }
-.b-title { font-size: 15px; font-weight: 700; color: var(--navy); }
-.b-meta { font-size: 13px; color: var(--text-secondary); }
-.b-note { font-size: 12px; color: var(--text-secondary); }
-.b-warn { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--amber-text); font-weight: 600; }
-.b-act { display: flex; align-items: center; gap: 12px 16px; flex-wrap: wrap; padding-top: 6px; }
+.d-price > span:last-child { font-size: var(--fs-sm); color: var(--text-secondary); }
+.d-when { display: flex; flex-direction: column; gap: 6px; padding: var(--sp-3) var(--sp-4); background: var(--ivory); border-radius: var(--r-md); }
+.d-when div { display: flex; align-items: center; gap: var(--sp-2); font-size: var(--fs-xs); }
+.d-when svg { color: var(--text-secondary); }
+.meter { display: flex; flex-direction: column; gap: 6px; }
+.meter-t { display: flex; justify-content: space-between; font-size: var(--fs-cap); color: var(--text-secondary); }
+.meter-t b { color: var(--navy); }
 .bar { height: 6px; background: var(--stone); border-radius: 99px; overflow: hidden; }
-.bar i { display: block; height: 100%; background: var(--teal); }
-.lrow { display: flex; align-items: center; gap: 14px; background: var(--white); border: 1px solid var(--stone); border-radius: 14px; padding: 16px 20px; text-align: left; width: 100%; }
+.bar i { display: block; height: 100%; background: var(--teal); border-radius: 99px; }
+.bar.low i { background: var(--gold); }
+.bar.full i { background: var(--cancel-text); }
+.sticky-cta { position: sticky; bottom: 0; z-index: 15; margin: 0 calc(var(--cx) * -1) calc(var(--sp-16) * -1); padding: var(--sp-3) var(--cx) calc(var(--sp-3) + env(safe-area-inset-bottom, 0px)); background: var(--white); border-top: 1px solid var(--stone); display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); box-shadow: 0 -8px 24px -16px rgba(13, 27, 42, 0.25); }
+.desk .sticky-cta { display: none; }
+.sticky-cta .baht-price { font-size: 22px; }
+.sticky-cta .sub { font-size: var(--fs-cap); color: var(--text-secondary); }
+.sticky-cta .btn { flex: none; min-width: 140px; }
+
+/* ---------- checkout ---------- */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-2); counter-reset: st; }
+.steps li { counter-increment: st; display: flex; flex-direction: column; gap: 6px; font-size: var(--fs-cap); font-weight: 600; color: var(--text-secondary); }
+.steps li::before { content: ""; height: 4px; border-radius: 99px; background: var(--stone); }
+.steps li.done::before, .steps li.cur::before { background: var(--teal); }
+.steps li.cur { color: var(--navy); }
+.steps li.done { color: var(--teal-ink); }
+.sumhead { font-size: var(--fs-sm); font-weight: 700; color: var(--navy); }
+.sum-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: var(--fs-sm); color: var(--text-secondary); }
+.sum-total { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.sum-total b { font-size: var(--fs-body); }
+.sum-total .baht-price { font-size: 24px; }
+.mini { display: flex; gap: 14px; background: var(--white); border: 1px solid var(--stone); border-radius: var(--r-lg); padding: var(--sp-4); text-align: left; width: 100%; }
+.thumb { position: relative; width: 56px; height: 56px; border-radius: var(--r-md); flex: none; display: grid; place-items: center; background: var(--th-bg, var(--slate-soft)); color: var(--th-fg, var(--navy)); }
+.thumb.lg { width: 64px; height: 64px; }
+.mini-b { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; }
+.mini-b .t { font-size: var(--fs-body); font-weight: 700; color: var(--navy); line-height: 1.45; }
+.mini-b .m { font-size: var(--fs-xs); color: var(--text-secondary); }
+.pay-m { display: flex; align-items: center; gap: var(--sp-3); padding: var(--sp-3) var(--sp-4); border: 1.5px solid var(--teal); border-radius: var(--r-md); background: var(--teal-soft); }
+.pay-m .pp { width: 40px; height: 40px; border-radius: var(--r-sm); background: var(--white); display: grid; place-items: center; font-size: 10px; font-weight: 800; color: var(--deep-blue); letter-spacing: -0.02em; flex: none; border: 1px solid var(--stone); }
+.pay-m b { font-size: var(--fs-sm); display: block; }
+.pay-m span { font-size: var(--fs-cap); color: var(--text-secondary); }
+.pay-m .ok { margin-left: auto; color: var(--teal-ink); }
+.qr { align-items: center; text-align: center; }
+.qr canvas { width: 200px; height: 200px; max-width: 100%; image-rendering: pixelated; border: 1px solid var(--stone); border-radius: var(--r-md); padding: 8px; background: var(--white); }
+.timer { font-size: 30px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--deep-blue); line-height: 1.2; }
+.flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; font-size: 11px; line-height: 1.45; text-align: center; color: var(--text-secondary); }
+.flow div { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.flow i { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-style: normal; font-weight: 700; color: var(--white); background: var(--deep-blue); font-size: 12px; }
+.waiting { display: inline-flex; align-items: center; gap: 8px; font-size: var(--fs-xs); color: var(--amber-text); font-weight: 600; }
+.waiting::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--gold); animation: pulse 1.4s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: 0.3; transform: scale(0.8); } }
+.ok-hero { display: flex; flex-direction: column; align-items: center; text-align: center; gap: var(--sp-3); padding: var(--sp-2) 0 var(--sp-1); }
+.ok-hero .ok-c { width: 64px; height: 64px; border-radius: 50%; background: var(--teal-soft); color: var(--teal-ink); display: grid; place-items: center; }
+.ok-hero h2 { font-size: 22px; }
+.ok-hero p { font-size: var(--fs-sm); color: var(--text-secondary); }
+.demo-row { display: flex; gap: var(--sp-2); flex-wrap: wrap; justify-content: center; padding-top: var(--sp-2); border-top: 1px dashed var(--stone-strong); }
+.demo-row .lbl { width: 100%; text-align: center; font-size: 11px; color: var(--text-secondary); }
+
+/* ---------- lists: bookings, classes, wish list, demand board, notifications ---------- */
+.bcard { display: flex; gap: var(--sp-4); background: var(--white); border: 1px solid var(--stone); border-radius: var(--r-lg); padding: var(--sp-4); }
+.desk .bcard { padding: var(--sp-5); gap: var(--sp-5); }
+.bcard.dim { background: #fbfbfa; }
+.bcard.dim .b-title, .bcard.dim .thumb { opacity: 0.7; }
+.b-th { width: 56px; height: 56px; border-radius: var(--r-md); flex: none; }
+.b-body { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 0; }
+.b-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.b-top .baht-price { font-size: 17px; }
+.b-title { font-size: var(--fs-body); font-weight: 700; color: var(--navy); line-height: 1.45; }
+.b-meta { font-size: var(--fs-xs); color: var(--text-secondary); line-height: 1.55; }
+.b-note { font-size: var(--fs-cap); color: var(--text-secondary); line-height: 1.55; }
+.b-warn { display: flex; align-items: center; gap: 6px; font-size: var(--fs-cap); color: var(--amber-text); font-weight: 600; }
+.b-act { display: flex; align-items: center; gap: var(--sp-2) var(--sp-3); flex-wrap: wrap; padding-top: var(--sp-2); }
+.lrow { display: flex; align-items: center; gap: 14px; background: var(--white); border: 1px solid var(--stone); border-radius: var(--r-lg); padding: var(--sp-4); text-align: left; width: 100%; }
+button.lrow { transition: border-color var(--dur), box-shadow var(--dur); }
+button.lrow:hover { border-color: var(--stone-strong); box-shadow: var(--sh-sm); }
+.desk .lrow { padding: var(--sp-4) var(--sp-5); }
 .lrow .grow { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
 .unread { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); flex: none; }
 .unread.off { background: transparent; }
-.plus { border: 1.5px solid var(--stone); background: var(--white); border-radius: 8px; height: 36px; padding: 0 14px; font-weight: 600; font-size: 13px; white-space: nowrap; color: var(--navy); }
+.plus { border: 1.5px solid var(--stone); background: var(--white); border-radius: var(--r-sm); height: 40px; padding: 0 14px; font-weight: 600; font-size: 13px; white-space: nowrap; color: var(--navy); flex: none; transition: border-color var(--dur), background var(--dur); }
+.plus:hover { border-color: var(--navy); }
 .plus[aria-pressed="true"] { background: var(--navy); border-color: var(--navy); color: var(--white); }
 .switch { position: relative; width: 42px; height: 24px; flex: none; }
 .switch input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
-.switch span { position: absolute; inset: 0; background: var(--stone); border-radius: 99px; transition: background .15s; pointer-events: none; }
+.switch span { position: absolute; inset: 0; background: var(--stone-strong); border-radius: 99px; transition: background .15s; pointer-events: none; }
 .switch span::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: var(--white); transition: transform .15s; box-shadow: var(--shadow-knob); }
 .switch input:checked + span { background: var(--teal); }
 .switch input:checked + span::after { transform: translateX(18px); }
 .switch input:focus-visible + span { outline: 2px solid var(--teal); outline-offset: 2px; }
-.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.desk .stats { grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.switch input:disabled + span { opacity: 0.5; }
+.tabs { display: flex; gap: var(--sp-1); border-bottom: 1px solid var(--stone); overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { position: relative; background: none; border: 0; height: 44px; padding: 0 var(--sp-3); font-size: var(--fs-sm); font-weight: 500; color: var(--text-secondary); white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
+.tab:hover { color: var(--navy); }
+.tab[aria-selected="true"] { color: var(--navy); font-weight: 600; }
+.tab[aria-selected="true"]::after { content: ""; position: absolute; left: var(--sp-3); right: var(--sp-3); bottom: -1px; height: 2px; border-radius: 2px; background: var(--teal); }
+.tab .c { min-width: 20px; height: 20px; padding: 0 6px; border-radius: 99px; background: var(--stone); font-size: 11px; font-weight: 700; display: grid; place-items: center; color: var(--text-secondary); }
+.tab[aria-selected="true"] .c { background: var(--navy); color: var(--white); }
+
+/* ---------- tutor ---------- */
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-3); }
+.desk .stats { grid-template-columns: repeat(4, 1fr); gap: var(--sp-4); }
 .stats.s2 { grid-template-columns: 1fr 1fr; }
-.stat { background: var(--white); border: 1px solid var(--stone); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 4px; }
-.stat span { font-size: 13px; color: var(--text-secondary); }
-.stat b { font-family: var(--display); font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums; }
-.tgroup { display: flex; flex-direction: column; background: var(--white); border: 1px solid var(--stone); border-radius: 14px; padding: 20px; }
+.stat { background: var(--white); border: 1px solid var(--stone); border-radius: var(--r-lg); padding: var(--sp-4); display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.stat > span { font-size: var(--fs-cap); color: var(--text-secondary); }
+.stat b { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; line-height: 1.35; }
+.desk .stat b { font-size: 24px; }
+.stat small { font-size: var(--fs-cap); color: var(--text-secondary); }
+.stat.hl { border-color: var(--info-border); background: var(--teal-soft); }
+.stat.hl b { color: var(--teal-ink); }
+.dash { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--sp-5); align-items: start; }
+.desk .dash { grid-template-columns: minmax(0, 1fr) 320px; gap: var(--sp-6); }
+.dash-side { display: flex; flex-direction: column; gap: var(--sp-5); }
+.todo { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.todo li + li { border-top: 1px solid var(--stone); }
+.todo button { display: flex; align-items: center; gap: var(--sp-3); width: 100%; padding: var(--sp-3) 0; background: none; border: 0; text-align: left; }
+.todo button:hover .todo-t { color: var(--teal-ink); }
+.todo-ic { width: 36px; height: 36px; border-radius: var(--r-sm); display: grid; place-items: center; flex: none; }
+.todo-t { font-size: var(--fs-sm); font-weight: 600; line-height: 1.45; transition: color var(--dur); }
+.todo-d { font-size: var(--fs-cap); color: var(--text-secondary); }
+.todo .chev { margin-left: auto; color: var(--text-secondary); transform: rotate(180deg); }
+.up { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: var(--sp-3) var(--sp-4); align-items: center; padding: var(--sp-4) 0; }
+.up + .up { border-top: 1px solid var(--stone); }
+.desk .up { grid-template-columns: 52px minmax(0, 1fr) 180px auto; }
+.datebox { width: 52px; height: 56px; border-radius: var(--r-md); background: var(--ivory); border: 1px solid var(--stone); display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.1; }
+.datebox span { font-size: 11px; color: var(--text-secondary); font-weight: 600; }
+.datebox b { font-size: 20px; }
+.up .meter { grid-column: 1 / -1; }
+.desk .up .meter { grid-column: auto; }
+.up .btn { grid-column: 1 / -1; }
+.desk .up .btn { grid-column: auto; }
+.earn-list { display: flex; flex-direction: column; gap: var(--sp-3); }
+.earn-list .row { font-size: var(--fs-sm); }
+.earn-list .row span:first-child { display: inline-flex; align-items: center; gap: 8px; color: var(--text-secondary); }
+.earn-list .row b { font-variant-numeric: tabular-nums; }
+.tgroup { display: flex; flex-direction: column; background: var(--white); border: 1px solid var(--stone); border-radius: var(--r-lg); padding: var(--sp-5); }
 .tg-h { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-bottom: 4px; }
 .trow { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 14px 0; border-top: 1px solid var(--stone); }
-.t-av { width: 32px; height: 32px; border-radius: 50%; background: var(--teal); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: var(--white); flex: none; }
+.t-av { width: 32px; height: 32px; border-radius: 50%; background: var(--teal); display: grid; place-items: center; font-size: 12px; font-weight: 700; color: var(--white); flex: none; }
 .t-av.off { background: var(--stone); color: var(--text-secondary); }
-.tbl { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
-.tbl th { text-align: left; font-weight: 600; color: var(--text-secondary); font-size: 12px; padding: 12px 14px; border-bottom: 1px solid var(--stone); }
-.tbl td { padding: 12px 14px; border-bottom: 1px solid var(--stone); vertical-align: top; }
+.tbl { width: 100%; border-collapse: collapse; font-size: var(--fs-xs); font-variant-numeric: tabular-nums; }
+.tbl th { text-align: left; font-weight: 600; color: var(--text-secondary); font-size: var(--fs-cap); padding: 12px 16px; border-bottom: 1px solid var(--stone); background: #fafaf8; white-space: nowrap; }
+.tbl td { padding: 14px 16px; border-bottom: 1px solid var(--stone); vertical-align: top; line-height: 1.5; }
 .tbl tr:last-child td { border-bottom: 0; }
+.tbl tbody tr:hover td { background: #fcfcfb; }
 .tbl td.num, .tbl th.num { text-align: right; }
 .scroll-x { overflow-x: auto; }
-.t2g { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; align-items: start; }
-.desk .t2g { grid-template-columns: minmax(0, 1fr) 360px; gap: 32px; }
+.t2g { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--sp-6); align-items: start; }
+.desk .t2g { grid-template-columns: minmax(0, 1fr) 340px; gap: var(--sp-8); }
 .t2side { display: flex; flex-direction: column; gap: 14px; }
 .desk .t2side { position: sticky; top: 104px; }
 .t2side .inote { padding: 0 4px; }
 .calc { display: flex; flex-direction: column; gap: 10px; background: var(--ivory); border: 1px solid var(--stone); border-radius: 12px; padding: 16px; }
 .calc .row { font-size: 14px; }
 
-/* auth: AuthSplit / AuthShell */
+/* ---------- auth: AuthSplit / AuthShell ---------- */
 .auth-split { display: flex; flex: 1; width: 100%; background: var(--white); }
 .auth-split-banner { display: none; flex: 1 1 45%; max-width: 640px; flex-direction: column; justify-content: space-between; gap: 40px; padding: 48px 56px; background: var(--g-banner); }
 .desk .auth-split-banner { display: flex; }
-.auth-split-banner .logo { font-size: 36px; color: var(--white); align-self: flex-start; }
-.auth-split-banner h2 { font-size: 34px; line-height: 44px; color: var(--white); }
+.auth-split-banner .logo { font-size: 36px; color: var(--white); align-self: flex-start; margin: 0; }
+.auth-split-banner h2 { font-size: 32px; line-height: 1.4; color: var(--white); }
 .auth-split-banner ul { display: flex; flex-direction: column; gap: 14px; padding: 0; margin: 16px 0; list-style: none; }
-.auth-split-banner li { display: flex; gap: 10px; font-size: 15px; line-height: 24px; color: var(--banner-text); }
+.auth-split-banner li { display: flex; gap: 10px; font-size: 15px; line-height: 1.6; color: var(--banner-text); }
 .auth-split-banner li i { font-style: normal; color: var(--gold); font-weight: 700; }
 .auth-split-banner p { font-size: 12px; color: var(--banner-foot); }
 .banner-mid { display: flex; flex-direction: column; gap: 20px; }
@@ -488,20 +801,22 @@ p { margin: 0; }
 .desk .auth-split-mobile-logo { display: none; }
 .auth-split-card { width: 100%; max-width: 440px; display: flex; flex-direction: column; gap: 20px; }
 .auth-shell { flex: 1; display: flex; flex-direction: column; width: 100%; background: var(--ivory); }
-.auth-shell-h { width: 100%; height: 72px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--stone); background: var(--white); flex: none; }
+.auth-shell-h { width: 100%; height: 64px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--stone); background: var(--white); flex: none; }
 .auth-shell-h > div { width: 100%; max-width: 640px; padding: 0 24px; }
-.auth-shell-s { width: 100%; display: flex; justify-content: center; padding: 40px 16px 80px; }
+.auth-shell-s { width: 100%; display: flex; justify-content: center; padding: 32px 16px 80px; }
 .auth-shell-col { width: 100%; max-width: var(--mw, 460px); display: flex; flex-direction: column; gap: 20px; }
+
+.hdr { container-type: inline-size; container-name: hdr; }
 
 @media (max-width: 820px) {
   body { padding-block: 12px 0; }
   .shell.desk { grid-template-columns: minmax(0, 1fr); }
   .phone.desk { overflow-x: auto; }
-  .phone.desk > :not(.toast) { min-width: 960px; }
+  .phone.desk > :not(.toast):not(.overlay-root) { min-width: 960px; }
   .shell { grid-template-columns: minmax(0, 1fr); gap: 14px; }
   .side { position: static; }
   .brand h1 { font-size: 24px; }
-  .phone { height: auto; border-radius: 20px; overflow: visible; }
+  .phone { height: auto; border-radius: 20px; overflow: visible; transform: none; }
   .app { overflow: visible; }
   .toast { position: fixed; bottom: 24px; }
 }
@@ -509,18 +824,18 @@ p { margin: 0; }
 .ribbon, .side-close { display: none; }
 .site body { padding: 0; background: var(--ivory); }
 .site .shell { display: block; max-width: none; }
-.site .side { display: none; position: fixed; inset: 0 0 0 auto; width: min(340px, 92vw); z-index: 30; background: var(--page); padding: calc(16px + env(safe-area-inset-top, 0px)) 16px calc(16px + env(safe-area-inset-bottom, 0px)); overflow-y: auto; box-shadow: var(--shadow-side); }
+.site .side { display: none; position: fixed; inset: 0 0 0 auto; width: min(340px, 92vw); z-index: 70; background: var(--page); padding: calc(16px + env(safe-area-inset-top, 0px)) 16px calc(16px + env(safe-area-inset-bottom, 0px)); overflow-y: auto; box-shadow: var(--sh-lg); }
 .site .side.open { display: flex; }
 .site .view-seg, .site #desk-hint, .site .browserbar { display: none !important; }
 .site .side-close { display: inline-flex; align-self: flex-end; }
-.site .phone { height: 100vh; height: 100dvh; border: 0; border-radius: 0; box-shadow: none; overflow: hidden; }
+.site .phone { height: 100vh; height: 100dvh; border: 0; border-radius: 0; box-shadow: none; overflow: hidden; transform: translateZ(0); }
 .site .phone.desk > :not(.toast) { min-width: 0; }
 .site .app { overflow-y: auto; }
 .site .toast { position: absolute; bottom: 24px; }
 .site .screen-tag, .site .tagwrap { display: none; }
 .site .ribbon { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: calc(6px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 6px max(16px, env(safe-area-inset-left, 0px)); background: var(--navy); color: var(--white); font-size: 12px; flex: none; }
 .ribbon button { border: 1px solid var(--ribbon-line); background: none; color: var(--white); border-radius: 99px; padding: 3px 12px; font-size: 12px; white-space: nowrap; }
-@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }
 </style>
 </head>
 <body>
@@ -559,8 +874,9 @@ p { margin: 0; }
   <main class="phone" id="phone" aria-label="เว็บ Educare">
     <div class="ribbon"><span>หน้าตัวอย่าง Educare · ข้อมูลทั้งหมดไม่ใช่ของจริง</span><button type="button" id="helper-btn">เมนูตัวอย่าง</button></div>
     <div class="browserbar" id="browserbar" hidden><span class="dots"><i></i><i></i><i></i></span><span class="url" id="url">educare.example</span></div>
-    <div class="app" id="screen"></div>
-    <div class="toast" id="toast" role="status" hidden></div>
+    <div class="app" id="screen" tabindex="-1"></div>
+    <div class="overlay-root" id="overlay-root"></div>
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
   </main>
 </div>
 
@@ -568,7 +884,7 @@ p { margin: 0; }
 (() => {
   "use strict";
 
-  // ---------- icons ----------
+  // ---------- icons (one style: 24px grid, round caps, stroke set per use) ----------
   const I = {
     cal: '<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>',
     bell: '<path d="M6 9a6 6 0 0 1 12 0c0 6 3 7 3 7H3s3-1 3-7M10 20a2 2 0 0 0 4 0"/>',
@@ -580,16 +896,36 @@ p { margin: 0; }
     clock: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
     shield: '<path d="M12 22s8-4.5 8-11V5l-8-3-8 3v6c0 6.5 8 11 8 11z"/>',
     chev: '<polyline points="15 18 9 12 15 6"/>',
+    chevr: '<polyline points="9 18 15 12 9 6"/>',
+    chevd: '<polyline points="6 9 12 15 18 9"/>',
     x: '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
     okc: '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>',
     plus: '<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',
+    menu: '<line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/>',
+    user: '<circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/>',
+    logout: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>',
+    swap: '<polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/>',
+    sliders: '<line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/>',
+    tag: '<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/>',
+    heart: '<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/>',
+    board: '<path d="M18 20V10M12 20V4M6 20v-6"/>',
+    home: '<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+    list: '<line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>',
+    wallet: '<rect x="2" y="6" width="20" height="14" rx="2"/><path d="M16 13h2M2 10h20M6 6V4h12v2"/>',
+    inbox: '<polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>',
+    edit: '<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+    link: '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+    atom: '<circle cx="12" cy="12" r="1.5"/><ellipse cx="12" cy="12" rx="10" ry="4"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)"/>',
+    flask: '<path d="M9 3h6M10 3v6L4.5 18.5A2 2 0 0 0 6.2 21.5h11.6a2 2 0 0 0 1.7-3L14 9V3"/><path d="M7 15h10"/>',
+    code: '<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>',
+    sigma: '<path d="M18 7V4H6l6 8-6 8h12v-3"/>',
     t1: '<path d="M22 10v6M2 10l10-5 10 5-10 5-10-5z M6 12v5c0 1.5 2.5 3 6 3s6-1.5 6-3v-5"/>',
     t2: '<path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/>',
     t3: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20 M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
-    t4: '<path d="M2 12h20 M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/>',
+    t4: '<path d="M2 12h20 M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/><circle cx="12" cy="12" r="10"/>',
     t5: '<path d="M13 2 3 14h7l-1 8 11-14h-7l1-6z"/>',
   };
-  const icon = (n, s = 18, w = 2) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[n]}</svg>`;
+  const icon = (n, s = 18, w = 2) => `<svg class="ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[n]}</svg>`;
 
   // ---------- helpers ----------
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -597,11 +933,10 @@ p { margin: 0; }
     const frac = Math.round(n * 100) % 100 !== 0;
     return '<span class="baht">฿</span>' + n.toLocaleString("th-TH", { minimumFractionDigits: frac ? 2 : 0, maximumFractionDigits: 2 });
   };
-  const GRADS = ["var(--g1)", "var(--g2)", "var(--g3)", "var(--g4)"];
   // Example platform fee. The real rate is not set yet, so it is labelled as an example everywhere.
   const FEE = 15;
 
-  // ---------- example data (all invented) ----------
+  // ---------- example data (all invented; "today" in the sample is Thu 5 Nov 2026) ----------
   const TUTORS = {
     prae: { name: "ครูแพร", initials: "พ", headline: "ติว TGAT และเคมี ม.ปลาย", since: "ส.ค. 2026", taught: 24, subjects: ["TGAT", "เคมี", "ภาษาอังกฤษ"], bio: "จบวิศวะเคมี จุฬาฯ สอนพิเศษมา 5 ปี เน้นทำโจทย์จริงและเทคนิคจับเวลา ห้องเรียนเล็ก ถามได้ตลอด" },
     ton: { name: "ครูต้น", initials: "ต", headline: "ฟิสิกส์ ม.ปลาย · คณิตสอบเข้า ม.4", since: "ก.ย. 2026", taught: 18, subjects: ["ฟิสิกส์", "คณิต"], bio: "อดีตนักเรียนค่ายฟิสิกส์โอลิมปิก อธิบายจากภาพก่อนสูตร ทุกคลาสมีชีทสรุปให้" },
@@ -609,14 +944,45 @@ p { margin: 0; }
     boss: { name: "ครูบอส", initials: "บ", headline: "Python และพื้นฐานโปรแกรมมิ่ง", since: "ต.ค. 2026", taught: 6, subjects: ["Python", "คอมพิวเตอร์"], bio: "Software engineer สอนมือใหม่ให้เขียนโปรแกรมแรกได้ภายในคลาสเดียว" },
   };
   const CLASSES = [
-    { id: "c1", title: "ติว TGAT ความถนัดทั่วไป: ตะลุยโจทย์ภาษาอังกฤษ", subject: "TGAT", level: "ม.6", tutor: "prae", when: "8 พ.ย. 10:00 - 12:00", hours: "2 ชั่วโมง", seats: 8, booked: 5, price: 350, via: "Zoom" },
-    { id: "c2", title: "ฟิสิกส์ ม.5 ไฟฟ้ากระแส สรุปเนื้อหา + ทำโจทย์", subject: "ฟิสิกส์", level: "ม.5", tutor: "ton", when: "9 พ.ย. 13:00 - 15:00", hours: "2 ชั่วโมง", seats: 6, booked: 2, price: 250, via: "Google Meet" },
-    { id: "c3", title: "IELTS Writing Task 2 ตัวต่อตัว", subject: "IELTS", level: "มหาลัย / ทำงาน", tutor: "jane", when: "11 พ.ย. 19:00 - 20:30", hours: "1.5 ชั่วโมง", seats: 1, booked: 0, price: 590, via: "Zoom" },
-    { id: "c4", title: "คณิต ม.3 เตรียมสอบเข้า ม.4: ทฤษฎีบทพีทาโกรัส", subject: "คณิต", level: "ม.3", tutor: "ton", when: "12 พ.ย. 18:00 - 19:30", hours: "1.5 ชั่วโมง", seats: 10, booked: 7, price: 180, via: "Google Meet" },
-    { id: "c6", title: "เคมี ม.4 ตารางธาตุ เข้าใจใน 90 นาที", subject: "เคมี", level: "ม.4", tutor: "prae", when: "13 พ.ย. 17:30 - 19:00", hours: "1.5 ชั่วโมง", seats: 8, booked: 8, price: 220, via: "Zoom" },
-    { id: "c5", title: "Python เบื้องต้นสำหรับมือใหม่ (ครั้งที่ 1)", subject: "Python", level: "ทั่วไป", tutor: "boss", when: "15 พ.ย. 09:30 - 12:00", hours: "2.5 ชั่วโมง", seats: 12, booked: 3, price: 290, via: "Zoom" },
+    { id: "c1", title: "ติว TGAT ความถนัดทั่วไป: ตะลุยโจทย์ภาษาอังกฤษ", subject: "TGAT", level: "ม.6", tutor: "prae", date: "2026-11-08", dow: "อา.", when: "8 พ.ย. 10:00 - 12:00", hours: "2 ชั่วโมง", seats: 8, booked: 5, price: 350, via: "Zoom" },
+    { id: "c2", title: "ฟิสิกส์ ม.5 ไฟฟ้ากระแส สรุปเนื้อหา + ทำโจทย์", subject: "ฟิสิกส์", level: "ม.5", tutor: "ton", date: "2026-11-09", dow: "จ.", when: "9 พ.ย. 13:00 - 15:00", hours: "2 ชั่วโมง", seats: 6, booked: 2, price: 250, via: "Google Meet" },
+    { id: "c3", title: "IELTS Writing Task 2 ตัวต่อตัว", subject: "IELTS", level: "มหาลัย / ทำงาน", tutor: "jane", date: "2026-11-11", dow: "พ.", when: "11 พ.ย. 19:00 - 20:30", hours: "1.5 ชั่วโมง", seats: 1, booked: 0, price: 590, via: "Zoom" },
+    { id: "c4", title: "คณิต ม.3 เตรียมสอบเข้า ม.4: ทฤษฎีบทพีทาโกรัส", subject: "คณิต", level: "ม.3", tutor: "ton", date: "2026-11-12", dow: "พฤ.", when: "12 พ.ย. 18:00 - 19:30", hours: "1.5 ชั่วโมง", seats: 10, booked: 7, price: 180, via: "Google Meet" },
+    { id: "c6", title: "เคมี ม.4 ตารางธาตุ เข้าใจใน 90 นาที", subject: "เคมี", level: "ม.4", tutor: "prae", date: "2026-11-13", dow: "ศ.", when: "13 พ.ย. 17:30 - 19:00", hours: "1.5 ชั่วโมง", seats: 8, booked: 8, price: 220, via: "Zoom" },
+    { id: "c5", title: "Python เบื้องต้นสำหรับมือใหม่ (ครั้งที่ 1)", subject: "Python", level: "ทั่วไป", tutor: "boss", date: "2026-11-15", dow: "อา.", when: "15 พ.ย. 09:30 - 12:00", hours: "2.5 ชั่วโมง", seats: 12, booked: 3, price: 290, via: "Zoom" },
   ];
   const cls = (id) => CLASSES.find((c) => c.id === id) || CLASSES[0];
+  const SOON_UNTIL = "2026-11-08"; // classes in the next 3 days get the "starts soon" badge
+
+  // Subject illustration used when a class has no picture: one tint + one icon per subject.
+  const SUBJ = {
+    TGAT: { ic: "t1", bg: "var(--gold-soft)", fg: "var(--amber-text)" },
+    "ฟิสิกส์": { ic: "atom", bg: "var(--blue-soft)", fg: "var(--deep-blue)" },
+    IELTS: { ic: "t4", bg: "var(--teal-soft)", fg: "var(--teal-ink)" },
+    "คณิต": { ic: "sigma", bg: "var(--purple-soft)", fg: "var(--purple-ink)" },
+    "เคมี": { ic: "flask", bg: "var(--teal-soft)", fg: "var(--teal-ink)" },
+    Python: { ic: "code", bg: "var(--slate-soft)", fg: "var(--navy)" },
+  };
+  const subjOf = (name) => SUBJ[name] || SUBJ[Object.keys(SUBJ).find((k) => String(name).includes(k))] || { ic: "t3", bg: "var(--slate-soft)", fg: "var(--navy)" };
+  const thStyle = (subject) => { const t = subjOf(subject); return `--th-bg:${t.bg};--th-fg:${t.fg}`; };
+  const thumb = (subject, cls2 = "") => `<span class="thumb ${cls2}" style="${thStyle(subject)}" aria-hidden="true">${icon(subjOf(subject).ic, 24, 1.8)}</span>`;
+  const left = (c) => Math.max(0, c.seats - (c.booked || 0));
+  const isFull = (c) => left(c) === 0;
+  const timeOf = (c) => c.when.replace(/^\d+ \S+ /, "").replace(" - ", "–");
+  const dayOf = (c) => (c.dow ? c.dow + " " : "") + c.when.match(/^\d+ \S+/)[0];
+  const startH = (c) => Number(c.when.replace(/^\d+ \S+ /, "").slice(0, 2));
+  const seatText = (c) => isFull(c) ? '<span class="seat-full">ที่นั่งเต็มแล้ว</span>'
+    : c.seats === 1 ? "ว่าง 1 ที่ (ตัวต่อตัว)"
+    : left(c) <= 2 ? `<span class="seat-low">เหลือ ${left(c)} ที่สุดท้าย</span>` : `เหลือ ${left(c)} จาก ${c.seats} ที่`;
+
+  // Search filters. In the real app search takes only a keyword and a subject today; the rest run on sample data.
+  const F0 = () => ({ subj: [], level: [], type: "all", price: "all", seats: false, date: "all", time: [], sort: "soon" });
+  const PRICE = { all: ["ทุกราคา"], u200: ["ไม่เกิน ฿200", (p) => p <= 200], mid: ["฿201–300", (p) => p > 200 && p <= 300], o300: ["มากกว่า ฿300", (p) => p > 300] };
+  const DATE = { all: "ทุกวัน", wknd: "เสาร์–อาทิตย์นี้ (7–8 พ.ย.)", d7: "ภายใน 7 วัน" };
+  const TIME = { am: ["ช่วงเช้า", "ก่อน 12:00", (h) => h < 12], pm: ["ช่วงบ่าย", "12:00–17:00", (h) => h >= 12 && h < 17], eve: ["ช่วงเย็น", "หลัง 17:00", (h) => h >= 17] };
+  const SORT = { soon: "วันเรียนใกล้สุด", priceAsc: "ราคาต่ำ → สูง", priceDesc: "ราคาสูง → ต่ำ", seats: "ที่นั่งเหลือมากสุด" };
+  const SUBJECTS = [...new Set(CLASSES.map((c) => c.subject))];
+  const LEVELS = ["ม.3", "ม.4", "ม.5", "ม.6", "มหาลัย / ทำงาน", "ทั่วไป"];
 
   const state = {
     view: "mobile",
@@ -629,7 +995,9 @@ p { margin: 0; }
     screen: "s1",
     classId: "c1",
     q: "",
-    filter: "all",
+    F: F0(),
+    sheet: false,
+    loading: false,
     bookTab: "upcoming",
     tclassTab: "open",
     approved: true,
@@ -655,10 +1023,11 @@ p { margin: 0; }
     bookings: [
       { id: "b1", classId: "c1", status: "paid" },
       { id: "b2", classId: "c4", status: "pending" },
-      { id: "b3", title: "เคมี ม.4 พันธะเคมี", when: "31 ต.ค. 17:30 - 19:00", tutor: "prae", price: 220, status: "done" },
+      { id: "b3", title: "เคมี ม.4 พันธะเคมี", subject: "เคมี", when: "31 ต.ค. 17:30 - 19:00", tutor: "prae", price: 220, status: "done" },
+      { id: "b4", title: "IELTS Speaking Part 2 ตัวต่อตัว", subject: "IELTS", when: "28 ต.ค. 19:00 - 20:00", tutor: "jane", price: 590, status: "expired" },
     ],
     notifs: [
-      { t: "มีคลาสตรงกับ Wish list “ฟิสิกส์ ม.5 เรื่องไฟฟ้า”", d: "ครูต้นเปิดคลาส อา. 9 พ.ย. เหลือ 4 ที่", go: "s3", cid: "c2", unread: true },
+      { t: "มีคลาสตรงกับ Wish list “ฟิสิกส์ ม.5 เรื่องไฟฟ้า”", d: "ครูต้นเปิดคลาส จ. 9 พ.ย. เหลือ 4 ที่", go: "s3", cid: "c2", unread: true },
       { t: "คลาส TGAT จะเริ่มพรุ่งนี้ 10:00", d: "ลิงก์ Zoom อยู่ในหน้าการจองของฉัน", go: "s8", unread: true },
       { t: "ชำระเงินสำเร็จ", d: "ติว TGAT ความถนัดทั่วไป · ฿350", go: "s8", unread: false },
       { t: "Wish list “ชีวะ ม.6 ระบบประสาท” หมดเวลาแล้ว", d: "ไม่มีคลาสที่ตรงภายใน 20 ก.ย. ตั้งใหม่ได้", go: "s9", unread: false },
@@ -683,153 +1052,287 @@ p { margin: 0; }
   const def = (id, role, title, status, render, asks) => { S[id] = { id, role, title, status, render, asks }; };
   const STATUS_TEXT = { built: "มีในแอปจริงแล้ว", partial: "มีบางส่วน", new: "ยังไม่มีในแอปจริง" };
 
-  // ---------- shared pieces (same markup as the real components) ----------
+  // ---------- shared pieces ----------
   const badge = (txt, kind) => `<span class="badge ${kind}">${txt}</span>`;
-  const gradOf = (c) => GRADS[Math.max(0, CLASSES.indexOf(c)) % GRADS.length];
   const kindText = (c) => (c.seats === 1 ? "ตัวต่อตัว" : "กลุ่มเรียน");
-  const timingBadge = (c) => (c.soon ? badge("เริ่มเร็วๆ นี้", "b-soon") : "");
+  // One status vocabulary for every booking everywhere (badge with a dot).
+  const BST = { paid: ["ยืนยันแล้ว", "b-teal"], pending: ["รอชำระเงิน", "b-gold"], done: ["เรียนจบแล้ว", "b-grey"], expired: ["ยกเลิก · ชำระไม่ทันเวลา", "b-red"], cancelled: ["ยกเลิกแล้ว", "b-red"] };
+  const statusBadge = (st) => badge(BST[st][0], BST[st][1] + " st");
   const field = (id, label, control, hint) => `<div class="fld g8"><label class="field-label" for="${id}">${label}</label>${control}${hint ? `<span class="field-hint">${hint}</span>` : ""}</div>`;
   const notice = (tone, html) => `<div class="notice ${tone}" role="${tone === "error" ? "alert" : "status"}">${html}</div>`;
-  const inote = (ic, html, cls = "") => `<div class="inote ${cls}">${icon(ic, 15)}<span>${html}</span></div>`;
+  const inote = (ic, html, cls2 = "") => `<div class="inote ${cls2}">${icon(ic, 15)}<span>${html}</span></div>`;
   const pwField = (id, label, auto, hint, aside = "") => `<div class="fld"><div class="lab-row"><label class="field-label" for="${id}">${label}</label>${aside}</div><div class="pw"><input class="input" id="${id}" type="password" autocomplete="${auto}" required minlength="8"><button type="button" class="pw-t" data-act="showpw" data-for="${id}" aria-label="แสดงรหัสผ่าน">แสดง</button></div>${hint ? `<span class="field-hint">${hint}</span>` : ""}</div>`;
   const emptyCard = (title, text, actions = "") => `<div class="cardx p32"><h2>${title}</h2><p class="p">${text}</p>${actions}</div>`;
+  const meter = (c) => {
+    const pct = Math.round(((c.booked || 0) / c.seats) * 100), l = left(c);
+    return `<div class="meter"><div class="meter-t"><span>${isFull(c) ? "<b>ที่นั่งเต็มแล้ว</b>" : `เหลือ <b>${l}</b> ที่`}</span><span>จองแล้ว ${c.booked || 0}/${c.seats}</span></div><div class="bar${isFull(c) ? " full" : l <= 2 && c.seats > 1 ? " low" : ""}"><i style="width:${pct}%"></i></div></div>`;
+  };
 
-  // ListingCard (components/ListingCard.tsx)
-  const lcardInner = (c) => `
-    <span class="lc-top" style="background:${gradOf(c)}">${badge(kindText(c), c.seats === 1 ? "b-glass-strong" : "b-glass")}${timingBadge(c)}</span>
-    <span class="lc-body">
-      <span class="lc-title">${esc(c.title)}</span>
-      <span class="lc-sub">${esc(c.subject)} · สอนโดย ${esc(TUTORS[c.tutor].name)}</span>
-      <span class="lc-when">${icon("cal", 14)}${esc(c.when)}</span>
-      <span style="flex:1"></span>
-      <span class="lc-foot"><span class="baht-price" style="font-size:19px">${baht(c.price)}<small> /คน</small></span><span class="btn btn-ghost btn-ghost-sm">ดูรายละเอียด</span></span>
-    </span>`;
-  const lcard = (c) => `<button type="button" class="lc" data-go="s3" data-cid="${c.id}">${lcardInner(c)}</button>`;
+  // Class card. The title is the card's only interactive element; its ::after covers the card so the whole card is clickable.
+  const lcardInner = (c, link = true) => {
+    const t = TUTORS[c.tutor] || TUTORS.ton;
+    const right = isFull(c) ? badge("เต็มแล้ว", "b-red") : c.date && c.date <= SOON_UNTIL ? badge("เริ่มเร็วๆ นี้", "b-soon") : "";
+    const title = link ? `<button type="button" class="lc-link" data-go="s3" data-cid="${c.id}">${esc(c.title)}</button>` : esc(c.title);
+    return `
+    <div class="lc-th" style="${thStyle(c.subject)}"><span class="lc-badges">${badge(kindText(c), "b-white")}${right}</span>${icon(subjOf(c.subject).ic, 104, 1.3)}</div>
+    <div class="lc-body">
+      <div class="lc-meta">${esc(c.subject)}${c.level ? ` · ${esc(c.level)}` : ""}</div>
+      <h3 class="lc-title">${title}</h3>
+      <div class="lc-tutor"><span class="av-sm">${t.initials}</span>สอนโดย ${esc(t.name)}</div>
+      <ul class="lc-facts"><li>${icon("cal", 15)}<span>${esc(dayOf(c))} · ${esc(timeOf(c))} น.</span></li><li>${icon("users", 15)}<span>${seatText(c)}</span></li></ul>
+      <div class="lc-foot"><span class="baht-price">${baht(c.price)}<small> /คน</small></span><span class="lc-cta" aria-hidden="true">ดูรายละเอียด${icon("chevr", 14, 2.4)}</span></div>
+    </div>`;
+  };
+  const lcard = (c) => `<article class="lc${isFull(c) ? " is-full" : ""}">${lcardInner(c)}</article>`;
+  const skeleton = () => `<div class="lgrid" aria-busy="true" aria-label="กำลังโหลดผลการค้นหา">${Array.from({ length: 6 }, () => `<div class="sk"><i class="sk-th"></i><div class="sk-b"><i style="height:10px;width:40%"></i><i style="height:14px;width:90%"></i><i style="height:14px;width:70%"></i><i style="height:10px;width:55%"></i><i style="height:22px;width:35%;margin-top:10px"></i></div></div>`).join("")}</div>`;
 
   const TOPICS = [
-    ["TCAS / TGAT / TPAT", "t1"], ["วิชามหาวิทยาลัย", "t2"], ["มัธยม ม.ต้น–ม.ปลาย", "t3"], ["ภาษา", "t4"], ["ทักษะ & อื่นๆ", "t5"],
+    ["TCAS / TGAT / TPAT", "t1", { subj: ["TGAT"] }, "var(--gold-soft)", "var(--amber-text)"],
+    ["วิชามหาวิทยาลัย", "t2", { level: ["มหาลัย / ทำงาน"] }, "var(--blue-soft)", "var(--deep-blue)"],
+    ["มัธยม ม.ต้น–ม.ปลาย", "t3", { level: ["ม.3", "ม.4", "ม.5", "ม.6"] }, "var(--teal-soft)", "var(--teal-ink)"],
+    ["ภาษา", "t4", { subj: ["IELTS"] }, "var(--purple-soft)", "var(--purple-ink)"],
+    ["ทักษะ & อื่นๆ", "t5", { subj: ["Python"] }, "var(--slate-soft)", "var(--navy)"],
   ];
   const TRUST = [
-    ["จองได้ทันที", "ไม่ต้องแชทหรือต่อรอง เลือกคลาสที่ใช่แล้วจองได้เลย", "var(--teal-soft)"],
-    ["ปลอดภัยด้วยระบบพักเงิน", "เงินของนักเรียนถูกพักไว้ในระบบก่อน โอนให้ติวเตอร์เมื่อเรียนจบแล้วเท่านั้น", "var(--gold-soft)"],
-    ["ราคาชัดเจนตั้งแต่แรก", "เห็นราคารวมตั้งแต่หน้าค้นหา ไม่มีค่าใช้จ่ายแอบแฝง", "var(--blue-soft)"],
-    ["เปิดกว้างสำหรับติวเตอร์ทุกคน", "ใครก็เปิดคลาสสอนได้ กำหนดราคาและเวลาด้วยตัวเอง", "var(--purple-soft)"],
+    ["จองได้ทันที", "ไม่ต้องแชทหรือต่อรอง เลือกคลาสที่ใช่แล้วจองได้เลย", "t5", "var(--teal-soft)", "var(--teal-ink)"],
+    ["ปลอดภัยด้วยระบบพักเงิน", "เงินของนักเรียนถูกพักไว้ในระบบก่อน โอนให้ติวเตอร์เมื่อเรียนจบแล้วเท่านั้น", "shield", "var(--gold-soft)", "var(--amber-text)"],
+    ["ราคาชัดเจนตั้งแต่แรก", "เห็นราคารวมตั้งแต่หน้าค้นหา ไม่มีค่าใช้จ่ายแอบแฝง", "tag", "var(--blue-soft)", "var(--deep-blue)"],
+    ["เปิดกว้างสำหรับติวเตอร์ทุกคน", "ใครก็เปิดคลาสสอนได้ กำหนดราคาและเวลาด้วยตัวเอง", "users", "var(--purple-soft)", "var(--purple-ink)"],
   ];
-  const POPULAR = ["แคลคูลัส", "TGAT", "ฟิสิกส์ ม.ปลาย", "TU101", "ภาษาอังกฤษ"];
+  const POPULAR = ["TGAT", "ฟิสิกส์", "IELTS", "คณิต ม.3", "Python", "แคลคูลัส"];
 
-  const heroSection = (filtered) => `
-    <section class="hero"><div class="container"><div class="hero-in">
-      <div class="eyebrow">Learn on demand. Succeed together.</div>
-      <h1>หาคลาสที่ใช่<br>เรียนได้<b>ทันที</b></h1>
-      <p>ค้นหาคลาสจากติวเตอร์ตัวจริง เลือกวันเวลาที่ใช่กับคุณ แล้วจองได้เลยโดยไม่ต้องแชทหรือรอใครตอบ</p>
-      <div class="hs-wrap">
-        <form class="hs" data-form="search" role="search">
-          ${icon("search", 20)}
-          <input id="q1" name="q" placeholder="ค้นหาวิชา ข้อสอบ หรือมหาวิทยาลัย..." value="${esc(state.q)}" aria-label="ค้นหาคลาส">
-          <button class="btn btn-primary" type="submit">ค้นหา</button>
-        </form>
-        <div class="chips hs-pop"><span>ยอดนิยม:</span>${POPULAR.map((t) => `<button type="button" class="chip${filtered && state.q === t ? " active" : ""}" data-q="${t}">${t}</button>`).join("")}</div>
+  // Hero illustration: abstract class card + calendar, brand tints only, no numbers or claims.
+  const HERO_ART = `<svg viewBox="0 0 480 360" role="presentation">
+    <circle cx="262" cy="180" r="160" fill="var(--ivory)"/>
+    <g fill="var(--stone-strong)">${Array.from({ length: 20 }, (_, i) => `<circle cx="${52 + (i % 5) * 16}" cy="${44 + Math.floor(i / 5) * 16}" r="2"/>`).join("")}</g>
+    <rect x="150" y="64" width="250" height="176" rx="18" fill="var(--blue-soft)" transform="rotate(-7 275 152)"/>
+    <g transform="translate(108 96)">
+      <rect width="272" height="196" rx="18" fill="var(--white)" stroke="var(--stone)" stroke-width="1.5"/>
+      <path d="M0 18a18 18 0 0 1 18-18h236a18 18 0 0 1 18 18v52H0z" fill="var(--teal-soft)"/>
+      <g transform="translate(210 14) scale(1.9)" fill="none" stroke="var(--teal)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5z M6 12v5c0 1.5 2.5 3 6 3s6-1.5 6-3v-5"/></g>
+      <rect x="20" y="22" width="64" height="22" rx="6" fill="var(--white)"/>
+      <rect x="20" y="88" width="190" height="12" rx="6" fill="var(--navy)"/>
+      <rect x="20" y="108" width="130" height="12" rx="6" fill="var(--stone)"/>
+      <circle cx="32" cy="146" r="12" fill="var(--navy)"/>
+      <rect x="52" y="141" width="78" height="10" rx="5" fill="var(--stone)"/>
+      <rect x="20" y="170" width="232" height="1.5" fill="var(--stone)"/>
+      <rect x="186" y="132" width="66" height="28" rx="14" fill="var(--gold)"/>
+    </g>
+    <g transform="translate(372 58)">
+      <circle r="38" fill="var(--navy)"/>
+      <g transform="translate(-14 -14) scale(1.17)" fill="none" stroke="var(--white)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></g>
+    </g>
+    <g transform="translate(96 296)">
+      <circle r="26" fill="var(--gold)"/>
+      <path d="M-10 0l7 7 13-14" fill="none" stroke="var(--navy)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+  </svg>`;
+
+  const searchForm = (id) => `
+    <form class="hs" data-form="search" role="search">
+      ${icon("search", 20)}
+      <input id="${id}" name="q" type="search" placeholder="ค้นหาวิชา ข้อสอบ หรือมหาวิทยาลัย..." value="${esc(state.q)}" aria-label="ค้นหาคลาส" autocomplete="off">
+      <button class="btn btn-primary" type="submit">ค้นหา</button>
+    </form>`;
+  const heroSection = () => `
+    <section class="hero"><div class="container"><div class="hero-grid">
+      <div class="hero-in">
+        <div class="eyebrow">Learn on demand. Succeed together.</div>
+        <h1>หาคลาสที่ใช่<br>เรียนได้<b>ทันที</b></h1>
+        <p class="lead">ค้นหาคลาสจากติวเตอร์ตัวจริง เลือกวันเวลาที่ใช่กับคุณ แล้วจองได้เลยโดยไม่ต้องแชทหรือรอใครตอบ</p>
+        <div class="hs-wrap">
+          ${searchForm("q1")}
+          <div class="chips scroll hs-pop"><span class="lbl">คำค้นยอดนิยม</span>${POPULAR.map((t) => `<button type="button" class="chip" data-q="${t}">${t}</button>`).join("")}</div>
+        </div>
       </div>
+      <div class="hero-art" aria-hidden="true">${HERO_ART}</div>
     </div></div></section>`;
-  const topicsSection = () => `
-    <section class="sect topics"><div class="container col">
-      <h2>หัวข้อที่ค้นหาบ่อย</h2>
-      <div class="topic-grid">${TOPICS.map(([label, k]) => `<div class="topic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">${I[k]}</svg><span>${label}</span></div>`).join("")}</div>
-    </div></section>`;
   const trustSection = () => `
-    <section class="trust"><div class="container col" style="gap:32px">
+    <section class="trust"><div class="container col" style="gap:var(--sp-8)">
       <h2>ทำไมต้อง Educare</h2>
-      <div class="trust-grid">${TRUST.map(([t, d, bg]) => `<div class="trust-it"><div class="trust-ic" style="background:${bg}"></div><b>${t}</b><span>${d}</span></div>`).join("")}</div>
+      <div class="trust-grid">${TRUST.map(([t, d, ic, bg, fg]) => `<div class="trust-it"><div class="trust-ic" style="background:${bg};color:${fg}">${icon(ic, 22, 1.8)}</div><b>${t}</b><span>${d}</span></div>`).join("")}</div>
     </div></section>`;
   const ctaSection = () => `
-    <section class="sect cta" id="tutor-cta"><div class="cta-in">
+    <section class="sect cta" id="tutor-cta"><div class="container"><div class="cta-in">
       <div class="cta-txt"><h2>มีความรู้ที่อยากแบ่งปัน?<br>มาเป็นติวเตอร์กับ <em>Educare</em></h2><p>เปิดคลาสของคุณเอง กำหนดราคาและเวลาเรียนได้ด้วยตัวเอง</p></div>
-      <button type="button" class="btn btn-secondary" style="height:48px;padding:0 28px;font-size:15px;flex:none" data-act="becometutor">${state.tutorOn ? "ไปโหมดติวเตอร์" : "สมัครเป็นติวเตอร์"}</button>
-    </div></section>`;
+      <button type="button" class="btn btn-accent btn-lg" style="flex:none" data-act="becometutor">${state.tutorOn ? "ไปโหมดติวเตอร์" : "สมัครเป็นติวเตอร์"}</button>
+    </div></div></section>`;
   const footerHTML = () => `
     <footer class="foot"><div class="container">
       <div class="foot-grid">
         <div class="foot-c"><div class="logo-s">educ<span>are</span></div><div class="blurb">แพลตฟอร์มรวมติวเตอร์รายย่อย ตอบโจทย์ทุกความต้องการเรียนรู้</div></div>
-        <div class="foot-c"><h4>สำหรับผู้เรียน</h4><button type="button" class="flink" data-go="s1">ค้นหาคลาส</button><button type="button" class="flink" data-act="toast" data-msg="หน้านี้ยังเป็นแค่ตัวอย่าง">วิธีการใช้งาน</button></div>
+        <div class="foot-c"><h4>สำหรับผู้เรียน</h4><button type="button" class="flink" data-q="">ค้นหาคลาส</button><button type="button" class="flink" data-act="toast" data-msg="หน้านี้ยังเป็นแค่ตัวอย่าง">วิธีการใช้งาน</button></div>
         <div class="foot-c"><h4>สำหรับติวเตอร์</h4><button type="button" class="flink" data-act="becometutor">สมัครเป็นติวเตอร์</button><button type="button" class="flink" data-act="toast" data-msg="หน้านี้ยังเป็นแค่ตัวอย่าง">วิธีเปิดคลาส</button></div>
-        <div class="foot-c"><h4>เกี่ยวกับเรา</h4><button type="button" class="flink" data-act="toast" data-msg="หน้านี้ยังเป็นแค่ตัวอย่าง">เกี่ยวกับ Educare</button><button type="button" class="flink" data-act="toast" data-msg="หน้านี้ยังเป็นแค่ตัวอย่าง">ติดต่อเรา</button></div>
+        <div class="foot-c"><h4>เกี่ยวกับเรา</h4><button type="button" class="flink" data-act="toast" data-msg="หน้านี้ยังเป็นแค่ตัวอย่าง">เกี่ยวกับ Educare</button><button type="button" class="flink" data-act="toast" data-msg="หน้านี้ยังเป็นแค่ตัวอย่าง">ติดต่อเรา</button><button type="button" class="flink" data-go="a6" data-legal="terms">ข้อกำหนดการใช้งาน</button></div>
       </div>
       <div class="copy">© 2026 Educare. All rights reserved.</div>
     </div></footer>`;
 
-  // Home page (app/page.tsx) with and without a search
-  const homeBody = (filtered) => {
-    const q = state.q.trim().toLowerCase();
-    let list = CLASSES.filter((c) => !filtered || !q || (c.title + c.subject + c.level + TUTORS[c.tutor].name).toLowerCase().includes(q));
-    if (filtered) {
-      if (state.filter === "one") list = list.filter((c) => c.seats === 1);
-      if (state.filter === "group") list = list.filter((c) => c.seats > 1);
-      if (state.filter === "cheap") list = list.filter((c) => c.price <= 250);
-    }
-    const f = (k, t) => `<button type="button" class="chip" data-filter="${k}" aria-pressed="${state.filter === k}">${t}</button>`;
-    const isF = filtered && (q || state.filter !== "all");
-    const results = list.length
-      ? `<div class="lgrid">${list.map(lcard).join("")}</div>`
-      : `<div class="empty-card"><span>ไม่พบคลาสที่ตรงกับการค้นหา ลองคำค้นอื่นดูนะ</span>
-          <button type="button" class="btn btn-primary" data-wish-from-search>ตั้ง Wish list “${esc(state.q)}”</button>
-          <button type="button" class="btn btn-ghost" data-go="s10">ดู Demand Board</button></div>`;
-    return `
-    ${heroSection(filtered)}
-    ${topicsSection()}
-    <section class="sect lsec" id="results"><div class="container col">
-      <div class="lsec-h"><h2>${filtered ? "ผลการค้นหา" : "คลาสที่เปิดสอนตอนนี้"}</h2>${isF ? '<a href="#" role="button" class="lnk w6" style="font-size:14px" data-q="">ล้างตัวกรอง</a>' : ""}</div>
-      ${filtered ? `<div class="chips">${f("all", "ทั้งหมด")}${f("group", "เรียนกลุ่ม")}${f("one", "ตัวต่อตัว")}${f("cheap", "ไม่เกิน ฿250")}</div>
-        ${list.length ? `<span class="t14" style="font-size:13px">พบ ${list.length} คลาส${q ? ` สำหรับ “${esc(state.q)}”` : ""}</span>` : ""}` : ""}
-      ${results}
-      ${filtered && list.length ? `<div class="hint-card"><div><b>หาไม่เจอ?</b><span>ตั้ง Wish list ไว้ พอมีติวเตอร์เปิดคลาสที่ตรงกัน เราจะแจ้งให้ทันที</span></div><button type="button" class="btn btn-ghost" data-go="s9">ตั้ง Wish list</button></div>` : ""}
+  // Home: hero with search, then classes straight away, then categories, trust and tutor CTA.
+  const homeBody = () => `
+    ${heroSection()}
+    <section class="sect home-sec"><div class="container col">
+      <div class="sec-h"><div><h2>คลาสที่เปิดรับจองตอนนี้</h2><p>เรียงตามวันเรียนที่ใกล้ที่สุด</p></div><a href="#" role="button" class="lnk w6" data-q="">ดูทั้งหมด${icon("chevr", 14, 2.4)}</a></div>
+      <div class="lgrid">${[...CLASSES].sort((a, b) => a.date.localeCompare(b.date)).map(lcard).join("")}</div>
+    </div></section>
+    <section class="sect home-sec"><div class="container col">
+      <div class="sec-h"><h2>เลือกตามหมวด</h2></div>
+      <div class="topic-grid">${TOPICS.map(([l, k, , bg, fg], i) => `<button type="button" class="topic" data-topic="${i}"><i style="background:${bg};color:${fg}">${icon(k, 20, 1.8)}</i><span>${l}</span></button>`).join("")}</div>
     </div></section>
     ${trustSection()}
     ${ctaSection()}`;
+
+  // ---------- search results ----------
+  const matchQ = (c, q) => !q || (c.title + c.subject + c.level + TUTORS[c.tutor].name).toLowerCase().includes(q);
+  function results(F = state.F) {
+    const q = state.q.trim().toLowerCase();
+    const list = CLASSES.filter((c) => matchQ(c, q)
+      && (!F.subj.length || F.subj.includes(c.subject))
+      && (!F.level.length || F.level.includes(c.level))
+      && (F.type === "all" || (F.type === "one" ? c.seats === 1 : c.seats > 1))
+      && (F.price === "all" || PRICE[F.price][1](c.price))
+      && (!F.seats || left(c) > 0)
+      && (F.date === "all" || (F.date === "wknd" ? c.date >= "2026-11-07" && c.date <= "2026-11-08" : c.date <= "2026-11-12"))
+      && (!F.time.length || F.time.some((k) => TIME[k][2](startH(c)))));
+    const by = { soon: (a, b) => a.date.localeCompare(b.date), priceAsc: (a, b) => a.price - b.price, priceDesc: (a, b) => b.price - a.price, seats: (a, b) => left(b) - left(a) }[F.sort];
+    return list.sort(by);
+  }
+  function activeList(F = state.F) {
+    const out = [];
+    F.subj.forEach((v) => out.push(["subj", v, v]));
+    F.level.forEach((v) => out.push(["level", v, v]));
+    if (F.type !== "all") out.push(["type", F.type, F.type === "one" ? "ตัวต่อตัว" : "เรียนกลุ่ม"]);
+    F.time.forEach((v) => out.push(["time", v, TIME[v][0]]));
+    if (F.date !== "all") out.push(["date", F.date, DATE[F.date]]);
+    if (F.price !== "all") out.push(["price", F.price, PRICE[F.price][0]]);
+    if (F.seats) out.push(["seats", "1", "มีที่ว่าง"]);
+    return out;
+  }
+  const activeHTML = () => {
+    const list = activeList();
+    const qChip = state.q ? [["q", "", `“${esc(state.q)}”`]] : [];
+    const all = [...qChip, ...list.map(([k, v, l]) => [k, v, esc(l)])];
+    if (!all.length) return "";
+    return all.map(([k, v, l]) => `<button type="button" class="chip" data-unf="${k}" data-v="${esc(v)}" aria-label="เอาตัวกรอง ${l} ออก">${l}<span class="x">${icon("x", 12, 2.6)}</span></button>`).join("")
+      + `<button type="button" class="btn btn-text" style="height:32px;font-size:var(--fs-xs)" data-act="clearf">ล้างทั้งหมด</button>`;
+  };
+  const resultsHTML = (list) => {
+    if (state.loading) return skeleton();
+    if (list.length) return `<div class="lgrid">${list.map(lcard).join("")}</div>
+      <div class="hint-card"><div><b>หาไม่เจอ?</b><span>ตั้ง Wish list ไว้ พอมีติวเตอร์เปิดคลาสที่ตรงกัน เราจะแจ้งให้ทันที</span></div><button type="button" class="btn btn-ghost" data-go="s9">ตั้ง Wish list</button></div>`;
+    const filtered = activeList().length > 0;
+    return `<div class="empty-card" role="status"><span class="empty-ic">${icon("search", 24)}</span>
+      <b>${filtered ? "ไม่พบคลาสที่ตรงกับตัวกรอง" : "ไม่พบคลาสที่ตรงกับการค้นหา"}</b>
+      <span>${filtered ? "ลองเอาตัวกรองบางอย่างออก หรือค้นด้วยคำอื่น" : "ลองคำค้นอื่นดูนะ หรือบอกเราว่าอยากเรียนอะไร"}</span>
+      <div class="row" style="gap:var(--sp-2)">${filtered ? '<button type="button" class="btn btn-primary" data-act="clearf">ล้างตัวกรอง</button>' : ""}
+        ${state.q ? `<button type="button" class="btn ${filtered ? "btn-ghost" : "btn-primary"}" data-wish-from-search>ตั้ง Wish list “${esc(state.q)}”</button>` : ""}
+        <button type="button" class="btn btn-ghost" data-go="s10">ดู Demand Board</button></div></div>`;
+  };
+  const fpanel = () => {
+    const F = state.F, q = state.q.trim().toLowerCase();
+    const cnt = (pred) => CLASSES.filter((c) => matchQ(c, q) && pred(c)).length;
+    const cb = (k, v, label, n) => `<label class="cb"><input type="checkbox" data-f="${k}" value="${esc(v)}" ${F[k].includes(v) ? "checked" : ""}><span>${label}${n !== undefined ? `<span class="cnt">${n}</span>` : ""}</span></label>`;
+    const radio = (k, v, label) => `<label class="cb"><input type="radio" name="f-${k}" data-f="${k}" value="${v}" ${F[k] === v ? "checked" : ""}><span>${label}</span></label>`;
+    const n = results().length;
+    return `<aside class="fpanel${state.sheet ? " open" : ""}" id="fpanel" aria-label="ตัวกรอง"${state.sheet ? ' role="dialog" aria-modal="true"' : ""}>
+      <button type="button" class="scrim" data-act="sheetclose" aria-label="ปิดตัวกรอง" tabindex="-1"></button>
+      <div class="fp-sheet">
+        <div class="fp-h"><h2>ตัวกรอง</h2><button type="button" class="ibtn plain" data-act="sheetclose" aria-label="ปิดตัวกรอง">${icon("x", 20)}</button></div>
+        <div class="fp-b">
+          <fieldset class="fg"><legend>รูปแบบคลาส</legend><div class="seg2">${[["all", "ทั้งหมด"], ["group", "กลุ่ม"], ["one", "ตัวต่อตัว"]].map(([v, l]) => `<label><input type="radio" name="f-type" data-f="type" value="${v}" ${F.type === v ? "checked" : ""}><span>${l}</span></label>`).join("")}</div></fieldset>
+          <fieldset class="fg"><legend>วิชา</legend>${SUBJECTS.map((s) => cb("subj", s, esc(s), cnt((c) => c.subject === s))).join("")}</fieldset>
+          <fieldset class="fg"><legend>ระดับชั้น</legend>${LEVELS.map((l) => cb("level", l, esc(l), cnt((c) => c.level === l))).join("")}</fieldset>
+          <fieldset class="fg"><legend>วันเรียน</legend>${Object.entries(DATE).map(([v, l]) => radio("date", v, l)).join("")}</fieldset>
+          <fieldset class="fg"><legend>ช่วงเวลา</legend>${Object.entries(TIME).map(([v, [l, h]]) => cb("time", v, `${l} <small>${h}</small>`)).join("")}</fieldset>
+          <fieldset class="fg"><legend>ราคาต่อคน</legend>${Object.entries(PRICE).map(([v, [l]]) => radio("price", v, l)).join("")}</fieldset>
+          <fieldset class="fg"><legend>ที่นั่ง</legend><label class="cb"><input type="checkbox" data-f="seats" value="1" ${F.seats ? "checked" : ""}><span>แสดงเฉพาะคลาสที่ยังมีที่ว่าง</span></label></fieldset>
+        </div>
+        <div class="fp-clear"><button type="button" class="btn btn-text" data-act="clearf"${activeList().length ? "" : " disabled"}>ล้างตัวกรองทั้งหมด</button></div>
+        <div class="fp-f"><button type="button" class="btn btn-ghost" data-act="clearf">ล้าง</button><button type="button" class="btn btn-primary" data-act="sheetclose" id="fp-apply">ดู ${n} คลาส</button></div>
+      </div>
+    </aside>`;
+  };
+  const countText = (n) => state.loading ? "กำลังค้นหา..." : `พบ ${n} คลาส`;
+  const searchBody = () => {
+    const list = results(), n = activeList().length;
+    return `
+    <section class="sbar"><div class="container">${searchForm("q2")}</div></section>
+    <div class="container"><div class="srch">
+      ${fpanel()}
+      <div class="res">
+        <div class="res-bar">
+          <div class="hgroup" style="gap:2px"><h1>${state.q ? `ผลการค้นหา “${esc(state.q)}”` : "คลาสทั้งหมด"}</h1><span class="res-count" id="res-count" aria-live="polite">${countText(list.length)}</span></div>
+          <div class="res-tools">
+            <button type="button" class="btn btn-ghost btn-sm fbtn" data-act="sheet" aria-haspopup="dialog">${icon("sliders", 16)}ตัวกรอง<span id="fbtn-n">${n ? `<span class="n">${n}</span>` : ""}</span></button>
+            <label class="sr-only" for="f-sort">เรียงตาม</label>
+            <select class="input" id="f-sort" data-sort>${Object.entries(SORT).map(([k, l]) => `<option value="${k}" ${state.F.sort === k ? "selected" : ""}>${l}</option>`).join("")}</select>
+          </div>
+        </div>
+        <div class="active-f" id="active-f">${activeHTML()}</div>
+        <div class="stack" style="gap:var(--sp-5)" id="res-body">${resultsHTML(list)}</div>
+      </div>
+    </div></div>`;
   };
 
-  def("s1", "student", "หน้าแรก + ค้นหา", "built", () => homeBody(false),
+  def("s1", "student", "หน้าแรก + ค้นหา", "built", () => homeBody(),
     ["เวลาจะหาที่เรียน ปกติพิมพ์ค้นหาด้วยคำแบบไหน (ชื่อวิชา, ชื่อข้อสอบ, ชื่อครู)?", "อยากเห็นอะไรบนการ์ดคลาสบ้างก่อนกดเข้าไปดู?"]);
 
-  def("s2", "student", "ผลการค้นหา", "partial", () => homeBody(true),
-    ["ตัวกรองไหนสำคัญที่สุด: วันเวลา, ราคา, ระดับชั้น, เรียนกลุ่ม/ตัวต่อตัว?", "ลองค้นคำที่ไม่มี (เช่น “ชีวะ”) — ถ้าเจอหน้านี้ จะตั้ง Wish list ไหม?"]);
+  def("s2", "student", "ผลการค้นหา + ตัวกรอง", "partial", () => searchBody(),
+    ["ตัวกรองไหนสำคัญที่สุด: วันเวลา, ราคา, ระดับชั้น, เรียนกลุ่ม/ตัวต่อตัว? (แอปจริงตอนนี้ค้นได้ด้วยคำค้นและวิชาเท่านั้น)", "ลองค้นคำที่ไม่มี (เช่น “แคลคูลัส”) — ถ้าเจอหน้านี้ จะตั้ง Wish list ไหม?"]);
 
   def("s3", "student", "รายละเอียดคลาส", "built", () => {
-    const c = cls(state.classId), t = TUTORS[c.tutor];
+    const c = cls(state.classId), t = TUTORS[c.tutor], full = isFull(c), l = left(c);
+    const backTo = state.prev === "s2" ? ["s2", "กลับไปผลการค้นหา"] : ["s1", "กลับไปหน้าค้นหา"];
+    const cta = (extra) => full
+      ? `<button type="button" class="btn btn-lg ${extra}" disabled>ที่นั่งเต็มแล้ว</button>`
+      : `<button type="button" class="btn btn-accent btn-lg ${extra}" data-go="s5">จองเลย</button>`;
     return `
-    <button type="button" class="back" data-go="s1">${icon("chev", 16)}กลับไปหน้าค้นหา</button>
+    <button type="button" class="back" data-go="${backTo[0]}">${icon("chev", 16)}${backTo[1]}</button>
     <div class="detail">
       <div class="d-main">
         <div class="d-head">
-          <div class="row" style="justify-content:flex-start;gap:10px">${badge(kindText(c), c.seats === 1 ? "b-teal" : "b-blue")}<span class="tag">${esc(c.subject)}</span></div>
+          <div class="chips">${badge(kindText(c), c.seats === 1 ? "b-teal" : "b-blue")}<span class="tag">${esc(c.subject)}</span><span class="tag">${esc(c.level)}</span>${full ? badge("เต็มแล้ว", "b-red") : ""}</div>
           <h1>${esc(c.title)}</h1>
           <button type="button" class="d-tutor" data-go="s4" data-tid="${c.tutor}">
             <span class="d-av">${t.initials}</span>
             <span style="display:flex;flex-direction:column;flex:1;min-width:0"><span style="font-size:14px;font-weight:700;color:var(--navy)">สอนโดย ${t.name}</span><span style="font-size:13px;color:var(--text-secondary)">${esc(t.headline)}</span></span>
-            <span class="lnk w5" style="font-size:13px">ดูโปรไฟล์</span>
+            <span class="lnk w5" style="font-size:13px;display:inline-flex;align-items:center;gap:2px">ดูโปรไฟล์${icon("chevr", 14, 2.4)}</span>
           </button>
         </div>
-        <div class="hr"></div>
+        <div class="facts">
+          <div class="fact">${icon("cal", 18)}<span>วันที่</span><b>${esc(dayOf(c))}</b></div>
+          <div class="fact">${icon("clock", 18)}<span>เวลา (${c.hours})</span><b>${esc(timeOf(c))} น.</b></div>
+          <div class="fact">${icon("video", 18)}<span>เรียนออนไลน์ผ่าน</span><b>${c.via}</b></div>
+          <div class="fact">${icon("users", 18)}<span>ที่นั่ง</span><b>${full ? "เต็มแล้ว" : c.seats === 1 ? "ตัวต่อตัว (1 ที่)" : `เหลือ ${l} จาก ${c.seats}`}</b></div>
+        </div>
         <div class="d-sec"><h2 class="s20">รายละเอียดคลาส</h2>
           <p>สรุปเนื้อหาที่ออกสอบบ่อย ทำโจทย์ไปพร้อมกันพร้อมเฉลยละเอียด มีชีทสรุปให้ดาวน์โหลดหลังเรียน ถามได้ตลอดคลาส</p></div>
-        <div class="hr"></div>
-        <div class="d-sec"><h2 class="s20">กำหนดการเรียน</h2>
-          <div class="d-facts">
-            <div class="d-fact">${icon("cal")}<span>${esc(c.when)} น. (${c.hours})</span></div>
-            <div class="d-fact">${icon("video")}<span>เรียนออนไลน์ผ่าน ${c.via} — ลิงก์จะส่งให้หลังชำระเงินสำเร็จ</span></div>
-            <div class="d-fact">${icon("users")}<span>รับสูงสุด ${c.seats} คน</span></div>
-          </div>
-        </div>
+        <div class="d-sec"><h2 class="s20">ก่อนจองควรรู้</h2>
+          <ul class="checklist">
+            <li>${icon("link", 16)}<span><b>ลิงก์ห้องเรียน ${c.via}</b> จะแสดงในหน้า “การจองของฉัน” หลังชำระเงินสำเร็จ</span></li>
+            <li>${icon("info", 16)}<span><b>ไม่มีแชทกับผู้สอนก่อนจอง</b> กรุณาอ่านรายละเอียดคลาสให้ครบก่อนกดจอง</span></li>
+            <li>${icon("shield", 16)}<span><b>เงินพักไว้ในระบบก่อน</b> โอนให้ติวเตอร์เมื่อเรียนจบแล้วเท่านั้น</span></li>
+          </ul></div>
+        <div class="cardx"><h2>การยกเลิกและคืนเงิน</h2>
+          <ul class="checklist">
+            <li>${icon("clock", 16)}<span>ต้องชำระภายใน 30 นาทีหลังกดจอง ถ้าไม่ชำระ การจองจะถูกยกเลิกเองและไม่มีการตัดเงิน</span></li>
+            <li>${icon("x", 16)}<span>ระหว่างที่ QR ยังใช้ได้ ยกเลิกการจองไม่ได้ ถ้าไม่ต้องการแล้วให้ปล่อย QR หมดเวลา</span></li>
+            <li>${icon("inbox", 16)}<span>ถ้าคลาสไม่เกิดขึ้นหรือมีปัญหา ติดต่อทีมงานพร้อมรายละเอียดการจอง ทีมงานพิจารณาคืนเงินเป็นรายกรณี</span></li>
+          </ul>
+          <a href="#" role="button" class="lnk w6" style="font-size:13px" data-go="a6" data-legal="terms">อ่านข้อกำหนดการใช้งาน ข้อ 5 (ฉบับร่าง)</a></div>
       </div>
-      <aside class="d-card">
+      <aside class="d-card" aria-label="จองคลาสนี้">
         <div class="d-price"><span class="baht-price">${baht(c.price)}</span><span>/ คน</span></div>
-        <div style="font-size:13px;color:var(--text-secondary)">รับสูงสุด ${c.seats} คน</div>
-        <button type="button" class="btn btn-secondary" style="width:100%;height:48px;font-size:15px" data-go="s5">จองเลย</button>
-        ${inote("info", "ระบบไม่มีแชทกับผู้สอนก่อนจอง กรุณาอ่านรายละเอียดคลาสให้ครบก่อนกดจองเลย")}
+        <div class="d-when"><div>${icon("cal", 15)}${esc(dayOf(c))} · ${esc(timeOf(c))} น.</div><div>${icon("video", 15)}เรียนออนไลน์ผ่าน ${c.via}</div></div>
+        ${meter(c)}
+        ${cta("btn-block")}
+        ${full ? inote("heart", 'ตั้ง <a href="#" role="button" class="lnk w6" data-go="s9">Wish list</a> ไว้ เราจะแจ้งเมื่อมีรอบใหม่') : inote("info", "ระบบไม่มีแชทกับผู้สอนก่อนจอง กรุณาอ่านรายละเอียดคลาสให้ครบก่อนกดจองเลย")}
         <div class="hr"></div>
         ${inote("shield", "เงินพักไว้ในระบบก่อน โอนให้ติวเตอร์เมื่อเรียนจบ", "teal")}
       </aside>
-    </div>`;
-  }, ["ข้อมูลไหนที่ยังขาด ทำให้ไม่กล้ากดจอง?", "อยากเห็นรีวิวจากคนที่เคยเรียนไหม (ตอนนี้ยังไม่มีระบบรีวิว)?"]);
+    </div>
+    <div class="sticky-cta"><div><span class="baht-price">${baht(c.price)}<small> /คน</small></span><div class="sub">${full ? "ที่นั่งเต็มแล้ว" : `${esc(dayOf(c))} · เหลือ ${l} ที่`}</div></div>${cta("")}</div>`;
+  }, ["ข้อมูลไหนที่ยังขาด ทำให้ไม่กล้ากดจอง?", "อยากเห็นรีวิวจากคนที่เคยเรียนไหม (ตอนนี้ยังไม่มีระบบรีวิว)?", "ข้อความเรื่องยกเลิก/คืนเงินเข้าใจง่ายไหม?"]);
 
   def("s4", "student", "โปรไฟล์ติวเตอร์", "new", () => {
     const id = state.tutorId || "ton", t = TUTORS[id];
@@ -840,20 +1343,22 @@ p { margin: 0; }
       <div class="d-av lg">${t.initials}</div>
       <h1 style="font-size:26px">${t.name}</h1>
       <p class="p">${esc(t.headline)}</p>
-      ${badge(`${icon("check", 13, 2.6)}&nbsp;ทีมงานอนุมัติแล้ว`, "b-teal")}
+      ${badge(`${icon("check", 13, 2.6)}ทีมงานอนุมัติแล้ว`, "b-teal")}
     </div>
     <div class="stats s2"><div class="stat"><span>สอนไปแล้ว</span><b>${t.taught} คลาส</b></div><div class="stat"><span>อยู่กับ Educare ตั้งแต่</span><b style="font-size:18px">${t.since}</b></div></div>
     <div class="d-sec"><h2 class="s20">เกี่ยวกับครู</h2><p>${esc(t.bio)}</p><div class="chips">${t.subjects.map((s) => `<span class="tag">${s}</span>`).join("")}</div></div>
     <div class="d-sec"><h2 class="s20">คลาสที่เปิดอยู่</h2><div class="lgrid">${theirs.map(lcard).join("")}</div></div>`;
   }, ["ก่อนจอง อยากรู้อะไรเกี่ยวกับครูบ้าง (ประวัติการศึกษา, ผลงานลูกศิษย์, วิดีโอแนะนำตัว)?", "ป้าย “ทีมงานอนุมัติแล้ว” ช่วยให้มั่นใจขึ้นไหม?"]);
 
-  const miniClass = (c) => `<div class="mini"><div class="mini-th" style="background:${gradOf(c)}"></div><div class="mini-b">
+  const miniClass = (c) => `<div class="mini">${thumb(c.subject)}<div class="mini-b">
     <div>${badge(kindText(c), c.seats === 1 ? "b-teal" : "b-blue")}</div><div class="t">${esc(c.title)}</div>
-    <div class="m">สอนโดย ${esc(TUTORS[c.tutor].name)} · ${esc(c.when)} น.</div></div></div>`;
+    <div class="m">สอนโดย ${esc(TUTORS[c.tutor].name)} · ${esc(dayOf(c))} ${esc(timeOf(c))} น.</div></div></div>`;
+  const steps = (n) => `<ol class="steps" aria-label="ขั้นตอนการจอง">${["ยืนยันการจอง", "ชำระเงิน", "เสร็จสิ้น"].map((t, i) => `<li class="${i + 1 < n ? "done" : i + 1 === n ? "cur" : ""}"${i + 1 === n ? ' aria-current="step"' : ""}>${i + 1}. ${t}</li>`).join("")}</ol>`;
 
   def("s5", "student", "ยืนยันการจอง", "built", () => {
     const c = cls(state.classId);
     return `
+    ${steps(1)}
     <h1 class="s26">ยืนยันการจอง</h1>
     ${miniClass(c)}
     <div class="cardx">
@@ -863,65 +1368,68 @@ p { margin: 0; }
       <div class="hr"></div>
       <div class="sum-total"><b>ยอดที่ต้องชำระ</b><span class="baht-price">${baht(c.price)}</span></div>
     </div>
-    <div class="cardx" style="gap:12px"><div class="sumhead">ชำระด้วย PromptPay</div>
-      <p class="p" style="font-size:13px;line-height:20px">สแกน QR ด้วยแอปธนาคารใดก็ได้ ภายใน 30 นาที ถ้าไม่ชำระ การจองจะถูกยกเลิกอัตโนมัติ</p></div>
+    <div class="cardx" style="gap:12px"><div class="sumhead">วิธีชำระเงิน</div>
+      <div class="pay-m"><span class="pp">Prompt<br>Pay</span><div><b>PromptPay QR</b><span>สแกนด้วยแอปธนาคารใดก็ได้</span></div><span class="ok">${icon("okc", 20)}</span></div>
+      <p class="field-hint">ต้องชำระภายใน 30 นาที ถ้าไม่ชำระ การจองจะถูกยกเลิกอัตโนมัติและที่นั่งถูกปล่อยคืนให้คนอื่น</p></div>
     <label class="cb"><input type="checkbox" id="agree-terms" checked><span>ฉันอ่านและยอมรับเงื่อนไขการจองและการคืนเงินแล้ว</span></label>
-    <button type="button" class="btn btn-secondary" style="width:100%;height:50px;font-size:15px" data-act="pay">ไปหน้าชำระเงิน</button>
-    ${inote("clock", "กรุณาชำระเงินภายใน 30 นาที มิฉะนั้นที่นั่งจะถูกปล่อยคืนให้คนอื่นจองแทนโดยอัตโนมัติ")}
+    <div id="pay-err" hidden></div>
+    <button type="button" class="btn btn-accent btn-lg btn-block" data-act="pay">ไปหน้าชำระเงิน</button>
     ${inote("shield", "เงินของคุณจะถูกพักไว้ในระบบก่อน แล้วโอนให้ติวเตอร์เมื่อเรียนจบแล้วเท่านั้น", "teal")}`;
   }, ["อยากจ่ายช่องทางไหนนอกจาก PromptPay (บัตรเครดิต, TrueMoney)?", "เวลา 30 นาทีพอไหม?"]);
 
   def("s6", "student", "ชำระเงิน (PromptPay QR)", "new", () => {
     const c = cls(state.classId);
     return `
-    <h1 class="s26">ชำระเงิน</h1>
-    <div class="cardx qr">
-      <span class="t14">ยอดชำระ</span><div class="baht-price" style="font-size:28px">${baht(c.price)}</div>
+    ${steps(2)}
+    <div class="row wrap"><h1 class="s26">ชำระเงิน</h1>${statusBadge("pending")}</div>
+    <div class="cardx qr" style="gap:var(--sp-2)">
+      <span class="t14">ยอดชำระ</span><div class="baht-price" style="font-size:30px">${baht(c.price)}</div>
       <canvas id="qr" width="232" height="232" aria-label="QR PromptPay ตัวอย่าง"></canvas>
       ${badge("QR ตัวอย่าง สแกนไม่ได้", "b-grey")}
-      <span class="t14">ชำระภายใน</span><div class="timer" id="qr-timer">30:00</div>
+      <span class="t14" style="padding-top:var(--sp-2)">QR หมดอายุใน</span><div class="timer" id="qr-timer">30:00</div>
+      <span class="waiting">รอการชำระเงิน หน้านี้จะเปลี่ยนเองเมื่อชำระสำเร็จ</span>
     </div>
     <div class="cardx"><div class="flow"><div><i>1</i>เปิดแอปธนาคาร</div><div><i>2</i>สแกน QR</div><div><i>3</i>ยืนยันยอด</div><div><i>4</i>รอหน้านี้เปลี่ยนเอง</div></div></div>
-    ${notice("warning", "<strong>ระหว่างที่ QR ยังใช้ได้ ยกเลิกการจองไม่ได้</strong><br>ถ้าไม่ต้องการแล้ว ปล่อยให้ QR หมดเวลา การจองจะถูกยกเลิกเอง")}
-    <button type="button" class="btn btn-primary" style="width:100%;height:50px;font-size:15px" data-act="paid">จำลอง: ชำระเงินสำเร็จ</button>`;
+    ${notice("warning", "<strong>ระหว่างที่ QR ยังใช้ได้ ยกเลิกการจองไม่ได้</strong><br>ถ้าไม่ต้องการแล้ว ปล่อยให้ QR หมดเวลา การจองจะถูกยกเลิกเองโดยไม่มีการตัดเงิน")}
+    <div class="demo-row"><span class="lbl">ปุ่มจำลองสำหรับ prototype</span><button type="button" class="btn btn-primary" data-act="paid">จำลอง: ชำระเงินสำเร็จ</button><button type="button" class="btn btn-ghost" data-act="expire">จำลอง: QR หมดเวลา</button></div>`;
   }, ["เคยจ่ายด้วย QR ในเว็บอื่นแล้วงงตรงไหนไหม?", "ถ้าจ่ายแล้วหน้าจอไม่เปลี่ยน จะทำอย่างไรต่อ?"]);
 
   def("s7", "student", "จองสำเร็จ", "new", () => {
     const c = cls(state.classId);
     return `
-    <div class="cardx p24">
-      <div class="ok-ic">${icon("okc", 26)}<h2>จองสำเร็จแล้ว</h2></div>
-      <div style="font-size:15px;font-weight:700;color:var(--navy)">${esc(c.title)}</div>
-      <div class="sum-row"><span>${esc(TUTORS[c.tutor].name)} · ${esc(c.when)} น.</span></div>
-      <div class="row"><span class="k">ยอดที่ชำระ</span><span class="baht-price" style="font-size:22px">${baht(c.price)}</span></div>
-      <div class="row"><span class="k">สถานะการจอง</span>${badge("ยืนยันแล้ว", "b-teal")}</div>
+    ${steps(3)}
+    <div class="cardx p24" style="gap:var(--sp-4)">
+      <div class="ok-hero"><span class="ok-c">${icon("check", 30, 2.4)}</span><h2>จองสำเร็จแล้ว</h2><p>เราส่งใบยืนยันไปที่อีเมลของคุณแล้ว และจะเตือนก่อนเริ่มคลาส 1 ชั่วโมง</p></div>
+      ${miniClass(c)}
+      <div class="row"><span class="k">ยอดที่ชำระ</span><span class="baht-price" style="font-size:20px">${baht(c.price)}</span></div>
+      <div class="row"><span class="k">สถานะการจอง</span>${statusBadge("paid")}</div>
+      <div class="row"><span class="k">ลิงก์ห้องเรียน ${c.via}</span><a href="#" role="button" class="lnk w6" style="font-size:14px" data-go="s8">ดูในการจองของฉัน</a></div>
       <div class="hr"></div>
-      <p class="p" style="font-size:13px;line-height:20px">ลิงก์ห้องเรียน ${c.via} จะอยู่ในหน้า <a href="#" role="button" class="lnk w6" data-go="s8" style="color:var(--teal)">การจองของฉัน</a> เราส่งใบยืนยันไปที่อีเมลของคุณแล้ว และจะส่งอีเมลเตือนก่อนเริ่มคลาส 1 ชั่วโมง</p>
-      <button type="button" class="btn btn-secondary btn-block" data-go="s8">ดูการจองของฉัน</button>
+      <button type="button" class="btn btn-primary btn-block" data-go="s8">ดูการจองของฉัน</button>
       <button type="button" class="btn btn-ghost btn-block" data-go="s1">หาคลาสอื่นต่อ</button>
     </div>`;
   }, ["อยากได้การเตือนแบบไหน (อีเมล, LINE, เพิ่มลงปฏิทิน)?"]);
 
   def("s8", "student", "การจองของฉัน", "partial", () => {
-    const tabs = { upcoming: "กำลังจะถึง", pending: "รอชำระเงิน", done: "ผ่านมาแล้ว" };
-    const want = { upcoming: "paid", pending: "pending", done: "done" }[state.bookTab];
-    const rows = state.bookings.filter((b) => b.status === want).map((b) => {
+    const tabs = { upcoming: ["กำลังจะถึง", ["paid"]], pending: ["รอชำระเงิน", ["pending"]], done: ["ผ่านมาแล้ว / ยกเลิก", ["done", "expired", "cancelled"]] };
+    const want = tabs[state.bookTab][1];
+    const rows = state.bookings.filter((b) => want.includes(b.status)).map((b) => {
       const c = b.classId ? cls(b.classId) : null;
-      const title = c ? c.title : b.title, when = c ? c.when : b.when, tutor = TUTORS[c ? c.tutor : b.tutor].name, price = c ? c.price : b.price;
-      const th = c ? gradOf(c) : "var(--g4)";
-      const sbadge = b.status === "paid" ? badge("ยืนยันแล้ว", "b-teal") : b.status === "pending" ? badge("รอชำระเงิน", "b-gold") : badge("เรียนจบแล้ว", "b-grey");
-      const action = b.status === "paid" ? `<div class="b-note">ลิงก์ห้องเรียนจากติวเตอร์ · กดเข้าได้ตลอด</div><div class="b-act"><button type="button" class="btn btn-secondary" data-act="zoom">เข้าห้องเรียน (${c.via})</button><button type="button" class="btn btn-ghost" data-go="s3" data-cid="${c.id}">ดูรายละเอียด</button></div>`
-        : b.status === "pending" ? `<div class="b-warn">${icon("clock", 13)}QR หมดอายุใน 18 นาที กรุณาชำระก่อนที่นั่งจะถูกปล่อยคืน</div><div class="b-act"><button type="button" class="btn btn-secondary" data-go="s6" data-cid="${b.classId}">ชำระเงินตอนนี้</button></div>`
-        : `<div class="b-act"><button type="button" class="btn btn-ghost" data-go="s3" data-cid="${b.classId || "c6"}">ดูรายละเอียด</button></div>`;
-      return `<div class="bcard${b.status === "done" ? " dim" : ""}"><div class="b-th" style="background:${th}"></div><div class="b-body">
-        <div class="b-top">${sbadge}<span class="baht-price">${baht(price)}</span></div>
-        <div class="b-title">${esc(title)}</div><div class="b-meta">สอนโดย ${tutor} · ${when} น.</div>${action}</div></div>`;
+      const title = c ? c.title : b.title, when = c ? `${dayOf(c)} ${timeOf(c)}` : b.when.replace(" - ", "–"), tutor = TUTORS[c ? c.tutor : b.tutor].name, price = c ? c.price : b.price;
+      const action = b.status === "paid" ? `<div class="b-note">ลิงก์ห้องเรียนจากติวเตอร์ · กดเข้าได้ตลอด</div><div class="b-act"><button type="button" class="btn btn-primary btn-sm" data-act="zoom">${icon("video", 16)}เข้าห้องเรียน (${c.via})</button><button type="button" class="btn btn-ghost btn-sm" data-go="s3" data-cid="${c.id}">ดูรายละเอียด</button></div>`
+        : b.status === "pending" ? `<div class="b-warn">${icon("clock", 13)}QR หมดอายุใน 18 นาที กรุณาชำระก่อนที่นั่งจะถูกปล่อยคืน</div><div class="b-act"><button type="button" class="btn btn-accent btn-sm" data-go="s6" data-cid="${b.classId}">ชำระเงินตอนนี้</button></div>`
+        : b.status === "expired" ? `<div class="b-note">ไม่ได้ชำระภายใน 30 นาที การจองถูกยกเลิกอัตโนมัติ ไม่มีการตัดเงิน</div>${c && !isFull(c) ? `<div class="b-act"><button type="button" class="btn btn-ghost btn-sm" data-go="s3" data-cid="${c.id}">จองใหม่อีกครั้ง</button></div>` : ""}`
+        : `<div class="b-act"><button type="button" class="btn btn-ghost btn-sm" data-go="s3" data-cid="${b.classId || "c6"}">ดูรายละเอียด</button></div>`;
+      return `<div class="bcard${["done", "expired", "cancelled"].includes(b.status) ? " dim" : ""}">${thumb(c ? c.subject : b.subject)}<div class="b-body">
+        <div class="b-top">${statusBadge(b.status)}<span class="baht-price">${baht(price)}</span></div>
+        <div class="b-title">${esc(title)}</div><div class="b-meta">สอนโดย ${tutor} · ${esc(when)} น.</div>${action}</div></div>`;
     }).join("");
+    const count = (k) => state.bookings.filter((b) => tabs[k][1].includes(b.status)).length;
     return `
     <h1>การจองของฉัน</h1>
-    <div class="chips">${Object.entries(tabs).map(([k, v]) => `<button type="button" class="chip" data-booktab="${k}" aria-pressed="${state.bookTab === k}">${v}</button>`).join("")}</div>
-    ${rows ? `<div class="stack" style="gap:24px">${rows}</div>` : emptyCard("ยังไม่มีรายการ", "ลองไปค้นหาคลาสที่สนใจดูสิ", '<button type="button" class="btn btn-secondary" style="margin-top:8px" data-go="s1">ค้นหาคลาสเรียน</button>')}
-    <div class="cardx"><div class="sumhead">มีปัญหาหรืออยากขอคืนเงิน?</div><p class="p" style="font-size:13px;line-height:20px">ติดต่อทีมงานทางอีเมล support@educare.example (ที่อยู่ตัวอย่าง) แจ้งชื่อคลาสและวันที่จอง</p></div>`;
+    <div class="tabs" role="tablist" aria-label="สถานะการจอง">${Object.entries(tabs).map(([k, [v]]) => `<button type="button" class="tab" role="tab" data-booktab="${k}" aria-selected="${state.bookTab === k}">${v}<span class="c">${count(k)}</span></button>`).join("")}</div>
+    ${rows ? `<div class="stack" style="gap:var(--sp-4)" role="tabpanel">${rows}</div>` : `<div class="empty-card"><span class="empty-ic">${icon("cal", 24)}</span><b>ยังไม่มีรายการ</b><span>ลองไปค้นหาคลาสที่สนใจดูสิ</span><button type="button" class="btn btn-primary" data-go="s1">ค้นหาคลาสเรียน</button></div>`}
+    <div class="cardx"><div class="sumhead">มีปัญหาหรืออยากขอคืนเงิน?</div><p class="p" style="font-size:13px;line-height:20px">ติดต่อทีมงานทางอีเมล support@educare.example (ที่อยู่ตัวอย่าง) แจ้งชื่อคลาสและวันที่จอง ทีมงานพิจารณาคืนเงินเป็นรายกรณี</p></div>`;
   }, ["อยากยกเลิกเองในแอปไหม หรือติดต่อทีมงานก็โอเค?", "ลิงก์ห้องเรียนควรกดได้ตลอด หรือเปิดแค่ใกล้เวลาเรียน?"]);
 
   const wishForm = () => `
@@ -934,7 +1442,7 @@ p { margin: 0; }
         <input class="input" id="w-until" name="until" type="date" min="2026-11-04" value="2026-11-30" aria-label="วันที่สุดท้าย">
         <span class="field-hint">ถ้ากำหนดวัน คลาสที่เรียนหลังวันนั้นจะไม่ถูกแจ้ง</span></div>
       <label class="cb"><input type="checkbox" name="public" id="w-public" ${state.wishPublic ? "checked" : ""}><span>แสดงบน Demand Board ด้วย (ไม่แสดงชื่อ ติวเตอร์เห็นว่ามีคนอยากเรียนกี่คน)</span></label>
-      <button class="btn btn-secondary" type="submit">บันทึก</button>
+      <button class="btn btn-primary" type="submit">บันทึก</button>
     </form>`;
 
   def("s9", "student", "Wish list", "new", () => {
@@ -947,7 +1455,7 @@ p { margin: 0; }
     }).join("");
     return `
     <div class="hgroup"><h1>Wish list</h1><p class="sub14">เขียนสิ่งที่อยากเรียนไว้ พอมีติวเตอร์เปิดคลาสที่ตรงกัน เราจะแจ้งคุณทันที</p></div>
-    <div><button type="button" class="btn btn-secondary" data-act="wishform">${state.wishOpen ? "ปิดฟอร์ม" : `${icon("plus", 16, 2.2)}เพิ่มสิ่งที่อยากเรียน`}</button></div>
+    <div><button type="button" class="btn btn-primary" data-act="wishform">${state.wishOpen ? "ปิดฟอร์ม" : `${icon("plus", 16, 2.2)}เพิ่มสิ่งที่อยากเรียน`}</button></div>
     ${state.wishOpen ? wishForm() : ""}
     <div class="stack" style="gap:16px">${items}</div>
     <p class="field-hint">ปิดสวิตช์ = หยุดแจ้งเตือนรายการนั้น · ถ้าคุณจองคลาสที่ตรงแล้ว รายการจะหยุดแจ้งเอง</p>`;
@@ -961,7 +1469,7 @@ p { margin: 0; }
     <div class="stack" style="gap:16px">${list.map((d) => `<div class="lrow"><div class="grow"><div class="b-title">${esc(d.topic)}</div><div class="b-meta">${esc(d.level)} · โพสต์ ${d.age}</div>
       ${d.opened ? `<div><button type="button" class="badge b-teal" style="border:0" data-go="s3" data-cid="${d.opened}">มีติวเตอร์เปิดคลาสแล้ว ›</button></div>` : ""}</div>
       <button type="button" class="plus" data-plus="${d.id}" aria-pressed="${d.mine}">+1 · ${d.count}</button></div>`).join("")}</div>
-    <div><button type="button" class="btn btn-secondary" data-act="postdemand">โพสต์สิ่งที่อยากเรียน</button></div>`;
+    <div><button type="button" class="btn btn-primary" data-act="postdemand">โพสต์สิ่งที่อยากเรียน</button></div>`;
   }, ["ถ้าเห็นคนอื่นอยากเรียนเรื่องเดียวกัน จะกด +1 ไหม?", "อยากให้แสดงชื่อคนโพสต์ไหม หรือไม่ระบุตัวตนดีกว่า?"]);
 
   def("s11", "student", "การแจ้งเตือน", "new", () => `
@@ -984,7 +1492,7 @@ p { margin: 0; }
       ${[["คลาสตรงกับ Wish list", true], ["เตือนก่อนเริ่มคลาส", true], ["ข่าวสารและโปรโมชัน", false]].map(([t, on], i) => `<div class="lrow"><div class="grow" style="font-size:14px">${t}</div><label class="switch"><input type="checkbox" id="mail-${i}" ${on ? "checked" : ""} aria-label="${t}"><span></span></label></div>`).join("")}
     </div></div>
     <div class="cardx"><div class="sumhead">สอนเองได้ไหม?</div><p class="p" style="font-size:13px;line-height:20px">เปิดโหมดติวเตอร์ แล้วรอทีมงานอนุมัติก่อนโพสต์คลาสแรก ใช้บัญชีเดียวกันทั้งเรียนและสอน</p>
-      <div><button type="button" class="btn btn-secondary" data-act="becometutor">${state.tutorOn ? "ไปโหมดติวเตอร์" : "เปิดโหมดติวเตอร์"}</button></div></div>
+      <div><button type="button" class="btn btn-primary" data-act="becometutor">${state.tutorOn ? "ไปโหมดติวเตอร์" : "เปิดโหมดติวเตอร์"}</button></div></div>
     <div class="row wrap"><a href="#" role="button" class="lnk" style="font-size:14px" data-go="a6" data-legal="terms">ข้อกำหนดการใช้งาน · นโยบายความเป็นส่วนตัว</a><button type="button" class="btn btn-ghost btn-ghost-sm" data-act="logout">ออกจากระบบ</button></div>`,
     ["อยากแก้อะไรในบัญชีได้เองบ้าง (ชื่อ, รูป, เบอร์โทร)?"]);
 
@@ -1101,22 +1609,42 @@ p { margin: 0; }
   const approvalNotice = (compact) => state.approved ? "" : compact
     ? `<div class="cardx warn-card" role="status" style="padding:12px 16px;gap:0;border-radius:10px"><p style="font-size:14px;line-height:22px;color:var(--navy)">${pendingMsg}</p></div>`
     : `<div class="cardx warn-card p24" role="status" style="gap:6px"><h2>รอการอนุมัติบัญชีติวเตอร์</h2><p class="p">${pendingMsg}</p></div>`;
-  const demoApproval = () => `<label class="cb" style="font-size:13px;color:var(--text-secondary)"><input type="checkbox" data-act="approve" ${state.approved ? "checked" : ""}><span>จำลอง: ทีมงานอนุมัติแล้ว</span></label>`;
+  const demoApproval = () => `<label class="demo-ctl"><input type="checkbox" data-act="approve" ${state.approved ? "checked" : ""}><span>จำลอง: ทีมงานอนุมัติแล้ว</span></label>`;
   const sum = (st) => EARN.filter((r) => st.includes(r.status)).reduce((a, r) => a + r.net, 0);
-  const stat = (k, v, extra = "") => `<div class="stat"><span>${k}</span><b ${extra}>${v}</b></div>`;
+  const stat = (k, v, extra = "", note = "", cls2 = "") => `<div class="stat ${cls2}"><span>${k}</span><b ${extra}>${v}</b>${note ? `<small>${note}</small>` : ""}</div>`;
 
-  def("t1", "tutor", "ภาพรวมติวเตอร์", "new", () => `
-    <div class="hgroup"><h1>สวัสดี ครูต้น</h1><p class="sub14">ภาพรวมคลาสและรายได้ของคุณ</p></div>
+  // Tutor dashboard: what needs attention first, then upcoming classes, with earnings on the side.
+  def("t1", "tutor", "ภาพรวมติวเตอร์", "new", () => {
+    const up = ["c2", "c4"].map(cls);
+    const todos = [
+      ["link", "var(--blue-soft)", "var(--deep-blue)", "ตรวจลิงก์ห้องเรียนก่อนเริ่มคลาส", `${esc(cls("c2").subject)} ม.5 · ${esc(dayOf(cls("c2")))} ${esc(timeOf(cls("c2")))} น.`, "t4", "c2"],
+      ["edit", "var(--slate-soft)", "var(--navy)", "ฉบับร่าง 1 คลาสยังไม่เผยแพร่", "ฟิสิกส์ ม.6 คลื่นและแสง", "t3"],
+      ["board", "var(--gold-soft)", "var(--amber-text)", "2 คำขอบน Demand Board ตรงวิชาของคุณ", "รวม 15 คนอยากเรียน", "t7"],
+    ];
+    const earnRow = (label, kind, st) => `<div class="row"><span>${badge(label, kind + " st")}</span><b>${baht(sum(st))}</b></div>`;
+    return `
+    <div class="page-h"><div class="hgroup"><h1>สวัสดี ครูต้น</h1><p class="sub14">สิ่งที่ต้องทำ คลาสที่กำลังจะถึง และรายได้ของคุณ</p></div>
+      <button type="button" class="btn btn-primary" data-go="t2" ${state.approved ? "" : "disabled"}>${icon("plus", 16, 2.2)}โพสต์คลาสใหม่</button></div>
     ${approvalNotice(false)}${demoApproval()}
     <div class="stats">
-      ${stat("คลาสที่เปิดรับ", "2")}${stat("ที่นั่งถูกจอง", "9")}${stat("รายได้รอปล่อย", baht(sum(["held", "grace"])))}${stat("พร้อมโอน", baht(sum(["ready"])))}
+      ${stat("คลาสที่เปิดรับ", "2", "", "+ ฉบับร่าง 1")}${stat("ที่นั่งถูกจอง", "9 / 16", "", "จาก 2 คลาส")}${stat("รายได้รอปล่อย", baht(sum(["held", "grace"])), "", "หลังคลาสจบ + 24 ชม.")}${stat("พร้อมโอน", baht(sum(["ready"])), "", "รอบโอนถัดไป", "hl")}
     </div>
-    <div class="d-sec"><div class="lsec-h"><h2 class="s20">คลาสถัดไป</h2><a href="#" role="button" class="lnk w6" style="font-size:14px" data-go="t3">คลาสทั้งหมด</a></div>
-      <div class="cardx"><div class="b-title">${esc(cls("c2").title)}</div><div class="b-meta">${cls("c2").when} · จองแล้ว 2/6</div>
-      <div><button type="button" class="btn btn-ghost" data-go="t4" data-cid="c2">ดูผู้จองและลิงก์ห้องเรียน</button></div></div></div>
-    <div class="cardx"><div class="sumhead">มี 2 คำขอบน Demand Board ที่ตรงวิชาของคุณ</div><div class="b-meta">รวม 15 คนอยากเรียน</div><div><button type="button" class="btn btn-ghost" data-go="t7">ดูคำขอ</button></div></div>
-    <div><button type="button" class="btn btn-secondary" data-go="t2" ${state.approved ? "" : "disabled"}>${icon("plus", 16, 2.2)}โพสต์คลาสใหม่</button></div>`,
-    ["อยากเห็นตัวเลขอะไรเป็นอย่างแรกเมื่อเปิดแอป?", "ระหว่างรออนุมัติ อยากรู้อะไร (ใช้เวลากี่วัน, ต้องส่งอะไรเพิ่ม)?"]);
+    <div class="dash">
+      <div class="stack" style="gap:var(--sp-5)">
+        <div class="cardx"><div class="card-h"><h2>สิ่งที่ต้องทำ</h2><span class="badge b-gold">${todos.length}</span></div>
+          <ul class="todo">${todos.map(([ic, bg, fg, t, d, go, cid]) => `<li><button type="button" data-go="${go}"${cid ? ` data-cid="${cid}"` : ""}><span class="todo-ic" style="background:${bg};color:${fg}">${icon(ic, 18)}</span><span style="display:flex;flex-direction:column;min-width:0"><span class="todo-t">${t}</span><span class="todo-d">${d}</span></span>${icon("chev", 16).replace('class="ic"', 'class="ic chev"')}</button></li>`).join("")}</ul></div>
+        <div class="cardx" style="padding-bottom:var(--sp-2)"><div class="card-h"><h2>คลาสที่กำลังจะถึง</h2><a href="#" role="button" class="lnk w6" data-go="t3">คลาสทั้งหมด${icon("chevr", 14, 2.4)}</a></div>
+          <div>${up.map((c) => `<div class="up"><div class="datebox"><span>${c.dow}</span><b>${c.when.match(/^\d+/)[0]}</b><span>พ.ย.</span></div>
+            <div style="min-width:0"><div class="b-title" style="font-size:var(--fs-sm)">${esc(c.title)}</div><div class="b-meta">${esc(timeOf(c))} น. · ${c.via}</div></div>
+            ${meter(c)}<button type="button" class="btn btn-ghost btn-sm" data-go="t4" data-cid="${c.id}">ผู้จองและลิงก์</button></div>`).join("")}</div></div>
+      </div>
+      <div class="dash-side">
+        <div class="cardx"><div class="card-h"><h2>รายได้</h2><a href="#" role="button" class="lnk w6" data-go="t5">ดูทั้งหมด${icon("chevr", 14, 2.4)}</a></div>
+          <div class="earn-list">${earnRow("รอคลาสจบ", "b-grey", ["held"])}${earnRow("รอครบ 24 ชม.", "b-gold", ["grace"])}${earnRow("พร้อมโอน", "b-teal", ["ready"])}<div class="hr"></div>${earnRow("โอนแล้วเดือนนี้", "b-blue", ["paid"])}</div>
+          <p class="field-hint">ยอดสุทธิหลังหักค่าธรรมเนียม (ตัวเลขตัวอย่าง) · ทีมงานโอนให้รายสัปดาห์</p></div>
+      </div>
+    </div>`;
+  }, ["อยากเห็นตัวเลขอะไรเป็นอย่างแรกเมื่อเปิดแอป?", "“สิ่งที่ต้องทำ” ควรมีอะไรอีก?", "ระหว่างรออนุมัติ อยากรู้อะไร (ใช้เวลากี่วัน, ต้องส่งอะไรเพิ่ม)?"]);
 
   // T2 "post a class" (listings/new/CreateListingForm.tsx): form on the left, live card preview on the right
   def("t2", "tutor", "โพสต์คลาส", "built", () => {
@@ -1144,7 +1672,7 @@ p { margin: 0; }
         <div class="lc lc-static" id="p-prev"></div>
         ${inote("info", "คลาสจะขึ้นในผลค้นหาก็ต่อเมื่อกด \"เผยแพร่คลาส\" เท่านั้น — บันทึกร่างไว้ยังไม่แสดงให้นักเรียนเห็น")}
         <div class="stack" style="gap:10px;padding-top:8px">
-          <button type="submit" form="post-form" class="btn btn-secondary" style="width:100%">เผยแพร่คลาส</button>
+          <button type="submit" form="post-form" class="btn btn-primary" style="width:100%">เผยแพร่คลาส</button>
           <button type="button" class="btn btn-ghost" style="width:100%" data-act="toast" data-msg="บันทึกเป็นฉบับร่างแล้ว (จำลอง)">บันทึกเป็นฉบับร่าง</button>
         </div>
       </div>
@@ -1163,18 +1691,17 @@ p { margin: 0; }
     const c = {
       title: v("p-title").trim() || "ชื่อคลาสของคุณ", subject: v("p-subject").trim() || "หมวดวิชา", tutor: "ton",
       when: date && from && to ? `${thaiDate(date)} ${from} - ${to}` : "1 ม.ค. 00:00 - 00:00",
-      price: Math.max(0, Number(v("p-price", 0)) || 0), seats: Math.max(1, Number(v("p-seats", 1)) || 1), booked: 0,
+      price: Math.max(0, Number(v("p-price", 0)) || 0), seats: Math.max(1, Number(v("p-seats", 1)) || 1), booked: 0, level: "",
     };
-    box.innerHTML = lcardInner(c);
+    box.innerHTML = lcardInner(c, false);
   };
 
   // listings/mine: ListingItemCard (status badge + price, schedule · capacity, actions by status).
-  const GRADS4 = ["linear-gradient(135deg, #0D1B2A, #1E3A8A)", "linear-gradient(135deg, #0FA3A3, #0D1B2A)", "linear-gradient(135deg, #1E3A8A, #0FA3A3)", "linear-gradient(135deg, #8A8F98, #5B6472)"];
   const MY_CLASSES = [
     { classId: "c2", status: "published" },
     { classId: "c4", status: "published" },
-    { title: "ฟิสิกส์ ม.6 คลื่นและแสง (ร่าง)", when: "29 พ.ย. 13:00 - 15:00", price: 250, seats: 6, status: "draft" },
-    { title: "คณิต ม.3 เศษส่วน", when: "5 พ.ย. 18:00 - 19:30", price: 180, seats: 8, status: "closed" },
+    { title: "ฟิสิกส์ ม.6 คลื่นและแสง (ร่าง)", subject: "ฟิสิกส์", when: "29 พ.ย. 13:00 - 15:00", price: 250, seats: 6, status: "draft" },
+    { title: "คณิต ม.3 เศษส่วน", subject: "คณิต", when: "5 พ.ย. 18:00 - 19:30", price: 180, seats: 8, status: "closed" },
   ];
   const LISTING_BADGE = { draft: ["ฉบับร่าง", "b-grey"], published: ["เผยแพร่อยู่", "b-teal"], closed: ["ปิดรับที่นั่งแล้ว", "b-blue"], cancelled: ["ยกเลิกแล้ว", "b-red"] };
   def("t3", "tutor", "คลาสของฉัน", "built", () => {
@@ -1182,18 +1709,18 @@ p { margin: 0; }
       const c = m.classId ? cls(m.classId) : m;
       const editBtn = '<button type="button" class="btn btn-ghost" disabled title="ฟีเจอร์นี้ยังไม่เปิดใช้งาน">แก้ไข</button>';
       const act = m.status === "draft"
-        ? `<div style="font-size:12px;color:var(--text-secondary)">ร่างนี้ยังไม่แสดงให้นักเรียนเห็น</div><div class="b-act">${editBtn}<button type="button" class="btn btn-secondary" style="height:40px" data-act="toast" data-msg="เผยแพร่คลาสแล้ว (จำลอง)">เผยแพร่คลาส</button><button type="button" class="btn btn-text" style="color:var(--cancel-text)" data-act="toast" data-msg="ลบร่างแล้ว (จำลอง)">ลบร่างนี้</button></div>`
+        ? `<div style="font-size:12px;color:var(--text-secondary)">ร่างนี้ยังไม่แสดงให้นักเรียนเห็น</div><div class="b-act">${editBtn}<button type="button" class="btn btn-primary" style="height:40px" data-act="toast" data-msg="เผยแพร่คลาสแล้ว (จำลอง)">เผยแพร่คลาส</button><button type="button" class="btn btn-text" style="color:var(--cancel-text)" data-act="toast" data-msg="ลบร่างแล้ว (จำลอง)">ลบร่างนี้</button></div>`
         : m.status === "published"
           ? `<div class="b-act">${editBtn}<button type="button" class="btn btn-text" data-go="s3" data-cid="${m.classId}">ดูหน้าคลาส</button><button type="button" class="btn btn-text" style="color:var(--cancel-text)" data-act="closeclass">ยกเลิกคลาสนี้</button></div>`
           : `<div style="font-size:12px;color:var(--text-secondary);padding-top:6px">คลาสนี้ปิดรับที่นั่งแล้ว</div>`;
       const [bt, bk] = LISTING_BADGE[m.status];
-      return `<div class="bcard${m.status === "closed" ? " dim" : ""}"><div class="b-th" style="background:${GRADS4[i % 4]}"></div><div class="b-body">
-        <div class="b-top">${badge(bt, bk)}<span class="baht-price">${baht(c.price)}<small> /คน</small></span></div>
+      return `<div class="bcard${m.status === "closed" ? " dim" : ""}">${thumb(c.subject, "lg")}<div class="b-body">
+        <div class="b-top">${badge(bt, bk + " st")}<span class="baht-price">${baht(c.price)}<small> /คน</small></span></div>
         <div class="b-title">${esc(c.title)}</div><div class="b-meta">${c.when} น. · รับสูงสุด ${c.seats} คน</div>
         ${act}</div></div>`;
     }).join("");
     return `
-    <div class="row wrap"><h1>คลาสของฉัน</h1><button type="button" class="btn btn-secondary" style="height:44px" data-go="t2">${icon("plus", 16, 2.2)}สร้างคลาสใหม่</button></div>
+    <div class="row wrap"><h1>คลาสของฉัน</h1><button type="button" class="btn btn-primary" style="height:44px" data-go="t2">${icon("plus", 16, 2.2)}สร้างคลาสใหม่</button></div>
     ${approvalNotice(true)}
     <div class="stack" style="gap:24px">${cards}</div>`;
   }, ["อยากแก้คลาสหลังมีคนจองแล้วได้แค่ไหน (เวลา, ราคา)?"]);
@@ -1213,11 +1740,11 @@ p { margin: 0; }
         <div style="font-size:12px;color:var(--text-secondary);padding-top:4px">กดปล่อยเงินแยกทีละที่นั่ง หลังนักเรียนแต่ละคนเรียนจบแล้ว</div>
         ${people.map(([n, s], i) => { const paid = s === "ชำระแล้ว"; return `<div class="trow"><div class="row" style="justify-content:flex-start;gap:10px"><span class="t-av${paid ? "" : " off"}">น${i + 1}</span><div class="stack" style="gap:2px"><span style="font-size:13px;font-weight:600">${n}</span>${paid ? badge("ยืนยันแล้ว · เงินพักไว้แล้ว", "b-teal") : badge("รอนักเรียนชำระเงิน", "b-gold")}</div></div>
           <div class="row" style="gap:14px;flex-wrap:wrap">${paid ? `<span style="font-size:14px;font-weight:700">คุณจะได้รับ ${baht(net)}</span>
-            <div class="stack" style="align-items:flex-end;gap:4px"><button type="button" class="btn btn-secondary" disabled title="ปล่อยเงินได้หลัง ${releaseAt}">จบคลาสนี้ (ปล่อยเงิน)</button>
+            <div class="stack" style="align-items:flex-end;gap:4px"><button type="button" class="btn btn-primary" disabled title="ปล่อยเงินได้หลัง ${releaseAt}">จบคลาสนี้ (ปล่อยเงิน)</button>
             <span style="font-size:11px;line-height:16px;color:var(--text-secondary);text-align:right">ปล่อยเงินได้หลัง ${releaseAt}<br>(รอ 24 ชั่วโมงหลังคลาสจบ เพื่อความปลอดภัยของทั้งสองฝ่าย)</span></div>` : `<span class="t14" style="font-size:13px">ยังจบคลาสไม่ได้จนกว่าจะชำระเงิน</span>`}</div></div>`; }).join("")}
         <form class="stack" style="gap:12px;border-top:1px solid var(--stone);padding-top:16px" data-form="zoom">
           ${field("z-link-" + id, `ลิงก์ห้องเรียน (${c.via})`, `<input class="input" id="z-link-${id}" type="url" value="${esc(state.zoom)}">`, "ผู้เรียนที่ชำระแล้วเห็นลิงก์นี้ในหน้าการจอง และได้อีเมลเตือนก่อนเริ่ม 1 ชม.")}
-          <div><button class="btn btn-secondary" type="submit">บันทึกลิงก์</button></div>
+          <div><button class="btn btn-primary" type="submit">บันทึกลิงก์</button></div>
         </form></div>`;
     }).join("");
     return `
@@ -1234,7 +1761,7 @@ p { margin: 0; }
     <div class="cardx"><div class="sumhead">เงินของคุณเดินทางอย่างไร</div>
       <div class="flow"><div><i>1</i>ผู้เรียนชำระ</div><div><i>2</i>ระบบพักเงินไว้</div><div><i>3</i>คลาสจบ + 24 ชม.</div><div><i>4</i>ทีมงานโอนรายสัปดาห์</div></div></div>
     <div class="cardx scroll-x" style="padding:0"><table class="tbl"><thead><tr><th>คลาส</th><th class="num">สุทธิ</th><th>สถานะ</th></tr></thead><tbody>
-      ${EARN.map((r) => `<tr><td><b>${esc(r.title)}</b><div class="b-note">${r.date} · ${r.seats} × ${baht(r.price)} · ค่าธรรมเนียม ${r.fee}%</div></td><td class="num">${baht(r.net)}</td><td>${badge(EARN_LABEL[r.status][0], EARN_LABEL[r.status][1])}<div class="b-note">${r.note}</div></td></tr>`).join("")}
+      ${EARN.map((r) => `<tr><td><b>${esc(r.title)}</b><div class="b-note">${r.date} · ${r.seats} × ${baht(r.price)} · ค่าธรรมเนียม ${r.fee}%</div></td><td class="num">${baht(r.net)}</td><td>${badge(EARN_LABEL[r.status][0], EARN_LABEL[r.status][1] + " st")}<div class="b-note">${r.note}</div></td></tr>`).join("")}
     </tbody></table></div>
     <p class="field-hint">% ค่าธรรมเนียมล็อกไว้ตอนจอง แถวบนสุดใช้อัตราเก่า 12% จึงไม่เปลี่ยนตามอัตราปัจจุบัน (ตัวเลขทั้งหมดเป็นตัวอย่าง)</p>
     <div><button type="button" class="btn btn-ghost" data-go="t6">บัญชีรับเงิน</button></div>`,
@@ -1267,52 +1794,74 @@ p { margin: 0; }
       ${field("pf-head", "แนะนำตัวสั้นๆ", `<input class="input" id="pf-head" value="${esc(TUTORS.ton.headline)}">`)}
       ${field("pf-bio", "เกี่ยวกับฉัน", `<textarea class="textarea" id="pf-bio" rows="4">${esc(TUTORS.ton.bio)}</textarea>`)}
       <div class="fld g8"><span class="field-label">วิชาที่สอน</span><div class="chips">${["ฟิสิกส์", "คณิต"].map((s) => `<span class="tag">${s} ×</span>`).join("")}<button type="button" class="chip" data-act="toast" data-msg="เพิ่มวิชายังเป็นแค่ตัวอย่าง">+ เพิ่ม</button></div></div>
-      <button class="btn btn-secondary" type="submit">บันทึก</button>
+      <button class="btn btn-primary" type="submit">บันทึก</button>
     </form>
     <div class="row wrap" style="justify-content:flex-start"><button type="button" class="btn btn-ghost" data-go="s4" data-tid="ton">ดูหน้าโปรไฟล์ที่ผู้เรียนเห็น</button><button type="button" class="btn btn-ghost" data-act="tostudent">กลับไปโหมดนักเรียน</button><button type="button" class="btn btn-text btn-danger" data-act="logout">ออกจากระบบ</button></div>`,
     ["อยากใส่อะไรเพิ่มในโปรไฟล์ (วุฒิการศึกษา, วิดีโอแนะนำตัว, ผลงานลูกศิษย์)?"]);
 
   // ---------- chrome ----------
-  // Which header each page uses (the real app has separate headers for checkout and for sign-in pages).
+  // Which header each page uses (checkout and sign-in pages have their own).
   const CHROME = { a1: "split", a2: "split", a3: "split", a5: "split", a4: "shell", a6: "shell", s1: "home", s2: "home", s5: "co", s6: "co", s7: "co" };
-  // Vertical padding of each real page's main <section> (same at every width in the real app).
-  const PAD = { s3: "32px var(--cx) 72px", s8: "40px 40px 80px", t2: "40px 40px 80px", t3: "40px 40px 80px", t4: "40px 40px 80px" };
-  const MW = { s3: "1200px", s4: "860px", s5: "560px", s6: "560px", s7: "560px", s8: "860px", t1: "960px", t2: "1180px", t3: "960px", t4: "900px", t5: "960px", t6: "640px", t7: "900px", t8: "640px" };
-  // Bold nav link, only on pages whose real header has one.
-  const ACTIVE_NAV = { s8: "s8", t2: "t3", t3: "t3", t4: "t4" };
+  const MW = { s3: "1200px", s4: "860px", s5: "560px", s6: "560px", s7: "560px", s8: "860px", t1: "1120px", t2: "1180px", t3: "960px", t4: "900px", t5: "960px", t6: "640px", t7: "900px", t8: "640px" };
+  // Which menu item is highlighted on each page.
+  const ACTIVE_NAV = { s1: "s1", s2: "s1", s3: "s1", s4: "s1", s8: "s8", s9: "s9", s10: "s10", s11: "s11", s12: "s12", t1: "t1", t2: "t3", t3: "t3", t4: "t4", t5: "t5", t6: "t5", t7: "t7", t8: "t8" };
   const NAV = {
-    student: [["s1", "ค้นหาคลาส"], ["s8", "การจองของฉัน"], ["s9", "Wish list"], ["s10", "Demand Board"]],
-    tutor: [["t1", "ภาพรวม"], ["t3", "คลาสของฉัน"], ["t4", "การจองที่เข้ามา"], ["t5", "รายได้"], ["t7", "Demand Board"]],
+    student: [["s1", "ค้นหาคลาส", "search"], ["s8", "การจองของฉัน", "cal"], ["s9", "Wish list", "heart"], ["s10", "Demand Board", "board"]],
+    tutor: [["t1", "ภาพรวม", "home"], ["t3", "คลาสของฉัน", "list"], ["t4", "การจองที่เข้ามา", "inbox"], ["t5", "รายได้", "wallet"], ["t7", "Demand Board", "board"]],
   };
-  const URLS = { s1: "", s2: "?q=" + "…", s3: "listings/c1", s4: "tutors/ton", s5: "bookings/new", s6: "bookings/pay", s7: "bookings/success", s8: "bookings/mine", s9: "wishlist", s10: "demand", s11: "notifications", s12: "account", t1: "tutor", t2: "listings/new", t3: "listings/mine", t4: "bookings/tutor-mine", t5: "tutor/earnings", t6: "tutor/payout", t7: "tutor/demand", t8: "tutor/profile", a1: "login", a2: "signup", a3: "signup", a4: "onboarding", a5: "forgot-password", a6: "legal/terms" };
+  const URLS = { s1: "", s2: "search?q=" + "…", s3: "listings/c1", s4: "tutors/ton", s5: "bookings/new", s6: "bookings/pay", s7: "bookings/success", s8: "bookings/mine", s9: "wishlist", s10: "demand", s11: "notifications", s12: "account", t1: "tutor", t2: "listings/new", t3: "listings/mine", t4: "bookings/tutor-mine", t5: "tutor/earnings", t6: "tutor/payout", t7: "tutor/demand", t8: "tutor/profile", a1: "login", a2: "signup", a3: "signup", a4: "onboarding", a5: "forgot-password", a6: "legal/terms" };
   const $ = (id) => document.getElementById(id);
   // Site mode = the GitHub Pages build: full-screen app, layout follows the window width, helper menu in a side panel.
   const SITE = document.documentElement.classList.contains("site");
   const autoView = () => (window.innerWidth >= 900 ? "desk" : "mobile");
   const screenEl = $("screen");
-  const logoBtn = (cls = "") => `<button type="button" class="logo ${cls}" data-go="s1" aria-label="Educare หน้าแรก">educ<span>are</span></button>`;
+  const logoBtn = (cls2 = "") => `<button type="button" class="logo ${cls2}" data-go="s1" aria-label="Educare หน้าแรก">educ<span>are</span></button>`;
+  const ME = { student: ["ม", "มายด์", "mind@example.com", "s12", "บัญชีของฉัน"], tutor: ["ต", "ครูต้น", "ton@example.com", "t8", "โปรไฟล์ติวเตอร์"] };
 
   function thaiDate(iso) {
     const m = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
-    const [y, mo, d] = iso.split("-").map(Number);
+    const [, mo, d] = iso.split("-").map(Number);
     return `${d} ${m[mo - 1]}`;
   }
 
-  // Header.tsx (student) and TutorHeader.tsx (tutor mode): logo, links, then the signed-in user menu.
+  // Desktop: logo | main menu (centre) | bell, mode switch, account menu.  Mobile: logo | bell, menu button (drawer).
   function headerHTML(s) {
-    const tutor = state.role === "tutor";
-        const link = ([id, label]) => `<button type="button" class="nl${ACTIVE_NAV[s.id] === id ? " on" : ""}" data-go="${id}">${label}</button>`;
-    const nav = NAV[state.role].map(link).join("") + (tutor ? "" : '<button type="button" class="nl" data-act="tutorcta">สำหรับติวเตอร์</button>');
+    const tutor = state.role === "tutor", on = ACTIVE_NAV[s.id], me = ME[state.role];
+    const nav = NAV[state.role].map(([id, label]) => `<button type="button" class="nl${on === id ? " on" : ""}" data-go="${id}"${on === id ? ' aria-current="page"' : ""}>${label}</button>`).join("");
     const unread = state.notifs.filter((n) => n.unread).length;
-    const right = tutor
-      ? `<div class="rpill" role="group" aria-label="โหมด"><button type="button" data-go="s8">นักเรียน</button><span>ติวเตอร์</span></div>
-         <div class="um"><button type="button" class="um-id" data-go="t8" aria-label="โปรไฟล์ติวเตอร์"><span class="um-av tutor">ต</span><span class="um-name">ครูต้น</span></button>
-         <button type="button" class="btn btn-ghost btn-ghost-sm um-btn" data-act="logout">ออกจากระบบ</button></div>`
-      : `<button type="button" class="ibtn" data-go="s11" aria-label="การแจ้งเตือน">${icon("bell", 18)}${unread ? `<span class="n">${unread}</span>` : ""}</button>
-         <div class="um"><button type="button" class="um-id" data-go="s12" aria-label="บัญชีของฉัน"><span class="um-av">ม</span><span class="um-name">มายด์</span></button>
-         ${state.tutorOn ? '<button type="button" class="btn btn-secondary btn-ghost-sm um-btn" data-go="t1">โหมดติวเตอร์</button>' : '<button type="button" class="btn btn-secondary btn-ghost-sm um-btn" data-act="becometutor">เปิดโหมดติวเตอร์</button>'}
-         <button type="button" class="btn btn-ghost btn-ghost-sm um-btn" data-act="logout">ออกจากระบบ</button></div>`;
-    return `<header class="hdr"><div class="hdr-in"><div class="hdr-l">${logoBtn()}<nav class="hdr-nav" aria-label="เมนูหลัก">${nav}</nav></div><div class="hdr-r${tutor ? " t" : ""}">${right}</div></div></header>`;
+    const bell = tutor ? "" : `<button type="button" class="ibtn" data-go="s11" aria-label="การแจ้งเตือน${unread ? ` (${unread} รายการใหม่)` : ""}">${icon("bell", 18)}${unread ? `<span class="n">${unread}</span>` : ""}</button>`;
+    const mode = tutor
+      ? `<div class="rpill" role="group" aria-label="โหมด"><button type="button" data-go="s8">นักเรียน</button><span aria-current="true">ติวเตอร์</span></div>`
+      : state.tutorOn ? `<button type="button" class="btn btn-ghost btn-sm" data-go="t1">${icon("swap", 15)}โหมดติวเตอร์</button>`
+      : `<button type="button" class="btn btn-ghost btn-sm" data-act="becometutor">เปิดโหมดติวเตอร์</button>`;
+    const account = `<div class="um-wrap"><button type="button" class="um-id" data-act="usermenu" aria-haspopup="menu" aria-expanded="false" aria-controls="um-menu" aria-label="เมนูบัญชี ${me[1]}"><span class="um-av${tutor ? " tutor" : ""}">${me[0]}</span><span class="um-name">${me[1]}</span>${icon("chevd", 14, 2.4)}</button>
+      <div class="menu" id="um-menu" role="menu" hidden><div class="menu-h"><b>${me[1]}</b><span>${me[2]}</span></div>
+        <button type="button" class="mi" role="menuitem" data-go="${me[3]}">${icon("user", 17)}${me[4]}</button>
+        ${tutor ? `<button type="button" class="mi" role="menuitem" data-go="s12">${icon("swap", 17)}กลับไปโหมดนักเรียน</button>` : `<button type="button" class="mi" role="menuitem" data-go="s11">${icon("bell", 17)}การแจ้งเตือน</button>`}
+        <button type="button" class="mi danger" role="menuitem" data-act="logout">${icon("logout", 17)}ออกจากระบบ</button></div></div>`;
+    return `<header class="hdr"><div class="hdr-in">${logoBtn()}<nav class="hdr-nav" aria-label="เมนูหลัก">${nav}</nav>
+      <div class="hdr-r">${bell}<div class="hdr-full">${mode}${account}</div>
+      <button type="button" class="ibtn plain hdr-burger" data-act="drawer" aria-label="เปิดเมนู" aria-haspopup="dialog" aria-expanded="false">${icon("menu", 22)}</button></div></div></header>`;
+  }
+  function drawerHTML() {
+    const tutor = state.role === "tutor", on = ACTIVE_NAV[state.screen], me = ME[state.role];
+    const unread = state.notifs.filter((n) => n.unread).length;
+    const dl = (id, label, ic, extra = "") => `<button type="button" class="dl${on === id ? " on" : ""}" data-go="${id}"${on === id ? ' aria-current="page"' : ""}>${icon(ic, 20)}${label}${extra}</button>`;
+    return `<div class="overlay" role="dialog" aria-modal="true" aria-label="เมนู">
+      <button type="button" class="scrim" data-act="drawerclose" aria-label="ปิดเมนู" tabindex="-1"></button>
+      <div class="drawer">
+        <div class="drawer-h">${logoBtn()}<button type="button" class="ibtn plain" data-act="drawerclose" aria-label="ปิดเมนู">${icon("x", 22)}</button></div>
+        <div class="drawer-user"><span class="um-av lg${tutor ? " tutor" : ""}">${me[0]}</span><div><b>${me[1]}</b><span>${me[2]}</span></div></div>
+        <nav aria-label="เมนูหลัก">${NAV[state.role].map(([id, label, ic]) => dl(id, label, ic)).join("")}
+          <div class="sep"></div>
+          ${tutor ? dl("t8", "โปรไฟล์ติวเตอร์", "user") : dl("s11", "การแจ้งเตือน", "bell", unread ? `<span class="n">${unread}</span>` : "") + dl("s12", "บัญชีของฉัน", "user")}</nav>
+        <div class="drawer-f">
+          ${tutor ? `<button type="button" class="btn btn-ghost btn-block" data-go="s12">${icon("swap", 16)}กลับไปโหมดนักเรียน</button>`
+            : state.tutorOn ? `<button type="button" class="btn btn-ghost btn-block" data-go="t1">${icon("swap", 16)}ไปโหมดติวเตอร์</button>`
+            : `<button type="button" class="btn btn-accent btn-block" data-act="becometutor">เปิดโหมดติวเตอร์</button>`}
+          <button type="button" class="btn btn-text btn-danger" style="margin:0" data-act="logout">${icon("logout", 16)}ออกจากระบบ</button>
+        </div>
+      </div></div>`;
   }
   function checkoutHeader(id) {
     const [label, to] = id === "s5" ? ["ยกเลิกและกลับไปหน้าคลาส", "s3"] : id === "s6" ? ["กลับไปการจองของฉัน", "s8"] : ["ไปหน้าแรก", "s1"];
@@ -1325,14 +1874,16 @@ p { margin: 0; }
     $("index-list").innerHTML = group("guest", "เริ่มใช้งาน") + group("student", "นักเรียน") + group("tutor", "ติวเตอร์");
   }
 
-  function render() {
+  function render(keepScroll = false) {
     const s = S[state.screen];
     const guest = s.role === "guest";
     if (!guest) state.role = s.role;
     clearInterval(state.payTimer);
+    closeOverlay(false);
     $("role-student").setAttribute("aria-pressed", String(state.role === "student"));
     $("role-tutor").setAttribute("aria-pressed", String(state.role === "tutor"));
     const desk = state.view === "desk";
+    if (desk) state.sheet = false;
     $("phone").classList.toggle("desk", desk);
     document.querySelector(".shell").classList.toggle("desk", desk);
     $("view-mobile").setAttribute("aria-pressed", String(!desk));
@@ -1357,11 +1908,11 @@ p { margin: 0; }
       html = `${headerHTML(s)}<main class="pgm">${asks ? `<div class="container" style="padding-top:16px">${asks}</div>` : ""}${body}</main>${footerHTML()}<div class="container tagwrap">${tag}</div>`;
     } else {
       const header = kind === "co" ? checkoutHeader(s.id) : headerHTML(s);
-      const pad = PAD[s.id] ? ` style="--pad:${PAD[s.id]}"` : "";
-      html = `${header}<main class="pgm"><div class="pg${kind === "co" ? " co" : ""}"${pad}><div class="col" style="--mw:${MW[s.id] || "860px"}">${asks}${body}${tag}</div></div></main>`;
+      html = `${header}<main class="pgm"><div class="pg${kind === "co" ? " co" : ""}"><div class="col" style="--mw:${MW[s.id] || "860px"}">${asks}${body}${tag}</div></div></main>`;
     }
+    const top = screenEl.scrollTop;
     screenEl.innerHTML = html;
-    screenEl.scrollTop = 0;
+    screenEl.scrollTop = keepScroll ? top : 0;
     renderIndex();
     try { history.replaceState(null, "", "#" + s.id); } catch (e) { /* hash is a convenience only */ }
     if (s.id === "s6") startPay();
@@ -1370,9 +1921,10 @@ p { margin: 0; }
 
   function go(id) {
     if (!S[id]) return;
-    if (id !== state.screen) state.prev = state.screen;
+    if (id !== state.screen) { state.prev = state.screen; state.sheet = false; }
     state.screen = id;
     render();
+    screenEl.focus({ preventScroll: true }); // keyboard and screen-reader users start at the top of the new page
     if (SITE) $("side").classList.remove("open");
     else if (window.matchMedia("(max-width: 820px)").matches) {
       $("index-details").open = false;
@@ -1380,10 +1932,41 @@ p { margin: 0; }
     }
   }
 
+  // ---------- overlays: account menu, drawer, filter sheet ----------
+  let lastFocus = null;
+  const firstFocusable = (root) => root.querySelector("button:not(.scrim):not([disabled]), a[href], input, select");
+  function setMenu(open) {
+    const m = $("um-menu"), b = screenEl.querySelector('[data-act="usermenu"]');
+    if (!m || !b) return;
+    m.hidden = !open; b.setAttribute("aria-expanded", String(open));
+    if (open) m.querySelector(".mi").focus();
+  }
+  function openDrawer() {
+    lastFocus = document.activeElement;
+    const r = $("overlay-root"); r.innerHTML = drawerHTML();
+    const b = screenEl.querySelector('[data-act="drawer"]'); if (b) b.setAttribute("aria-expanded", "true");
+    firstFocusable(r.querySelector(".drawer")).focus();
+  }
+  function closeOverlay(restore = true) {
+    const r = $("overlay-root"); if (!r || !r.innerHTML) return;
+    r.innerHTML = "";
+    const b = screenEl.querySelector('[data-act="drawer"]'); if (b) b.setAttribute("aria-expanded", "false");
+    if (restore && lastFocus && document.contains(lastFocus)) lastFocus.focus();
+  }
+  function setSheet(open) {
+    const p = $("fpanel"); if (!p) return;
+    state.sheet = open; p.classList.toggle("open", open);
+    if (open) { p.setAttribute("role", "dialog"); p.setAttribute("aria-modal", "true"); p.querySelector(".fp-h .ibtn").focus(); }
+    else { p.removeAttribute("role"); p.removeAttribute("aria-modal"); const b = screenEl.querySelector(".fbtn"); if (b) b.focus(); }
+  }
+
   let toastT;
-  function toast(msg) {
-    const t = $("toast"); t.textContent = msg; t.hidden = false;
-    clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 2400);
+  function toast(msg, kind = "ok") {
+    const t = $("toast");
+    t.className = "toast" + (kind === "err" ? " err" : "");
+    t.innerHTML = icon(kind === "err" ? "info" : "okc", 18) + `<span>${esc(msg)}</span>`;
+    t.hidden = false;
+    clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 2600);
   }
 
   // ---------- payment demo ----------
@@ -1415,8 +1998,45 @@ p { margin: 0; }
     });
   }
 
+  // ---------- search: results update in place so the filter panel keeps focus and scroll ----------
+  const copyF = (F) => JSON.parse(JSON.stringify(F));
+  function runSearch(q, F) {
+    state.q = q; state.F = F; state.loading = true;
+    go("s2");
+    setTimeout(() => { state.loading = false; if (state.screen === "s2") updateResults(); }, 450);
+  }
+  function updateResults() {
+    const box = $("res-body"); if (!box) return;
+    const list = results(), n = activeList().length;
+    box.innerHTML = resultsHTML(list);
+    $("res-count").textContent = countText(list.length);
+    $("active-f").innerHTML = activeHTML();
+    $("fbtn-n").innerHTML = n ? `<span class="n">${n}</span>` : "";
+    const ap = $("fp-apply"); if (ap) ap.textContent = `ดู ${list.length} คลาส`;
+    const cl = screenEl.querySelector(".fp-clear .btn"); if (cl) cl.disabled = !n;
+  }
+  function readFilters() {
+    const F = F0(); F.sort = state.F.sort;
+    screenEl.querySelectorAll("#fpanel [data-f]").forEach((el) => {
+      const k = el.dataset.f;
+      if (k === "seats") F.seats = el.checked;
+      else if (el.type === "checkbox") { if (el.checked) F[k].push(el.value); }
+      else if (el.checked) F[k] = el.value;
+    });
+    state.F = F;
+  }
+  function syncFilters() {
+    const F = state.F;
+    screenEl.querySelectorAll("#fpanel [data-f]").forEach((el) => {
+      const k = el.dataset.f;
+      el.checked = k === "seats" ? F.seats : el.type === "checkbox" ? F[k].includes(el.value) : F[k] === el.value;
+    });
+  }
+
   // ---------- events ----------
   document.addEventListener("click", (e) => {
+    const menu = $("um-menu");
+    if (menu && !menu.hidden && !e.target.closest(".um-wrap")) setMenu(false);
     const el = e.target.closest("button, a.lnk, [data-plus], input[data-act]");
     if (!el) return;
     if (el.tagName === "A") e.preventDefault();
@@ -1431,16 +2051,27 @@ p { margin: 0; }
     if (d.tid) state.tutorId = d.tid;
     if (d.legal) state.legalTab = d.legal;
     if (d.legaltab) { state.legalTab = d.legaltab; return render(); }
-    if (d.q !== undefined) { state.q = d.q; state.filter = "all"; return go("s2"); }
-    if (d.filter) { state.filter = d.filter; return render(); }
-    if (d.booktab) { state.bookTab = d.booktab; return render(); }
+    if (d.q !== undefined) return runSearch(d.q, F0());
+    if (d.topic !== undefined) return runSearch("", { ...F0(), ...copyF(TOPICS[Number(d.topic)][2]) });
+    if (d.unf) {
+      if (d.unf === "q") { state.q = ""; return render(true); }
+      const F = state.F;
+      if (Array.isArray(F[d.unf])) F[d.unf] = F[d.unf].filter((x) => x !== d.v);
+      else F[d.unf] = d.unf === "seats" ? false : "all";
+      syncFilters(); updateResults();
+      const next = screenEl.querySelector("#active-f .chip") || screenEl.querySelector("#q2");
+      if (next) next.focus();
+      return;
+    }
+    if (d.booktab) { state.bookTab = d.booktab; render(true); return screenEl.querySelector(`[data-booktab="${d.booktab}"]`).focus(); }
     if (d.tclasstab) { state.tclassTab = d.tclasstab; return render(); }
-    if (d.dsort) { state.demandSort = d.dsort; return render(); }
+    if (d.dsort) { state.demandSort = d.dsort; return render(true); }
     if (d.plus) {
       const it = state.demand.find((x) => x.id === d.plus);
       it.mine = !it.mine; it.count += it.mine ? 1 : -1;
       toast(it.mine ? "บันทึกแล้ว เราจะแจ้งเมื่อมีคลาสนี้" : "เอา +1 ออกแล้ว");
-      return render();
+      render(true);
+      return screenEl.querySelector(`[data-plus="${d.plus}"]`).focus();
     }
     if (d.notif !== undefined) { const n = state.notifs[Number(d.notif)]; n.unread = false; if (n.cid) state.classId = n.cid; return go(n.go); }
     if (d.wishFromSearch !== undefined) { state.wishOpen = true; state.wishPrefill = state.q; state.wishPublic = false; return go("s9"); }
@@ -1454,18 +2085,41 @@ p { margin: 0; }
       return go(d.go);
     }
     switch (d.act) {
-      case "pay":
-        if (!$("agree-terms").checked) return toast("ติ๊กยอมรับเงื่อนไขก่อนชำระเงิน");
-        if (!state.bookings.some((b) => b.classId === state.classId && b.status !== "done")) state.bookings.unshift({ id: "b" + Date.now(), classId: state.classId, status: "pending" });
-        return go("s6");
+      case "usermenu": return setMenu($("um-menu").hidden);
+      case "drawer": return openDrawer();
+      case "drawerclose": return closeOverlay();
+      case "sheet": return setSheet(true);
+      case "sheetclose": return setSheet(false);
+      case "clearf": state.F = { ...F0(), sort: state.F.sort }; syncFilters(); updateResults(); return screenEl.querySelector("#q2") && screenEl.querySelector("#q2").focus();
+      case "pay": {
+        const err = $("pay-err");
+        if (!$("agree-terms").checked) {
+          err.innerHTML = notice("error", "กรุณาติ๊กยอมรับเงื่อนไขการจองและการคืนเงินก่อนไปหน้าชำระเงิน"); err.hidden = false;
+          return $("agree-terms").focus();
+        }
+        err.hidden = true;
+        el.classList.add("is-loading"); el.setAttribute("aria-busy", "true");
+        setTimeout(() => {
+          if (!state.bookings.some((b) => b.classId === state.classId && ["pending", "paid"].includes(b.status))) state.bookings.unshift({ id: "b" + Date.now(), classId: state.classId, status: "pending" });
+          go("s6");
+        }, 700);
+        return;
+      }
       case "paid": {
         const b = state.bookings.find((x) => x.classId === state.classId && x.status === "pending");
         if (b) b.status = "paid";
         state.bookTab = "upcoming";
         return go("s7");
       }
+      case "expire": {
+        const b = state.bookings.find((x) => x.classId === state.classId && x.status === "pending");
+        if (b) b.status = "expired";
+        state.bookTab = "done";
+        toast("QR หมดเวลา การจองถูกยกเลิกแล้ว ไม่มีการตัดเงิน", "err");
+        return go("s8");
+      }
       case "zoom": return toast("จะเปิดลิงก์ห้องเรียนในเว็บจริง");
-      case "wishform": state.wishOpen = !state.wishOpen; if (state.wishOpen) { state.wishPrefill = ""; state.wishPublic = false; } return render();
+      case "wishform": state.wishOpen = !state.wishOpen; if (state.wishOpen) { state.wishPrefill = ""; state.wishPublic = false; } return render(true);
       case "postdemand": state.wishOpen = true; state.wishPrefill = ""; state.wishPublic = true; return go("s9");
       case "becometutor":
         if (state.tutorOn) return go("t1");
@@ -1477,7 +2131,7 @@ p { margin: 0; }
         return;
       }
       case "tostudent": return go("s12");
-      case "approve": state.approved = el.checked; return render();
+      case "approve": state.approved = el.checked; return render(true);
       case "closeclass": return toast("ยกเลิกคลาสแล้ว (จำลอง)");
       case "logout": toast("ออกจากระบบแล้ว"); return go("a1");
       case "google": state.googleName = "Mind S."; toast("เข้าสู่ระบบกับ Google ครั้งแรก ตั้งค่าบัญชีก่อนเริ่มใช้งาน"); return go("a4");
@@ -1490,26 +2144,37 @@ p { margin: 0; }
     }
   });
 
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    const menu = $("um-menu");
+    if (menu && !menu.hidden) { setMenu(false); return screenEl.querySelector('[data-act="usermenu"]').focus(); }
+    if ($("overlay-root").innerHTML) return closeOverlay();
+    if (state.sheet) return setSheet(false);
+  });
+
   document.addEventListener("change", (e) => {
     const el = e.target;
     if (el.dataset.wishnotify) {
       const w = state.wish.find((x) => x.id === el.dataset.wishnotify);
       w.notify = el.checked; toast(el.checked ? "เปิดแจ้งเตือนแล้ว" : "ปิดแจ้งเตือนรายการนี้แล้ว");
+      return;
     }
+    if (el.dataset.f) { readFilters(); return updateResults(); }
+    if (el.dataset.sort !== undefined) { state.F.sort = el.value; return updateResults(); }
   });
   document.addEventListener("input", (e) => { if (e.target.id && e.target.id.startsWith("p-")) { checkPrice(); previewBox(); } });
 
   document.addEventListener("submit", (e) => {
     const f = e.target; e.preventDefault();
     switch (f.dataset.form) {
-      case "search": state.q = f.q.value; state.filter = "all"; return go("s2");
+      case "search": return runSearch(f.q.value.trim(), state.screen === "s2" ? copyF(state.F) : F0());
       case "login": toast("เข้าสู่ระบบแล้ว"); return go("s1");
       case "signup":
-        if ($("r-pw").value.length < 8) return toast("รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร");
-        if ($("r-pw").value !== $("r-pw2").value) return toast("รหัสผ่านทั้งสองช่องไม่ตรงกัน");
+        if ($("r-pw").value.length < 8) return toast("รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร", "err");
+        if ($("r-pw").value !== $("r-pw2").value) return toast("รหัสผ่านทั้งสองช่องไม่ตรงกัน", "err");
         state.signupEmail = $("r-email").value; state.googleName = ""; return go("a3");
       case "otp":
-        if (!/^\d{6}$/.test($("otp").value)) return toast("ใส่รหัสตัวเลข 6 หลัก");
+        if (!/^\d{6}$/.test($("otp").value)) return toast("ใส่รหัสตัวเลข 6 หลัก", "err");
         return go("a4");
       case "onboard": {
         const err = $("ob-err");
@@ -1522,11 +2187,11 @@ p { margin: 0; }
       }
       case "forgot": state.resetStep = 2; toast("ส่งรหัสยืนยันไปที่อีเมลแล้ว"); return render();
       case "reset":
-        if ($("rs-pw").value !== $("rs-pw2").value) return toast("รหัสผ่านทั้งสองช่องไม่ตรงกัน");
+        if ($("rs-pw").value !== $("rs-pw2").value) return toast("รหัสผ่านทั้งสองช่องไม่ตรงกัน", "err");
         state.resetStep = 1; toast("ตั้งรหัสผ่านใหม่แล้ว เข้าสู่ระบบได้เลย"); return go("a1");
       case "wish": {
         const fd = new FormData(f), topic = String(fd.get("topic") || "").trim();
-        if (!topic) return toast("ใส่สิ่งที่อยากเรียนก่อน");
+        if (!topic) return toast("ใส่สิ่งที่อยากเรียนก่อน", "err");
         const until = fd.get("mode") === "until" ? String(fd.get("until")) : "";
         const pub = fd.get("public") === "on";
         state.wish.unshift({ id: "w" + Date.now(), topic, level: String(fd.get("level")), until, notify: true, public: pub, match: null });
@@ -1535,7 +2200,7 @@ p { margin: 0; }
       }
       case "post": {
         const price = Number($("p-price").value);
-        if (price < 20) { $("p-price-err").hidden = false; return toast("ราคาขั้นต่ำ 20 บาท"); }
+        if (price < 20) { $("p-price-err").hidden = false; $("p-price").setAttribute("aria-invalid", "true"); $("p-price").focus(); return toast("ราคาขั้นต่ำ 20 บาท", "err"); }
         const from = state.postPrefill && state.postPrefill.from;
         if (from) { const it = state.demand.find((x) => x.topic === from); if (it) it.opened = "c2"; }
         toast(from ? `เผยแพร่แล้ว แจ้งผู้ที่อยากเรียน ${state.postPrefill.count} คนแล้ว` : "เผยแพร่คลาสสำเร็จ");
@@ -1546,13 +2211,13 @@ p { margin: 0; }
     }
   });
 
-  $("show-asks").addEventListener("change", (e) => { state.asks = e.target.checked; render(); });
+  $("show-asks").addEventListener("change", (e) => { state.asks = e.target.checked; render(true); });
 
   const start = (location.hash || "").slice(1).toLowerCase();
   if (S[start]) state.screen = start;
   if (SITE) {
     state.view = autoView();
-    window.addEventListener("resize", () => { const v2 = autoView(); if (v2 !== state.view) { state.view = v2; render(); } });
+    window.addEventListener("resize", () => { const v2 = autoView(); if (v2 !== state.view) { state.view = v2; render(true); } });
     $("helper-btn").addEventListener("click", () => $("side").classList.toggle("open"));
     $("side-close").addEventListener("click", () => $("side").classList.remove("open"));
   } else {
